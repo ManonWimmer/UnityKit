@@ -360,7 +360,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b5205c874d69b8489e18923d438c94c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scriptSelections: []
+  scriptSelections:
+  - targetGameObject: {fileID: 1991515355}
+    selectedScript: {fileID: 1991515359}
+    variableSelections:
+    - variableName: PlayerHealth
+      isSelected: 1
+    - variableName: PlayerLevel
+      isSelected: 0
+  - targetGameObject: {fileID: 1991515355}
+    selectedScript: {fileID: 1991515360}
+    variableSelections:
+    - variableName: _privateValue
+      isSelected: 1
+    - variableName: _privateString
+      isSelected: 0
 --- !u!1 &1974177457
 GameObject:
   m_ObjectHideFlags: 0
