@@ -6,6 +6,8 @@ using UnityEngine.UIElements;
 using System;
 using System.Reflection;
 using UnityEditor;
+using System.Linq;
+using System.IO;
 
 public class DialogueGraphView : GraphView
 {
@@ -13,6 +15,12 @@ public class DialogueGraphView : GraphView
     private readonly Vector2 _defaultNodeSize = new Vector2(150, 200);
 
     private Vector2 _lastMousePosition;
+
+    private DialogueNode _entryPointNode;
+
+    private Vector2 _defaultEntryPointPosition = new Vector2(100, 200);
+    private Vector2 _defaultEntryPointScale = new Vector2(100, 150);
+
 
     public DialogueGraphView()
     {
@@ -29,7 +37,7 @@ public class DialogueGraphView : GraphView
         grid.StretchToParentSize();
 
 
-        AddElement(GenererateEntryPointNode());
+        AddElement(GenererateEntryPointNode(_defaultEntryPointPosition));
 
         RegisterCallback<MouseDownEvent>(OnMouseDown);
     }
@@ -53,10 +61,11 @@ public class DialogueGraphView : GraphView
             Debug.Log("Position : " + contentViewContainer.WorldToLocal(_lastMousePosition));
         });
 
-        // You can add more menu options here
-        evt.menu.AppendAction("Another Option", action =>
+        // Add a custom "Re-generate Start Node" option
+        evt.menu.AppendAction("Re-generate Start Node", action =>
         {
-            Debug.Log("Another Option Clicked");
+            AddElement(GenererateEntryPointNode(contentViewContainer.WorldToLocal(_lastMousePosition)));
+            Debug.Log("Re-generate Start Node");
         });
 
         base.BuildContextualMenu(evt);
@@ -85,8 +94,10 @@ public class DialogueGraphView : GraphView
         return node.InstantiatePort(Orientation.Horizontal, portDirection, capacity, type);
     }
 
-    private DialogueNode GenererateEntryPointNode()
+    private DialogueNode GenererateEntryPointNode(Vector2 position)
     {
+        if (_entryPointNode !=  null && this.Contains(_entryPointNode)) return _entryPointNode;
+
         var node = new DialogueNode
         {
             title = "START",
@@ -102,7 +113,8 @@ public class DialogueGraphView : GraphView
         node.RefreshExpandedState();
         node.RefreshPorts();
 
-        node.SetPosition(new Rect(100, 200, 100, 150));
+        node.SetPosition(new Rect(position, _defaultEntryPointScale));
+        _entryPointNode = node;
 
         return node;
     }
@@ -150,6 +162,7 @@ public class DialogueGraphView : GraphView
         dialogueNode.RefreshPorts();
         dialogueNode.RefreshExpandedState();
     }
+    #endregion
 
     private void AddNewChoiceButton(DialogueNode dialogueNode)
     {
@@ -172,7 +185,119 @@ public class DialogueGraphView : GraphView
 
         dialogueNode.mainContainer.Add(idField);
     }
-    #endregion
 
+    #region Save / Load Graph
+
+    public void SaveGraph(string path)
+    {
+        // Create a new ScriptableObject to save the graph
+        var dialogueGraph = ScriptableObject.CreateInstance<DialogueGraphSO>();
+
+        // Save nodes
+        foreach (var node in nodes.ToList().OfType<DialogueNode>())
+        {
+            var nodeData = new DialogueNodeSO
+            {
+                id = node.GIUD,
+                dialogueId = node.DialogueText, // Assuming DialogueText stores the custom ID
+                title = node.title,
+                position = node.GetPosition().position,
+                entryPoint = node.EntryPoint
+            };
+
+            Debug.Log($"Saving node: {nodeData.title}, EntryPoint: {nodeData.entryPoint}, Position: {nodeData.position}");
+
+            dialogueGraph.nodes.Add(nodeData);
+        }
+
+        // Save edges
+        foreach (var edge in edges.ToList().OfType<Edge>())
+        {
+            if (edge.input == null || edge.output == null)
+                continue;
+
+            var edgeData = new DialogueEdgeSO
+            {
+                fromNodeId = ((DialogueNode)edge.output.node).GIUD,
+                toNodeId = ((DialogueNode)edge.input.node).GIUD
+            };
+
+            dialogueGraph.edges.Add(edgeData);
+        }
+
+        // Save the ScriptableObject as an asset
+        AssetDatabase.CreateAsset(dialogueGraph, path);
+        AssetDatabase.SaveAssets();
+
+        Debug.Log($"Graph saved at: {path}");
+    }
+
+    public void LoadGraph(DialogueGraphSO dialogueGraph)
+    {
+        Debug.Log($"Try to load asset : {dialogueGraph.name}");
+
+        ClearGraph();
+
+        // Load nodes
+        foreach (var nodeData in dialogueGraph.nodes)
+        {
+            Debug.Log($"Loading node: {nodeData.title}, EntryPoint: {nodeData.entryPoint}, Position: {nodeData.position}");
+
+            DialogueNode node;
+            if (nodeData.entryPoint)
+            {
+                node = GenererateEntryPointNode(nodeData.position);
+            }
+            else
+            {
+                node = CreateDialogueNode(nodeData.title, nodeData.position);
+            }
+            node.GIUD = nodeData.id;
+            node.DialogueText = nodeData.dialogueId; // Custom ID
+            AddElement(node);
+        }
+
+        // Load edges
+        foreach (var edgeData in dialogueGraph.edges)
+        {
+            var fromNode = nodes.ToList().OfType<DialogueNode>().FirstOrDefault(n => n.GIUD == edgeData.fromNodeId);
+            var toNode = nodes.ToList().OfType<DialogueNode>().FirstOrDefault(n => n.GIUD == edgeData.toNodeId);
+
+            if (fromNode == null || toNode == null)
+            {
+                Debug.LogWarning($"Failed to find nodes for edge: {edgeData.fromNodeId} -> {edgeData.toNodeId}");
+                continue;
+            }
+
+            if (fromNode.outputContainer.childCount == 0 || toNode.inputContainer.childCount == 0)
+            {
+                Debug.LogWarning($"Node ports are missing for edge: {fromNode.title} -> {toNode.title}");
+                continue;
+            }
+
+            // Connect the first available ports
+            var fromPort = fromNode.outputContainer.ElementAt(0) as Port;
+            var toPort = toNode.inputContainer.ElementAt(0) as Port;
+
+            if (fromPort == null || toPort == null)
+            {
+                Debug.LogWarning($"Failed to retrieve ports for edge: {fromNode.title} -> {toNode.title}");
+                continue;
+            }
+
+            var edge = fromPort.ConnectTo(toPort);
+            AddElement(edge);
+        }
+    }
+
+    public void ClearGraph()
+    {
+        var elements = graphElements.ToList();
+        foreach (var element in elements)
+        {
+            RemoveElement(element);
+        }
+    }
+    #endregion
 
 }

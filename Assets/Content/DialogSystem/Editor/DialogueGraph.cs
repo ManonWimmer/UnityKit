@@ -44,6 +44,8 @@ public class DialogueGraph : EditorWindow
         GenerateLoadDialogueButton(toolbar);
 
         GenerateSaveDialogueButton(toolbar);
+
+        GenerateClearGraphButton(toolbar);
     }
 
     private void GenerateCreateNodeButton(Toolbar toolbar)
@@ -61,9 +63,20 @@ public class DialogueGraph : EditorWindow
     {
         var dialogueLoadButton = new Button(() =>
         {
-            
+
+            var absolutePath = EditorUtility.OpenFilePanel("Load Dialogue Graph", Application.dataPath, "asset");
+
+            if (!string.IsNullOrEmpty(absolutePath))
+            {
+                var relativePath = "Assets" + absolutePath.Substring(Application.dataPath.Length);
+                var graphSO = AssetDatabase.LoadAssetAtPath<DialogueGraphSO>(relativePath);
+                if (graphSO != null)
+                {
+                    _graphView.LoadGraph(graphSO);
+                }
+            }
         });
-        dialogueLoadButton.text = "Load Dialogue";
+        dialogueLoadButton.text = "Load Dialogue Graph";
         toolbar.Add(dialogueLoadButton);
 
         rootVisualElement.Add(toolbar);
@@ -72,10 +85,26 @@ public class DialogueGraph : EditorWindow
     {
         var dialogueSaveButton = new Button(() =>
         {
-            
+            var path = EditorUtility.SaveFilePanelInProject("Save Dialogue Graph", "NewDialogueGraph", "asset", "Save Dialogue Graph");
+            if (!string.IsNullOrEmpty(path))
+            {
+                _graphView.SaveGraph(path);
+            }
         });
-        dialogueSaveButton.text = "Save Dialogue";
+        dialogueSaveButton.text = "Save Dialogue Graph";
         toolbar.Add(dialogueSaveButton);
+
+        rootVisualElement.Add(toolbar);
+    }
+
+    private void GenerateClearGraphButton(Toolbar toolbar)
+    {
+        var dialogueClearGraphButton = new Button(() =>
+        {
+            _graphView.ClearGraph();
+        });
+        dialogueClearGraphButton.text = "Clear all graph Graph";
+        toolbar.Add(dialogueClearGraphButton);
 
         rootVisualElement.Add(toolbar);
     }
