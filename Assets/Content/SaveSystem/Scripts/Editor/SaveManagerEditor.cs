@@ -1,4 +1,5 @@
 using CodiceApp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -38,7 +39,7 @@ public class SaveManagerEditor : Editor
             EditorGUI.BeginChangeCheck();
             var newTargetGameObject = (GameObject)EditorGUILayout.ObjectField(
                 "Target GameObject",
-                scriptSelection.targetGameObject,
+                (GameObject)scriptSelection.targetGameObject,
                 typeof(GameObject),
                 true
             );
@@ -55,7 +56,8 @@ public class SaveManagerEditor : Editor
             if (scriptSelection.targetGameObject != null)
             {
                 // Get script from gameobject
-                MonoBehaviour[] scripts = scriptSelection.targetGameObject.GetComponents<MonoBehaviour>();
+                GameObject gameObject = scriptSelection.targetGameObject as GameObject;
+                MonoBehaviour[] scripts = gameObject.GetComponents<MonoBehaviour>();
                 string[] scriptNames = scripts.Select(s => s.GetType().Name).ToArray();
                 int selectedIndex = ArrayUtility.IndexOf(scripts, scriptSelection.selectedScript);
                 selectedIndex = EditorGUILayout.Popup("Select Script", selectedIndex, scriptNames);
@@ -102,7 +104,11 @@ public class SaveManagerEditor : Editor
                     // Delete selection if not variables from script
                     scriptSelection.variableSelections = scriptSelection.variableSelections
                         .Where(v => fields.Any(f => f.Name == v.variableName))
-                        .ToList();
+                    .ToList();
+
+                    // GUID
+                    if (scriptSelection.guid == "") scriptSelection.guid = Guid.NewGuid().ToString();
+                    EditorGUILayout.LabelField($"GUID : {scriptSelection.guid}");
 
                     // Foldout menu
                     if (showVariablesFoldout.Count < i + 1) showVariablesFoldout.Add(false);
@@ -191,7 +197,7 @@ public class SaveManagerEditor : Editor
         removeButtonStyle.alignment = TextAnchor.MiddleCenter;
 
         // Title
-        titleStyle = new GUIStyle(EditorStyles.foldout);
+        titleStyle = new GUIStyle();
         titleStyle.fontSize = 14;
         titleStyle.fontStyle = FontStyle.Bold;
         titleStyle.normal.textColor = Color.white;

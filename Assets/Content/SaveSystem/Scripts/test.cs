@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class test : MonoBehaviour
 {
-    private int _privateValue = 10;
-    private string _privateString = "Apagan";
+    [SerializeField] private int _privateValue = 10;
+    [SerializeField] private string _privateString = "Apagan";
+
+    public string PublicString = "Apagan";
+
+    public string PrivateString { get => _privateString; set => _privateString = value; }
 }
