@@ -170,6 +170,8 @@ public class DialogueGraphView : GraphView
         var outputPortCount = dialogueNode.outputContainer.Query("connector").ToList().Count ;
         var outputPortName = $"Choice {outputPortCount}";
 
+        generatePort.portName = outputPortName;
+
         dialogueNode.outputContainer.Add(generatePort);
         dialogueNode.RefreshPorts();
         dialogueNode.RefreshExpandedState();

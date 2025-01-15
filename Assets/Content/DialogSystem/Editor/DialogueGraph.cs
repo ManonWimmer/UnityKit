@@ -41,21 +41,33 @@ public class DialogueGraph : EditorWindow
     #region Generate Toolbar / Buttons
     private void GenerateToolbar()
     {
-        var toolbar = new Toolbar();
+        var toolbarContainer = new VisualElement();
+        InitStyleToolbarContainer(toolbarContainer);
 
         _currentSaveLabel = new Label("No Save Loaded");
-        toolbar.Add(_currentSaveLabel);
+        toolbarContainer.Add(_currentSaveLabel);
 
-        GenerateCreateNodeButton(toolbar);
+        GenerateCreateNodeButton(toolbarContainer);
 
-        GenerateLoadDialogueButton(toolbar);
+        GenerateLoadDialogueButton(toolbarContainer);
 
-        GenerateSaveDialogueButton(toolbar);
+        GenerateSaveDialogueButton(toolbarContainer);
 
-        GenerateClearGraphButton(toolbar);
+        GenerateClearGraphButton(toolbarContainer);
+
+        rootVisualElement.Add(toolbarContainer);
+    }
+    private void InitStyleToolbarContainer(VisualElement toolbarContainer)
+    {
+        toolbarContainer.style.flexDirection = FlexDirection.Row;
+        toolbarContainer.style.flexWrap = Wrap.Wrap; // Wrap sur plusieurs lignes
+        toolbarContainer.style.paddingTop = 4;
+        toolbarContainer.style.paddingBottom = 4;
+        toolbarContainer.style.justifyContent = Justify.SpaceBetween;
+        toolbarContainer.style.backgroundColor = new Color(0.3f, 0.3f, 0.3f, 1.0f);
     }
 
-    private void GenerateCreateNodeButton(Toolbar toolbar)
+    private void GenerateCreateNodeButton(VisualElement toolbar)
     {
         var nodeCreateButton = new Button(() =>
         {
@@ -66,7 +78,7 @@ public class DialogueGraph : EditorWindow
 
         rootVisualElement.Add(toolbar);
     }
-    private void GenerateLoadDialogueButton(Toolbar toolbar)
+    private void GenerateLoadDialogueButton(VisualElement toolbar)
     {
         var dialogueLoadButton = new Button(() =>
         {
@@ -90,7 +102,7 @@ public class DialogueGraph : EditorWindow
 
         rootVisualElement.Add(toolbar);
     }
-    private void GenerateSaveDialogueButton(Toolbar toolbar)
+    private void GenerateSaveDialogueButton(VisualElement toolbar)
     {
         var dialogueSaveButton = new Button(() =>
         {
@@ -106,11 +118,13 @@ public class DialogueGraph : EditorWindow
         rootVisualElement.Add(toolbar);
     }
 
-    private void GenerateClearGraphButton(Toolbar toolbar)
+    private void GenerateClearGraphButton(VisualElement toolbar)
     {
         var dialogueClearGraphButton = new Button(() =>
         {
             _graphView.ClearGraph();
+
+            _currentSaveLabel.text = "No Save Loaded";
         });
         dialogueClearGraphButton.text = "Clear all graph Graph";
         toolbar.Add(dialogueClearGraphButton);

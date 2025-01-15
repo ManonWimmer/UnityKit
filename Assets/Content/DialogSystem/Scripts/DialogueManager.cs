@@ -22,11 +22,11 @@ public class DialogueManager : MonoBehaviour
     public static DialogueManager Instance { get => _instance; set => _instance = value; }
     public string CurrentDialogueText { get => _currentDialogueText; set => _currentDialogueText = value; }
 
-    public UnityEvent<string> OnNextDialogueUnity;
-
+    public UnityEvent OnNextDialogueUnity;
     public event Action<string> OnNextDialogue;
 
-
+    public UnityEvent OnChoiceChangeUnity;
+    public event Action<DialogueNodeSO> OnChoiceChange;
 
 
     private void Awake()
@@ -79,7 +79,12 @@ public class DialogueManager : MonoBehaviour
 
     public void SelectChoice(int choiceId)
     {
-        string nextDialogueId = GetNextDialogueIdByChoiceId(choiceId);
+        DialogueNodeSO nextDialogueNode = GetNextDialogueNodeByChoiceId(choiceId);
+
+        if (nextDialogueNode == null)   return;
+
+        string nextDialogueId = nextDialogueNode.dialogueId;
+
         if (!string.IsNullOrEmpty(nextDialogueId))
         {
             Debug.Log($"From ID {_currentDialogueId} to ID {nextDialogueId}");
@@ -95,11 +100,17 @@ public class DialogueManager : MonoBehaviour
         _currentDialogueText = tempText;
 
         NotifyDialogueChange(tempText);
+
     }
     private void NotifyDialogueChange(string dialogueText)
     {
-        OnNextDialogueUnity?.Invoke(dialogueText);
         OnNextDialogue?.Invoke(dialogueText);
+        OnNextDialogueUnity?.Invoke();
+    }
+    private void NotifyChoiceChange(DialogueNodeSO dialogueNode)
+    {
+        OnChoiceChange?.Invoke(dialogueNode);
+        OnChoiceChangeUnity?.Invoke();
     }
 
     private string GetDialogueFromIdDialogue(string idDialogue)
@@ -115,12 +126,12 @@ public class DialogueManager : MonoBehaviour
     }
 
     #region Parcours Graph Data
-    private string GetNextDialogueIdByChoiceId(int choiceId)
+    private DialogueNodeSO GetNextDialogueNodeByChoiceId(int choiceId)
     {
-        if (_dialogueGraphSO.nodes == null) return "";
-        if (_dialogueGraphSO.edges == null) return "";
-        if (string.IsNullOrEmpty(_currentDialogueId)) return "";
-        if (choiceId < 0) return "";
+        if (_dialogueGraphSO.nodes == null) return null;
+        if (_dialogueGraphSO.edges == null) return null;
+        if (string.IsNullOrEmpty(_currentDialogueId)) return null;
+        if (choiceId < 0) return null;
 
         // Trouve le nœud actuel
         foreach (DialogueNodeSO node in _dialogueGraphSO.nodes)
@@ -129,20 +140,20 @@ public class DialogueManager : MonoBehaviour
             {
                 // Récupère l'edge correspondant au choix
                 DialogueEdgeSO edge = GetNextEdgeByChoiceId(choiceId, node.id);
-                if (edge == null) return ""; // Pas d'edge trouvé pour ce choix
+                if (edge == null) return null; // Pas d'edge trouvé pour ce choix
 
                 // Trouve le nœud cible
                 foreach (DialogueNodeSO targetNode in _dialogueGraphSO.nodes)
                 {
                     if (targetNode.id == edge.toNodeId)
                     {
-                        return targetNode.dialogueId; // Retourne l'ID du dialogue suivant
+                        return targetNode; // Retourne l'ID du dialogue suivant
                     }
                 }
             }
         }
 
-        return ""; // Aucun dialogue trouvé
+        return null; // Aucun dialogue trouvé
     }
 
     private DialogueEdgeSO GetNextEdgeByChoiceId(int choiceId, string currentNodeId)    // Retourne l'edge qui fait le lien vers le node cible
