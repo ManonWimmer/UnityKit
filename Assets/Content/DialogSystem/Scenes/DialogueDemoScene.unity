@@ -944,11 +944,11 @@ PrefabInstance:
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
       propertyPath: _idToDialogueSO
       value: 
-      objectReference: {fileID: 11400000, guid: acbda6a07197aba4089581050c309ae0, type: 2}
+      objectReference: {fileID: 11400000, guid: 7d78b1b0477ca994c9456de64b95cb08, type: 2}
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
       propertyPath: _dialogueGraphSO
       value: 
-      objectReference: {fileID: 11400000, guid: e22fce866fe1ffa43ad1061270923446, type: 2}
+      objectReference: {fileID: 11400000, guid: 27bbae3a19ad8934fa23ddc22174ac25, type: 2}
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
       propertyPath: _choiceButtonPanel
       value: 
