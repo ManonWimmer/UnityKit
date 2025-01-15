@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewDialogueGraph", menuName = "Dialogue/Dialogue Graph")]
@@ -28,4 +29,7 @@ public class DialogueEdgeSO
 
     public string toNodeId;
     public string toPortId;
+
+    public int fromPortIndex;
+    public int toPortIndex;
 }

@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1407b570a3c98a64c8b5cb583e8b2f72, type: 3}
+  m_Name: NewDialogueGraph_Test08
+  m_EditorClassIdentifier: 
+  nodes:
+  - id: 10a9fe0b-8598-4722-82ff-149780dc890f
+    dialogueId: ENTRYPOINT
+    title: START
+    position: {x: 20.8, y: 147.2}
+    entryPoint: 1
+    outputPorts:
+    - Next
+  - id: 06918d53-d6c1-4318-b360-54f0badde86e
+    dialogueId: ID0
+    title: Dialogue Node
+    position: {x: 138.4, y: 147.2}
+    entryPoint: 0
+    outputPorts:
+    - String
+    - String
+  - id: 5cbd04d6-09bf-48bd-ac2c-ec64c4ac0a2b
+    dialogueId: ID2
+    title: Dialogue Node
+    position: {x: 401.6, y: 49.600002}
+    entryPoint: 0
+    outputPorts:
+    - String
+  - id: c086aefd-5c1b-4745-a305-0ea8baff7722
+    dialogueId: ID1
+    title: Dialogue Node
+    position: {x: 401.6, y: 262.4}
+    entryPoint: 0
+    outputPorts:
+    - String
+  - id: 07aa0123-8c17-4e35-8613-5f95a8ab906f
+    dialogueId: ID3
+    title: Dialogue Node
+    position: {x: 642.4, y: 49.600002}
+    entryPoint: 0
+    outputPorts:
+    - String
+    - String
+  - id: 98ac15fa-6e07-4a31-a9c7-631cb7cf0930
+    dialogueId: ID4
+    title: Dialogue Node
+    position: {x: 894.4, y: 49.600002}
+    entryPoint: 0
+    outputPorts:
+    - String
+  - id: 9ffcffd8-7be7-448a-802e-2ac704aa385f
+    dialogueId: ID5
+    title: Dialogue Node
+    position: {x: 894.4, y: 176.8}
+    entryPoint: 0
+    outputPorts:
+    - String
+  edges:
+  - fromNodeId: 10a9fe0b-8598-4722-82ff-149780dc890f
+    fromPortId: d97ba36d-7b10-4283-a0ff-a2f6896e34b1
+    toNodeId: 06918d53-d6c1-4318-b360-54f0badde86e
+    toPortId: e3144d95-2dd6-4eed-97e7-b905a765d6b8
+    fromPortIndex: 0
+    toPortIndex: 0
+  - fromNodeId: 06918d53-d6c1-4318-b360-54f0badde86e
+    fromPortId: f182c6ff-c263-4b33-89f4-14343e45e6eb
+    toNodeId: c086aefd-5c1b-4745-a305-0ea8baff7722
+    toPortId: 452ceebf-bce0-46ef-abde-c0bee2db72bf
+    fromPortIndex: 1
+    toPortIndex: 0
+  - fromNodeId: 06918d53-d6c1-4318-b360-54f0badde86e
+    fromPortId: eddc00ff-749b-4d0d-8656-01ae5addc434
+    toNodeId: 5cbd04d6-09bf-48bd-ac2c-ec64c4ac0a2b
+    toPortId: 07cb4239-474f-40e6-98d8-d6605170189e
+    fromPortIndex: 0
+    toPortIndex: 0
+  - fromNodeId: 5cbd04d6-09bf-48bd-ac2c-ec64c4ac0a2b
+    fromPortId: 52b86385-5b7d-4960-a168-d3f51b8f6e9d
+    toNodeId: 07aa0123-8c17-4e35-8613-5f95a8ab906f
+    toPortId: 66a8accc-d1f2-4111-942e-9a5bc259b3bf
+    fromPortIndex: 0
+    toPortIndex: 0
+  - fromNodeId: 07aa0123-8c17-4e35-8613-5f95a8ab906f
+    fromPortId: 71edded0-0d4e-4c14-a046-8cd9fecccf28
+    toNodeId: 98ac15fa-6e07-4a31-a9c7-631cb7cf0930
+    toPortId: 03404899-4611-4dd6-8e5b-25b7afadf21b
+    fromPortIndex: 0
+    toPortIndex: 0
+  - fromNodeId: 07aa0123-8c17-4e35-8613-5f95a8ab906f
+    fromPortId: aad39ed7-58d9-47f9-a40e-181a6a11d04f
+    toNodeId: 9ffcffd8-7be7-448a-802e-2ac704aa385f
+    toPortId: 04e84ee2-5d4d-411e-bd98-9c72f3ef28a7
+    fromPortIndex: 1
+    toPortIndex: 0

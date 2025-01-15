@@ -79,7 +79,7 @@ public class DialogueGraphView : GraphView
 
         ports.ForEach(port =>
         {
-            if (startPort != port && startPort.node != port.node)
+            if (startPort != port && startPort.node != port.node && startPort.direction != port.direction)
             {
                 compatiblePorts.Add(port);
             }
@@ -163,7 +163,6 @@ public class DialogueGraphView : GraphView
     }
 
 
-
     private void AddChoicePort(DialogueNode dialogueNode)
     {
         var generatePort = GeneratePort(dialogueNode, Direction.Output, typeof(string));
@@ -198,7 +197,7 @@ public class DialogueGraphView : GraphView
             name = "Dialogue ID"
         };
 
-        // Synchroniser la valeur du champ avec le DialogueText du nœud
+        // Synchroniser la valeur du champ avec le DialogueText du noeud
         idField.RegisterValueChangedCallback(evt =>
         {
             dialogueNode.DialogueText = evt.newValue; // Mettre à jour le DialogueText
@@ -251,8 +250,12 @@ public class DialogueGraphView : GraphView
                 fromNodeId = ((DialogueNode)edge.output.node).GIUD,
                 fromPortId = edge.output.name, // Sauvegarder l'identifiant unique du port
 
+                fromPortIndex = edge.output.parent.IndexOf(edge.output),
+
                 toNodeId = ((DialogueNode)edge.input.node).GIUD,
-                toPortId = edge.input.name // Sauvegarder l'identifiant unique du port
+                toPortId = edge.input.name, // Sauvegarder l'identifiant unique du port
+
+                toPortIndex = edge.input.parent.IndexOf(edge.input),
             };
 
             dialogueGraph.edges.Add(edgeData);
@@ -316,9 +319,10 @@ public class DialogueGraphView : GraphView
                 continue;
             }
 
-            // Connect the first available ports
-            var fromPort = fromNode.outputContainer.ElementAt(0) as Port;
-            var toPort = toNode.inputContainer.ElementAt(0) as Port;
+            // Recup ports en utilisant l'index
+            var fromPort = fromNode.outputContainer.Children().OfType<Port>().ElementAt(edgeData.fromPortIndex);
+            var toPort = toNode.inputContainer.Children().OfType<Port>().ElementAt(edgeData.toPortIndex);
+
 
             if (fromPort == null || toPort == null)
             {

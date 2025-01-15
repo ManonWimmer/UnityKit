@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -8,6 +9,9 @@ using UnityEngine.UIElements;
 public class DialogueGraph : EditorWindow
 {
     private DialogueGraphView _graphView;
+
+    private Label _currentSaveLabel;
+
 
     [MenuItem("Graph/Dialogue Graph")]
     public static void OpenDialogueGraphWindow()
@@ -38,6 +42,9 @@ public class DialogueGraph : EditorWindow
     private void GenerateToolbar()
     {
         var toolbar = new Toolbar();
+
+        _currentSaveLabel = new Label("No Save Loaded");
+        toolbar.Add(_currentSaveLabel);
 
         GenerateCreateNodeButton(toolbar);
 
@@ -73,6 +80,8 @@ public class DialogueGraph : EditorWindow
                 if (graphSO != null)
                 {
                     _graphView.LoadGraph(graphSO);
+
+                    _currentSaveLabel.text = $"Loaded : {Path.GetFileName(relativePath)}";
                 }
             }
         });
