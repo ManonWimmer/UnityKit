@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1407b570a3c98a64c8b5cb583e8b2f72, type: 3}
+  m_Name: NewDialogueGraph_Test04
+  m_EditorClassIdentifier: 
+  nodes:
+  - id: f6bd0287-6895-4695-ac91-fc8132dfc326
+    dialogueId: ENTRYPOINT
+    title: START
+    position: {x: 21.6, y: 125.600006}
+    entryPoint: 1
+    outputPorts:
+    - Next
+  - id: f6bd0287-6895-4695-ac91-fc8132dfc326
+    dialogueId: ENTRYPOINT
+    title: START
+    position: {x: 21.6, y: 125.600006}
+    entryPoint: 1
+    outputPorts:
+    - Next
+  - id: 8e189264-adbc-4f47-9bf2-aee434d84645
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 171.2, y: 78.399994}
+    entryPoint: 0
+    outputPorts:
+    - String
+    - String
+  - id: 8e189264-adbc-4f47-9bf2-aee434d84645
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 171.2, y: 78.399994}
+    entryPoint: 0
+    outputPorts:
+    - String
+    - String
+  - id: e75566bb-961e-4ab0-b150-029b0bc4efa5
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 437.6, y: 165.6}
+    entryPoint: 0
+    outputPorts: []
+  - id: e75566bb-961e-4ab0-b150-029b0bc4efa5
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 437.6, y: 165.6}
+    entryPoint: 0
+    outputPorts: []
+  - id: bb4f7d1a-9131-46ea-8f9c-37d9b3ffc168
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 437.6, y: 15.200001}
+    entryPoint: 0
+    outputPorts:
+    - String
+  - id: bb4f7d1a-9131-46ea-8f9c-37d9b3ffc168
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 437.6, y: 15.200001}
+    entryPoint: 0
+    outputPorts:
+    - String
+  edges:
+  - fromNodeId: f6bd0287-6895-4695-ac91-fc8132dfc326
+    toNodeId: 8e189264-adbc-4f47-9bf2-aee434d84645
+  - fromNodeId: 8e189264-adbc-4f47-9bf2-aee434d84645
+    toNodeId: e75566bb-961e-4ab0-b150-029b0bc4efa5
+  - fromNodeId: 8e189264-adbc-4f47-9bf2-aee434d84645
+    toNodeId: bb4f7d1a-9131-46ea-8f9c-37d9b3ffc168

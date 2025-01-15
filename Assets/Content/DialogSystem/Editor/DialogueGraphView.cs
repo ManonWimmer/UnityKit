@@ -91,7 +91,9 @@ public class DialogueGraphView : GraphView
 
     private Port GeneratePort(DialogueNode node, Direction portDirection, Type type, Port.Capacity capacity = Port.Capacity.Single)
     {
-        return node.InstantiatePort(Orientation.Horizontal, portDirection, capacity, type);
+        var port = node.InstantiatePort(Orientation.Horizontal, portDirection, capacity, type);
+        port.name = Guid.NewGuid().ToString(); // Identifiant unique pour ce port
+        return port;
     }
 
     private DialogueNode GenererateEntryPointNode(Vector2 position)
@@ -124,7 +126,7 @@ public class DialogueGraphView : GraphView
         AddElement(CreateDialogueNode(nodeName, position));
     }
 
-    public DialogueNode CreateDialogueNode(string nodeName, Vector2 position)
+    public DialogueNode CreateDialogueNode(string nodeName, Vector2 position, List<string> outputPorts = null)
     {
         var dialogueNode = new DialogueNode()
         {
@@ -140,6 +142,17 @@ public class DialogueGraphView : GraphView
         AddNewChoiceButton(dialogueNode);
 
         AddIdTextField(dialogueNode);
+
+        // Ajouter les ports de sortie sauvegardés
+        if (outputPorts != null)
+        {
+            foreach (var portName in outputPorts)
+            {
+                var port = GeneratePort(dialogueNode, Direction.Output, typeof(string));
+                port.portName = portName;
+                dialogueNode.outputContainer.Add(port);
+            }
+        }
 
         dialogueNode.RefreshExpandedState();
         dialogueNode.RefreshPorts();
@@ -164,6 +177,7 @@ public class DialogueGraphView : GraphView
     }
     #endregion
 
+    #region Add Button / Fields to node
     private void AddNewChoiceButton(DialogueNode dialogueNode)
     {
         var button = new Button(() =>
@@ -180,11 +194,21 @@ public class DialogueGraphView : GraphView
         // Create a text field for Dialogue ID
         var idField = new TextField("Dialogue ID")
         {
-            value = "Set Id" // Default to the current GUID
+            value = dialogueNode.DialogueText, // Default to the current GUID
+            name = "Dialogue ID"
         };
+
+        // Synchroniser la valeur du champ avec le DialogueText du nœud
+        idField.RegisterValueChangedCallback(evt =>
+        {
+            dialogueNode.DialogueText = evt.newValue; // Mettre à jour le DialogueText
+        });
 
         dialogueNode.mainContainer.Add(idField);
     }
+
+    #endregion
+
 
     #region Save / Load Graph
 
@@ -199,10 +223,16 @@ public class DialogueGraphView : GraphView
             var nodeData = new DialogueNodeSO
             {
                 id = node.GIUD,
-                dialogueId = node.DialogueText, // Assuming DialogueText stores the custom ID
+                dialogueId = node.DialogueText, // DialogueText stores the custom ID
                 title = node.title,
                 position = node.GetPosition().position,
-                entryPoint = node.EntryPoint
+                entryPoint = node.EntryPoint,
+                outputPorts = node.outputContainer.Children()
+                        .OfType<Port>()
+                        .Select(port => port.portName)
+                        .ToList() // Sauvegarder les noms des ports de sortie
+                ,
+                
             };
 
             Debug.Log($"Saving node: {nodeData.title}, EntryPoint: {nodeData.entryPoint}, Position: {nodeData.position}");
@@ -219,7 +249,10 @@ public class DialogueGraphView : GraphView
             var edgeData = new DialogueEdgeSO
             {
                 fromNodeId = ((DialogueNode)edge.output.node).GIUD,
-                toNodeId = ((DialogueNode)edge.input.node).GIUD
+                fromPortId = edge.output.name, // Sauvegarder l'identifiant unique du port
+
+                toNodeId = ((DialogueNode)edge.input.node).GIUD,
+                toPortId = edge.input.name // Sauvegarder l'identifiant unique du port
             };
 
             dialogueGraph.edges.Add(edgeData);
@@ -250,10 +283,18 @@ public class DialogueGraphView : GraphView
             }
             else
             {
-                node = CreateDialogueNode(nodeData.title, nodeData.position);
+                node = CreateDialogueNode(nodeData.title, nodeData.position, nodeData.outputPorts);
             }
             node.GIUD = nodeData.id;
             node.DialogueText = nodeData.dialogueId; // Custom ID
+
+            // Mettre à jour visuellement le TextField
+            var idField = node.mainContainer.Q<TextField>("Dialogue ID");
+            if (idField != null)
+            {
+                idField.value = node.DialogueText;
+            }
+
             AddElement(node);
         }
 
@@ -297,6 +338,8 @@ public class DialogueGraphView : GraphView
         {
             RemoveElement(element);
         }
+
+        _entryPointNode = null;
     }
     #endregion
 

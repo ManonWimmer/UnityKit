@@ -16,23 +16,103 @@ MonoBehaviour:
   - id: 30ffb14e-f06b-49b5-a513-43a946ffac3e
     dialogueId: ENTRYPOINT
     title: START
-    position: {x: 47, y: 138}
+    position: {x: 47.2, y: 137.6}
     entryPoint: 1
-  - id: 64890b29-c37c-4918-83ce-6adc6bdc0d40
-    dialogueId: Dialogue Node
-    title: Dialogue Node
-    position: {x: 493, y: 162}
-    entryPoint: 0
+    outputPorts:
+    - Next
+  - id: 30ffb14e-f06b-49b5-a513-43a946ffac3e
+    dialogueId: ENTRYPOINT
+    title: START
+    position: {x: 47.2, y: 137.6}
+    entryPoint: 1
+    outputPorts:
+    - Next
   - id: e81a28d3-f5fa-4ceb-b467-3ca4e3a11b71
     dialogueId: Dialogue Node
     title: Dialogue Node
-    position: {x: 187, y: 155}
+    position: {x: 168.8, y: 137.6}
     entryPoint: 0
+    outputPorts:
+    - String
+    - String
+  - id: e81a28d3-f5fa-4ceb-b467-3ca4e3a11b71
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 168.8, y: 137.6}
+    entryPoint: 0
+    outputPorts:
+    - String
+    - String
+  - id: 64890b29-c37c-4918-83ce-6adc6bdc0d40
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 407.2, y: 137.6}
+    entryPoint: 0
+    outputPorts:
+    - String
+    - String
+  - id: 64890b29-c37c-4918-83ce-6adc6bdc0d40
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 407.2, y: 137.6}
+    entryPoint: 0
+    outputPorts:
+    - String
+    - String
   - id: 1abaeaff-f015-44ea-ac00-595820770a7e
     dialogueId: Dialogue Node
     title: Dialogue Node
-    position: {x: 493, y: 275}
+    position: {x: 407.2, y: 289.59998}
     entryPoint: 0
+    outputPorts:
+    - String
+  - id: 1abaeaff-f015-44ea-ac00-595820770a7e
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 407.2, y: 289.59998}
+    entryPoint: 0
+    outputPorts:
+    - String
+  - id: be857ac8-5650-4086-8aa9-ff433976b6c5
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 675.2, y: 160}
+    entryPoint: 0
+    outputPorts: []
+  - id: be857ac8-5650-4086-8aa9-ff433976b6c5
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 675.2, y: 160}
+    entryPoint: 0
+    outputPorts: []
+  - id: 53620d95-d61d-4de6-b8a2-53175f5b6630
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 659.2, y: 289.59998}
+    entryPoint: 0
+    outputPorts:
+    - String
+  - id: 53620d95-d61d-4de6-b8a2-53175f5b6630
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 659.2, y: 289.59998}
+    entryPoint: 0
+    outputPorts:
+    - String
+  - id: 0c82a627-7feb-4710-8837-99d44d8a32e3
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 675.2, y: 35.2}
+    entryPoint: 0
+    outputPorts:
+    - String
+  - id: 0c82a627-7feb-4710-8837-99d44d8a32e3
+    dialogueId: Dialogue Node
+    title: Dialogue Node
+    position: {x: 675.2, y: 35.2}
+    entryPoint: 0
+    outputPorts:
+    - String
   edges:
   - fromNodeId: 30ffb14e-f06b-49b5-a513-43a946ffac3e
     toNodeId: e81a28d3-f5fa-4ceb-b467-3ca4e3a11b71
@@ -40,3 +120,9 @@ MonoBehaviour:
     toNodeId: 64890b29-c37c-4918-83ce-6adc6bdc0d40
   - fromNodeId: e81a28d3-f5fa-4ceb-b467-3ca4e3a11b71
     toNodeId: 1abaeaff-f015-44ea-ac00-595820770a7e
+  - fromNodeId: 1abaeaff-f015-44ea-ac00-595820770a7e
+    toNodeId: 53620d95-d61d-4de6-b8a2-53175f5b6630
+  - fromNodeId: 64890b29-c37c-4918-83ce-6adc6bdc0d40
+    toNodeId: 0c82a627-7feb-4710-8837-99d44d8a32e3
+  - fromNodeId: 64890b29-c37c-4918-83ce-6adc6bdc0d40
+    toNodeId: be857ac8-5650-4086-8aa9-ff433976b6c5

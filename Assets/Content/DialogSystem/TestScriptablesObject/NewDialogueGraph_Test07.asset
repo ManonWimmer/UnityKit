@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1407b570a3c98a64c8b5cb583e8b2f72, type: 3}
+  m_Name: NewDialogueGraph_Test07
+  m_EditorClassIdentifier: 
+  nodes:
+  - id: 0b25e8fc-4cd0-46d1-8e08-f93192fb467a
+    dialogueId: ENTRYPOINT
+    title: START
+    position: {x: 181.59999, y: 235.2}
+    entryPoint: 1
+    outputPorts:
+    - Next
+  - id: 2819899d-002b-4ea2-acd3-a78bae545164
+    dialogueId: ID0
+    title: Dialogue Node
+    position: {x: 296, y: 235.2}
+    entryPoint: 0
+    outputPorts:
+    - String
+    - String
+  - id: 35c34402-ac4f-4d81-ac6a-1d42adcf5068
+    dialogueId: ID2
+    title: Dialogue Node
+    position: {x: 545.60004, y: 306.4}
+    entryPoint: 0
+    outputPorts: []
+  - id: f2ddbc75-d327-4aa1-9ccc-fcd1348ffafc
+    dialogueId: ID3
+    title: Dialogue Node
+    position: {x: 838.4, y: 154.40001}
+    entryPoint: 0
+    outputPorts: []
+  - id: debf3e0a-6ae4-46eb-85b0-40c0120cd36e
+    dialogueId: ID1
+    title: Dialogue Node
+    position: {x: 545.60004, y: 154.40001}
+    entryPoint: 0
+    outputPorts:
+    - String
+  edges:
+  - fromNodeId: 0b25e8fc-4cd0-46d1-8e08-f93192fb467a
+    fromPortId: fe185313-0013-4414-b8a6-db19ef515fe4
+    toNodeId: 2819899d-002b-4ea2-acd3-a78bae545164
+    toPortId: f0c0a22c-263f-46ff-82d4-82c4a12b1793
+  - fromNodeId: 2819899d-002b-4ea2-acd3-a78bae545164
+    fromPortId: 6f8f0df0-2f30-41e9-bbc5-a0a00ab8511c
+    toNodeId: debf3e0a-6ae4-46eb-85b0-40c0120cd36e
+    toPortId: 64cf5f8d-752f-4f7e-aab5-dc2f8fbdd4e3
+  - fromNodeId: 2819899d-002b-4ea2-acd3-a78bae545164
+    fromPortId: 9184b68a-a730-4457-a4ec-a590fcb56700
+    toNodeId: 35c34402-ac4f-4d81-ac6a-1d42adcf5068
+    toPortId: d9618940-f4ab-4d04-9ebd-0a6de015e814
+  - fromNodeId: debf3e0a-6ae4-46eb-85b0-40c0120cd36e
+    fromPortId: 80591dc4-14b2-406c-a49d-883f0cc04420
+    toNodeId: f2ddbc75-d327-4aa1-9ccc-fcd1348ffafc
+    toPortId: 04456072-2fae-4399-acde-8e658b624e4a

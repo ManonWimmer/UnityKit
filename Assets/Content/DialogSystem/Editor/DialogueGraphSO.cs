@@ -17,11 +17,15 @@ public class DialogueNodeSO
     public string title;
     public Vector2 position;
     public bool entryPoint = false;
+    public List<string> outputPorts = new List<string>(); // Liste des noms des ports de sortie
 }
 
 [System.Serializable]
 public class DialogueEdgeSO
 {
     public string fromNodeId;
+    public string fromPortId;
+
     public string toNodeId;
+    public string toPortId;
 }
