@@ -35,7 +35,7 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
-        DebugSavedVariables();
+        //DebugSavedVariables();
     }
 
     private object GetFieldValue(object obj, string fieldName)
@@ -56,6 +56,7 @@ public class SaveManager : MonoBehaviour
         return null;
     }
 
+    /*
     private void DebugSavedVariables()
     {
         // Check each gameobject -> script -> variable if is selected
@@ -70,12 +71,13 @@ public class SaveManager : MonoBehaviour
                         GameObject gameObject = selection.targetGameObject as GameObject;
                         object value = GetFieldValue(selection.selectedScript, varSelection.variableName);
                         Debug.Log($"Save Variable: {varSelection.variableName}, Value: {value} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
-                        varSelection.value = value;
+                        varSelection.value = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
                     }
                 }
             }
         }
     }
+    */
 
     public void Save()
     {
@@ -87,7 +89,13 @@ public class SaveManager : MonoBehaviour
             {
                 data.Add(selection.guid, selection.variableSelections); // GUID - List variables
                 Debug.Log($"add to dict data, guid : {selection.guid}, game object : {selection.targetGameObject}, script : {selection.selectedScript}, list variables :");
-                foreach (var varSelection in selection.variableSelections) { Debug.Log($"Variable : {varSelection.variableName}, Is Selected : {varSelection.isSelected}"); }
+                foreach (var varSelection in selection.variableSelections) 
+                {
+                    GameObject gameObject = selection.targetGameObject as GameObject;
+                    object value = GetFieldValue(selection.selectedScript, varSelection.variableName);
+                    Debug.Log($"Save Variable: {varSelection.variableName}, Value: {value}, Is Selected: {varSelection.isSelected} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
+                    varSelection.value = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
+                }
             }
         }
 
@@ -109,39 +117,22 @@ public class SaveManager : MonoBehaviour
             {
                 GameObject gameObject = selection.targetGameObject as GameObject;
                 Component component = selection.selectedScript as Component;
-                Type scriptType = Type.GetType(component.name);
 
-                // Log pour vérifier l'état du scriptType
-                Debug.Log($"Processing GUID: {guid}");
-
-                if (scriptType == null)
+                if (gameObject != null && component != null)
                 {
-                    Debug.LogError($"Script type is null for GUID: {guid}");
-                }
-
-                if (gameObject != null && scriptType != null)
-                {
-                    Component gameObjectScript = gameObject.GetComponent(scriptType);
-                    if (gameObjectScript != null)
+                    foreach (var varSelection in variables)
                     {
-                        foreach (var varSelection in selection.variableSelections)
+                        if (varSelection.isSelected)
                         {
-                            if (varSelection.isSelected)
-                            {
-                                object value = GetFieldValue(gameObjectScript, varSelection.variableName);
-                                Debug.Log($"Loaded Variable: {varSelection.variableName}, Value: {value} in GameObject: {gameObject.name}, Script: {component.ToString()}");
-                                varSelection.value = value;
-                            }
+                            // Définir la valeur chargée dans la variable du script
+                            SetFieldValue(component, varSelection.variableName, varSelection.value);
+                            Debug.Log($"Loaded Variable: {varSelection.variableName}, Set Value: {varSelection.value} in GameObject: {gameObject.name}, Script: {component.ToString()}");
                         }
-                    }
-                    else
-                    {
-                        Debug.LogError($"Script of type {scriptType.Name} not found on {gameObject.name}");
                     }
                 }
                 else
                 {
-                    Debug.LogWarning($"Problemo: Invalid game object or script type for GUID {guid}");
+                    Debug.LogError($"Invalid GameObject or Component for GUID: {guid}");
                 }
             }
             else
@@ -149,6 +140,25 @@ public class SaveManager : MonoBehaviour
                 Debug.LogWarning($"Script selection with GUID {guid} not found.");
             }
         }
+    }
+
+    private void SetFieldValue(object obj, string fieldName, object value)
+    {
+        var field = obj.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (field != null)
+        {
+            field.SetValue(obj, value);
+            return;
+        }
+
+        var property = obj.GetType().GetProperty(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (property != null && property.CanWrite)
+        {
+            property.SetValue(obj, value);
+            return;
+        }
+
+        Debug.LogWarning($"Field or Property '{fieldName}' not found or not writable on {obj.GetType().Name}");
     }
 
 
