@@ -18,6 +18,7 @@ public class DialogueUIBehavior : MonoBehaviour
         if (DialogueManager.Instance != null)
         {
             DialogueManager.Instance.OnNextDialogue += DisplayText;
+            DisplayText(DialogueManager.Instance.CurrentDialogueText);
         }
     }
     private void OnDestroy()

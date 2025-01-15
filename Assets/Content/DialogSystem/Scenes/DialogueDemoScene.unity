@@ -134,6 +134,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25946b55169cb864a82956f10a15b24a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &99178915 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4852673905068557081, guid: 8b88841c133ac5246928d130ce104551, type: 3}
+  m_PrefabInstance: {fileID: 7671036833949074385}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &204068565
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -142,6 +147,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1871429618}
     m_Modifications:
+    - target: {fileID: 717253775377372743, guid: 02b72592466cc124bbeb1ae897861ab2, type: 3}
+      propertyPath: m_text
+      value: Choice 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1784055800379825412, guid: 02b72592466cc124bbeb1ae897861ab2, type: 3}
       propertyPath: m_Name
       value: ChoiceButtonDemo (3)
@@ -276,6 +285,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1871429618}
     m_Modifications:
+    - target: {fileID: 717253775377372743, guid: 02b72592466cc124bbeb1ae897861ab2, type: 3}
+      propertyPath: m_text
+      value: Choice 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1784055800379825412, guid: 02b72592466cc124bbeb1ae897861ab2, type: 3}
       propertyPath: m_Name
       value: ChoiceButtonDemo (1)
@@ -410,6 +423,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1871429618}
     m_Modifications:
+    - target: {fileID: 717253775377372743, guid: 02b72592466cc124bbeb1ae897861ab2, type: 3}
+      propertyPath: m_text
+      value: Choice 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1784055800379825412, guid: 02b72592466cc124bbeb1ae897861ab2, type: 3}
       propertyPath: m_Name
       value: ChoiceButtonDemo (2)
@@ -925,33 +942,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
-      propertyPath: OnNextDialogueUnity.m_PersistentCalls.m_Calls.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
-      propertyPath: OnNextDialogueUnity.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
-      propertyPath: OnNextDialogueUnity.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      propertyPath: _idToDialogueSO
       value: 
-      objectReference: {fileID: 7671036833949074386}
+      objectReference: {fileID: 11400000, guid: acbda6a07197aba4089581050c309ae0, type: 2}
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
-      propertyPath: OnNextDialogueUnity.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
+      propertyPath: _dialogueGraphSO
+      value: 
+      objectReference: {fileID: 11400000, guid: e22fce866fe1ffa43ad1061270923446, type: 2}
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
-      propertyPath: OnNextDialogueUnity.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DisplayText
-      objectReference: {fileID: 0}
-    - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
-      propertyPath: OnNextDialogueUnity.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: DialogueUIBehavior, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
-      propertyPath: OnNextDialogueUnity.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
+      propertyPath: _choiceButtonPanel
+      value: 
+      objectReference: {fileID: 99178915}
     - target: {fileID: 3938295699592777552, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
       propertyPath: m_Name
       value: Manager_Dialogue
@@ -1030,17 +1031,6 @@ PrefabInstance:
       addedObject: {fileID: 204068566}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b88841c133ac5246928d130ce104551, type: 3}
---- !u!114 &7671036833949074386 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7316613756708827674, guid: 8b88841c133ac5246928d130ce104551, type: 3}
-  m_PrefabInstance: {fileID: 7671036833949074385}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdfcd9548c3a5e24a8ef3335c4b7daca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

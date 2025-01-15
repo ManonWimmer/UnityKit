@@ -14,12 +14,13 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private IdToDialogueSO _idToDialogueSO;
 
     private string _currentDialogueId = "";
+    private string _currentDialogueText = "";
 
     [SerializeField] private RectTransform _choiceButtonPanel;
 
 
     public static DialogueManager Instance { get => _instance; set => _instance = value; }
-
+    public string CurrentDialogueText { get => _currentDialogueText; set => _currentDialogueText = value; }
 
     public UnityEvent<string> OnNextDialogueUnity;
 
@@ -41,6 +42,8 @@ public class DialogueManager : MonoBehaviour
         if (_autoInit)
         {
             Init();
+
+            var temp = _idToDialogueSO.IdToDialogueConverter;
         }
     }
 
@@ -50,10 +53,10 @@ public class DialogueManager : MonoBehaviour
         _currentDialogueId = GetDialogueIdEntryPoint();
 
         string tempText = GetDialogueFromIdDialogue(_currentDialogueId);
+        _currentDialogueText = tempText;
 
-        OnNextDialogue?.Invoke(tempText);
+        NotifyDialogueChange(tempText);
     }
-
 
     private string GetDialogueIdEntryPoint()
     {
@@ -76,9 +79,10 @@ public class DialogueManager : MonoBehaviour
 
     public void SelectChoice(int choiceId)
     {
-        string nextDialogueId = GetNextDialogueIdChoice(choiceId);
+        string nextDialogueId = GetNextDialogueIdByChoiceId(choiceId);
         if (!string.IsNullOrEmpty(nextDialogueId))
         {
+            Debug.Log($"From ID {_currentDialogueId} to ID {nextDialogueId}");
             _currentDialogueId = nextDialogueId;
         }
         else
@@ -88,17 +92,30 @@ public class DialogueManager : MonoBehaviour
         
         string tempText = GetDialogueFromIdDialogue(_currentDialogueId);
 
-        OnNextDialogue?.Invoke(tempText);
+        _currentDialogueText = tempText;
+
+        NotifyDialogueChange(tempText);
     }
+    private void NotifyDialogueChange(string dialogueText)
+    {
+        OnNextDialogueUnity?.Invoke(dialogueText);
+        OnNextDialogue?.Invoke(dialogueText);
+    }
+
     private string GetDialogueFromIdDialogue(string idDialogue)
     {
         if (_idToDialogueSO == null) return "";
+        if (_idToDialogueSO.IdToDialogueConverter.TryGetValue(idDialogue, out var dialogueText))
+        {
+            return dialogueText;
+        }
 
-        return _idToDialogueSO.IdToDialogueConverter[idDialogue];
+        Debug.LogWarning($"Dialogue ID not found: {idDialogue}");
+        return "";
     }
 
     #region Parcours Graph Data
-    private string GetNextDialogueIdChoice(int choiceId)
+    private string GetNextDialogueIdByChoiceId(int choiceId)
     {
         if (_dialogueGraphSO.nodes == null) return "";
         if (_dialogueGraphSO.edges == null) return "";
@@ -111,7 +128,7 @@ public class DialogueManager : MonoBehaviour
             if (node.dialogueId == _currentDialogueId)
             {
                 // Récupère l'edge correspondant au choix
-                DialogueEdgeSO edge = GetNextNodeByChoiceId(choiceId, node.id);
+                DialogueEdgeSO edge = GetNextEdgeByChoiceId(choiceId, node.id);
                 if (edge == null) return ""; // Pas d'edge trouvé pour ce choix
 
                 // Trouve le nœud cible
@@ -128,17 +145,19 @@ public class DialogueManager : MonoBehaviour
         return ""; // Aucun dialogue trouvé
     }
 
-    private DialogueEdgeSO GetNextNodeByChoiceId(int choiceId, string currentNodeId)
+    private DialogueEdgeSO GetNextEdgeByChoiceId(int choiceId, string currentNodeId)    // Retourne l'edge qui fait le lien vers le node cible
     {
         foreach (DialogueEdgeSO edge in _dialogueGraphSO.edges)
         {
-            if (edge.fromNodeId == currentNodeId && edge.fromPortIndex == choiceId)
+            if (edge.fromNodeId == currentNodeId && edge.fromPortIndex == choiceId) // Si depuis bon node && bon choix
             {
+                Debug.Log($"Found edge: FromNodeId={edge.fromNodeId}, ToNodeId={edge.toNodeId}, ChoiceId={choiceId}");
                 return edge;
             }
         }
 
-        return null; // Aucun edge correspondant trouvé
+        Debug.LogWarning($"No edge found for CurrentNodeId={currentNodeId}, ChoiceId={choiceId}");
+        return null;
     }
     #endregion
 }

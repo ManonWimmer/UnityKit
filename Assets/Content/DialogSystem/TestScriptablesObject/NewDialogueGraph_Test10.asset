@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1407b570a3c98a64c8b5cb583e8b2f72, type: 3}
+  m_Name: NewDialogueGraph_Test10
+  m_EditorClassIdentifier: 
+  nodes:
+  - id: 88273a84-dd04-42f0-b45d-1f5fe2ef7a18
+    dialogueId: ENTRYPOINT
+    title: START
+    position: {x: 66, y: 94}
+    entryPoint: 1
+    outputPorts:
+    - Next
+  - id: c5825eb3-9b24-4ab4-8cd2-de9af3b45f6c
+    dialogueId: ID0
+    title: Dialogue Node
+    position: {x: 196, y: 94}
+    entryPoint: 0
+    outputPorts:
+    - String
+  - id: 1545de09-7a72-4173-8d38-7baafdd3d347
+    dialogueId: ID1
+    title: Dialogue Node
+    position: {x: 442, y: 94}
+    entryPoint: 0
+    outputPorts:
+    - String
+    - String
+  - id: ede0a84e-8cc1-4add-a06f-772332d318e3
+    dialogueId: ID2
+    title: Dialogue Node
+    position: {x: 699, y: 46}
+    entryPoint: 0
+    outputPorts: []
+  - id: 1e6a6910-1a8b-48c5-ab79-5d190cda626e
+    dialogueId: ID3
+    title: Dialogue Node
+    position: {x: 699, y: 214}
+    entryPoint: 0
+    outputPorts: []
+  edges:
+  - fromNodeId: 88273a84-dd04-42f0-b45d-1f5fe2ef7a18
+    fromPortId: 1aace915-8c01-4b76-b2d9-0060d6b90451
+    toNodeId: c5825eb3-9b24-4ab4-8cd2-de9af3b45f6c
+    toPortId: f5e8959c-2d74-4cba-ab6a-7431ec0bf06e
+    fromPortIndex: 0
+    toPortIndex: 0
+  - fromNodeId: c5825eb3-9b24-4ab4-8cd2-de9af3b45f6c
+    fromPortId: 53fb327e-58d7-4cd9-a672-b5cac3eacc1a
+    toNodeId: 1545de09-7a72-4173-8d38-7baafdd3d347
+    toPortId: aa1d9f68-e40a-423b-b19b-749e2acb8698
+    fromPortIndex: 0
+    toPortIndex: 0
+  - fromNodeId: 1545de09-7a72-4173-8d38-7baafdd3d347
+    fromPortId: 94c7db9b-6242-4a56-88aa-d1e079651c4b
+    toNodeId: ede0a84e-8cc1-4add-a06f-772332d318e3
+    toPortId: 13172969-d51c-4dfe-a533-e23c99287b34
+    fromPortIndex: 0
+    toPortIndex: 0
+  - fromNodeId: 1545de09-7a72-4173-8d38-7baafdd3d347
+    fromPortId: e5300da9-ea9c-4f65-9e8b-b6067e566ce2
+    toNodeId: 1e6a6910-1a8b-48c5-ab79-5d190cda626e
+    toPortId: cbe5889b-efd7-4d20-8d03-5c09e9ddec24
+    fromPortIndex: 1
+    toPortIndex: 0

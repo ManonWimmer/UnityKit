@@ -12,3 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8136f6899c9ba37459b532445abbc1e1, type: 3}
   m_Name: IdToDialogueConverter_01
   m_EditorClassIdentifier: 
+  _dialogueEntries:
+  - id: ID0
+    dialogueText: Salut c'est Moi !
+  - id: ID1
+    dialogueText: Et oui c'est bien moi !
+  - id: ID2
+    dialogueText: Je suis vivant !
+  - id: ID3
+    dialogueText: Je suis mort !

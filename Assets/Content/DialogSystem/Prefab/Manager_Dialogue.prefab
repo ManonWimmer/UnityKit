@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _autoInit: 1
   _dialogueGraphSO: {fileID: 11400000, guid: be1ce4d9e10f92f4fb03c1c87bdb24ad, type: 2}
+  _idToDialogueSO: {fileID: 0}
   _choiceButtonPanel: {fileID: 0}
   OnNextDialogueUnity:
     m_PersistentCalls:
