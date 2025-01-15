@@ -12,19 +12,32 @@ public class DialogueUIBehavior : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI _dialogueText;
 
+    [SerializeField] private bool _forceInitDialogueManager;
+
 
     private void Start()
     {
         if (DialogueManager.Instance != null)
         {
+            DialogueManager.Instance.OnChoiceChange += DisplayChoicesButton;
+
             DialogueManager.Instance.OnNextDialogue += DisplayText;
             DisplayText(DialogueManager.Instance.CurrentDialogueText);
+
+
+            if (_forceInitDialogueManager)
+            {
+                DialogueManager.Instance.Init();
+            }
         }
+
     }
     private void OnDestroy()
     {
         if (DialogueManager.Instance != null)
         {
+            DialogueManager.Instance.OnChoiceChange -= DisplayChoicesButton;
+
             DialogueManager.Instance.OnNextDialogue -= DisplayText;
         }
     }
@@ -33,23 +46,32 @@ public class DialogueUIBehavior : MonoBehaviour
     {
         if (_choicesButtonPanel == null) return;
 
+        GameObject[] allChildren = new GameObject[_choicesButtonPanel.childCount];
+        int tempIndex = 0;
+
         foreach (Transform child in _choicesButtonPanel.transform)
         {
-            Destroy(child);
+            allChildren[tempIndex] = child.gameObject;
+            ++tempIndex;
         }
+        foreach (GameObject child in allChildren)
+        {
+            Destroy(child.gameObject);
+        }
+
 
         for (int i = 0; i < dialogueNode.outputPorts.Count; ++i)
         {
-            CreateButtonChoice(i);
+            CreateButtonChoice(i, dialogueNode.outputPorts[i]);
         }
     }
-    private void CreateButtonChoice (int Id)
+    private void CreateButtonChoice (int Id, string textValue = "Default Choice")
     {
         GameObject buttonChoiceGameObject = Instantiate(_buttonChoicePrefab, _choicesButtonPanel);
 
         ButtonChoice buttonChoice = buttonChoiceGameObject.GetComponent<ButtonChoice>();
 
-        buttonChoice.Init(Id);
+        buttonChoice.Init(Id, textValue);
     }
 
     public void DisplayText(string text)

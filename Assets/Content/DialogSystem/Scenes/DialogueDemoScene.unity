@@ -382,6 +382,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
+      propertyPath: _autoInit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
       propertyPath: _idToDialogueSO
       value: 
       objectReference: {fileID: 11400000, guid: 7d78b1b0477ca994c9456de64b95cb08, type: 2}
@@ -453,6 +457,10 @@ PrefabInstance:
     - target: {fileID: 2930577615062411359, guid: 8b88841c133ac5246928d130ce104551, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7316613756708827674, guid: 8b88841c133ac5246928d130ce104551, type: 3}
+      propertyPath: _forceInitDialogueManager
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -42,20 +42,21 @@ public class DialogueManager : MonoBehaviour
         if (_autoInit)
         {
             Init();
-
-            var temp = _idToDialogueSO.IdToDialogueConverter;
         }
+
     }
 
     #region Init
     public void Init()
     {
+        var temp = _idToDialogueSO.IdToDialogueConverter;
+
         _currentDialogueId = GetDialogueIdEntryPoint();
 
         string tempText = GetDialogueFromIdDialogue(_currentDialogueId);
         _currentDialogueText = tempText;
 
-        NotifyDialogueChange(tempText);
+        SelectChoice(0);
     }
 
     private string GetDialogueIdEntryPoint()
@@ -101,6 +102,7 @@ public class DialogueManager : MonoBehaviour
 
         NotifyDialogueChange(tempText);
 
+        NotifyChoiceChange(nextDialogueNode);
     }
     private void NotifyDialogueChange(string dialogueText)
     {

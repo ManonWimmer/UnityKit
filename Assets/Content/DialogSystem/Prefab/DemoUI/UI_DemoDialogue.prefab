@@ -287,9 +287,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdfcd9548c3a5e24a8ef3335c4b7daca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _choicesButtonPanel: {fileID: 4762448847052426860, guid: 02b72592466cc124bbeb1ae897861ab2, type: 3}
+  _choicesButtonPanel: {fileID: 7814209468373053964}
   _buttonChoicePrefab: {fileID: 1784055800379825412, guid: 02b72592466cc124bbeb1ae897861ab2, type: 3}
   _dialogueText: {fileID: 7061199657868504161}
+  _forceInitDialogueManager: 0
 --- !u!1 &4762122925496238207
 GameObject:
   m_ObjectHideFlags: 0
