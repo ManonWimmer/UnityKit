@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] GameObject _profilesPanel;
+    [SerializeField] GameObject _saveAndLoadPanel;
+
+    private void Start()
     {
-        
+        OpenProfilesPanel();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OpenProfilesPanel()
     {
-        
+        _profilesPanel.SetActive(true);
+        _saveAndLoadPanel.SetActive(false);
+    }
+
+    public void OpenSaveAndLoadPanel()
+    {
+        _profilesPanel.SetActive(false);
+        _saveAndLoadPanel.SetActive(true);
     }
 }
