@@ -35,7 +35,7 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
-        //DebugSavedVariables();
+        DebugSavedVariables();
     }
 
     private object GetFieldValue(object obj, string fieldName)
@@ -56,7 +56,7 @@ public class SaveManager : MonoBehaviour
         return null;
     }
 
-    /*
+    
     private void DebugSavedVariables()
     {
         // Check each gameobject -> script -> variable if is selected
@@ -71,13 +71,12 @@ public class SaveManager : MonoBehaviour
                         GameObject gameObject = selection.targetGameObject as GameObject;
                         object value = GetFieldValue(selection.selectedScript, varSelection.variableName);
                         Debug.Log($"Save Variable: {varSelection.variableName}, Value: {value} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
-                        varSelection.value = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
                     }
                 }
             }
         }
     }
-    */
+    
 
     public void Save()
     {
