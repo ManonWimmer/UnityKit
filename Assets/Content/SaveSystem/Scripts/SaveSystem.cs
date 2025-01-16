@@ -7,16 +7,14 @@ using System.Runtime.Serialization;
 
 public static class SaveSystem
 {
-    public static void Save(Dictionary<string, object> Data)
+    public static void Save(SaveData Data)
     {
         BinaryFormatter binaryFormatter = new BinaryFormatter();
 
         string path = Application.persistentDataPath + "/player.test";
         FileStream stream = new FileStream(path, FileMode.Create);
 
-        SaveData data = new SaveData(Data);
-
-        binaryFormatter.Serialize(stream, data);
+        binaryFormatter.Serialize(stream, Data);
         stream.Close();
     }
 

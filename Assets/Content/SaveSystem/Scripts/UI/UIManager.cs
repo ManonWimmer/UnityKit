@@ -38,12 +38,15 @@ public class UIManager : MonoBehaviour
     {
         _profilesPanel.SetActive(true);
         _saveAndLoadPanel.SetActive(false);
+
+        _saveManager.CurrentProfile = "";
     }
 
     public void OpenSaveAndLoadPanel(string profileName)
     {
         _profilesPanel.SetActive(false);
         _saveAndLoadPanel.SetActive(true);
+        _saveManager.CurrentProfile = profileName;
 
         _profileNameInSavesTxt.text = profileName;
     }

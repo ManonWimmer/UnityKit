@@ -34,6 +34,7 @@ public class SaveManager : MonoBehaviour
     public List<ScriptSelection> scriptSelections = new List<ScriptSelection>();
 
     public List<string> ProfilesNames = new List<string>();
+    public string CurrentProfile = "";
     public event Action OnAddProfile;
 
     public static SaveManager Instance;
@@ -97,6 +98,13 @@ public class SaveManager : MonoBehaviour
     {
         Dictionary <string, object> data = new Dictionary<string, object>();
 
+        DateTime now = DateTime.Now;
+        string currentDate = now.ToString("yyyy-MM-dd"); // Format : "2025-01-16"
+        Debug.Log("Date actuelle : " + currentDate);
+        string currentTime = now.ToString("HH:mm:ss"); // Format : "16:45:30"
+        Debug.Log("Heure actuelle : " + currentTime);
+        SaveInfos dataInfos = new SaveInfos("", currentDate, currentTime);
+
         foreach (var selection in scriptSelections)
         {
             if (selection.targetGameObject != null && selection.selectedScript != null && selection.variableSelections.Count > 0)
@@ -113,14 +121,18 @@ public class SaveManager : MonoBehaviour
             }
         }
 
-        SaveSystem.Save(data);
+        Debug.Log($"Save Infos: GUID {dataInfos.GUID}, Date {dataInfos.Date}, Time {dataInfos.Time}");
+
+        SaveData saveData = new SaveData(data, dataInfos);
+
+        SaveSystem.Save(saveData);
     }
 
     public void Load()
     {
         SaveData data = SaveSystem.Load();
 
-        foreach (var entry in data.data)
+        foreach (var entry in data.DictVariables)
         {
             string guid = entry.Key;
             List<SaveManager.VariableSelection> variables = entry.Value as List<SaveManager.VariableSelection>;
@@ -174,39 +186,6 @@ public class SaveManager : MonoBehaviour
 
         Debug.LogWarning($"Field or Property '{fieldName}' not found or not writable on {obj.GetType().Name}");
     }
-
-
-
-
-
-
-
-    /*
-    foreach (var selection in data.scriptSelections)
-    {
-        if (selection.targetGameObject != null && selection.selectedScript != null && selection.variableSelections.Count > 0)
-        {
-            GameObject gameObject = selection.targetGameObject as GameObject;
-            MonoBehaviour[] scripts = gameObject.GetComponents<MonoBehaviour>();
-            foreach (MonoBehaviour script in scripts)
-            { 
-                MonoBehaviour scriptObject = selection.selectedScript as MonoBehaviour;
-                if (script != null && scriptObject == script)
-                {
-                    foreach(var varSelection in selection.variableSelections) 
-                    { 
-                        if (varSelection.isSelected)
-                        {
-                            Debug.Log(varSelection.variableName);
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-    }
-    */
-
 
     private ScriptSelection GetScriptSelectionFromGUID(string guid)
     {
@@ -276,5 +255,12 @@ public class SaveManager : MonoBehaviour
         {
             Debug.LogWarning("Le dossier spécifié n'existe pas : " + saveFolderPath);
         }
+    }
+
+    public void GetCurrentProfileSaves()
+    {
+        if (CurrentProfile == "") return;
+
+
     }
 }
