@@ -8,8 +8,14 @@ public class SaveSlot : MonoBehaviour
     public SaveData SaveData;
     [SerializeField] private TMP_Text _saveNameTxt;
     [SerializeField] private TMP_Text _saveInfosTxt;
+
+    [SerializeField] private GameObject _isLoadedContent;
+    [SerializeField] private GameObject _isNotLoadedContent;
+
     private UIManager _uiManager;
     private SaveManager _saveManager;
+
+    private bool _isLoaded = false;
 
     private void Start()
     {
@@ -29,5 +35,21 @@ public class SaveSlot : MonoBehaviour
     public void LoadSave()
     {
         _saveManager.LoadSave(SaveData.SaveInfos);
+    }
+
+    public void SetIsLoaded(bool isLoaded)
+    {
+        _isLoaded = isLoaded;
+
+        if (isLoaded)
+        {
+            _isLoadedContent.SetActive(true);
+            _isNotLoadedContent.SetActive(false);
+        }
+        else
+        {
+            _isLoadedContent.SetActive(false);
+            _isNotLoadedContent.SetActive(true);
+        }
     }
 }

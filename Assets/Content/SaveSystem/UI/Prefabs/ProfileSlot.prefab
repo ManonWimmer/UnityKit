@@ -543,6 +543,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ProfileName: 
   _profileNameTxt: {fileID: 8437151466338450700}
+  _profileInfosTxt: {fileID: 1888414177129312312}
+  SaveData:
+    SaveInfos:
+      GUID: 
+      Date: 
+      Time: 
 --- !u!1 &4877403946109953125
 GameObject:
   m_ObjectHideFlags: 0

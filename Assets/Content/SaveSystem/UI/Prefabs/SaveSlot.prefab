@@ -967,6 +967,8 @@ MonoBehaviour:
       Time: 
   _saveNameTxt: {fileID: 3599136384891828482}
   _saveInfosTxt: {fileID: 7429096860648189597}
+  _isLoadedContent: {fileID: 9047339319265999865}
+  _isNotLoadedContent: {fileID: 8620374803690756062}
 --- !u!1 &7562174708344938227
 GameObject:
   m_ObjectHideFlags: 0

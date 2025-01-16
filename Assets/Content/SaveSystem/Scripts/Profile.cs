@@ -7,7 +7,9 @@ public class Profile : MonoBehaviour
 {
     public string ProfileName = "";
     [SerializeField] private TMP_Text _profileNameTxt;
+    [SerializeField] private TMP_Text _profileInfosTxt;
     private UIManager _uiManager;
+    public SaveData SaveData;
 
     private void Start()
     {
@@ -26,5 +28,11 @@ public class Profile : MonoBehaviour
         {
             _uiManager.OpenSaveAndLoadPanel(ProfileName);
         }
+    }
+
+    public void SetData(SaveData saveData)
+    {
+        SaveData = saveData;
+        _profileInfosTxt.text = $"Date : {SaveData.SaveInfos.Date} \n\n Time : {SaveData.SaveInfos.Time}";
     }
 }

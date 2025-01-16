@@ -33,10 +33,13 @@ public class SaveManager : MonoBehaviour
 
     // ----- FIELDS ----- //
     public List<ScriptSelection> scriptSelections = new List<ScriptSelection>();
+    public List<ScriptSelection> defaultScriptSelections = new List<ScriptSelection>();
 
     public List<string> ProfilesNames = new List<string>();
     public List<SaveData> CurrentProfileSaves = new List<SaveData>();
     public string CurrentProfile = "";
+
+    public Dictionary<string, List<SaveData>> DictProfileSaveDatas = new Dictionary<string, List<SaveData>>();
 
     public event Action OnAddProfile;
     public event Action OnAddSave;
@@ -55,7 +58,7 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
-        DebugSavedVariables();
+        GetDefaultSavedVariables();
     }
 
     private object GetFieldValue(object obj, string fieldName)
@@ -77,7 +80,7 @@ public class SaveManager : MonoBehaviour
     }
 
     
-    private void DebugSavedVariables()
+    private void GetDefaultSavedVariables()
     {
         // Check each gameobject -> script -> variable if is selected
         foreach (var selection in scriptSelections)
@@ -94,6 +97,8 @@ public class SaveManager : MonoBehaviour
                     }
                 }
             }
+
+            defaultScriptSelections.Add(selection);
         }
     }
     
@@ -269,14 +274,38 @@ public class SaveManager : MonoBehaviour
 
     public void GetCurrentProfileSaves()
     {
-        if (CurrentProfile == "") return;
+        CurrentProfileSaves = GetProfileSaves(CurrentProfile);
+    }
+
+    public void GetAllProfilesSaves()
+    {
+        if (ProfilesNames.Count == 0) return;
 
         if (string.IsNullOrEmpty(saveFolderPath))
         {
             saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
         }
 
-        string saveFolderPathProfile = Path.Combine(saveFolderPath, $"{CurrentProfile}");
+        DictProfileSaveDatas.Clear();
+
+        foreach (string profileName in ProfilesNames)
+        {
+            List<SaveData> ProfileSaves = new List<SaveData>();
+            ProfileSaves = GetProfileSaves(profileName);
+            DictProfileSaveDatas.Add(profileName, ProfileSaves);
+        }
+    }
+
+    public List<SaveData> GetProfileSaves(string profileName)
+    {
+        if (profileName == "") return null;
+
+        if (string.IsNullOrEmpty(saveFolderPath))
+        {
+            saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
+        }
+
+        string saveFolderPathProfile = Path.Combine(saveFolderPath, $"{profileName}");
 
         // Vérifier si le dossier existe
         if (Directory.Exists(saveFolderPathProfile))
@@ -285,7 +314,15 @@ public class SaveManager : MonoBehaviour
             string[] files = Directory.GetFiles(saveFolderPathProfile, "*.save");
             Debug.Log("Fichiers dans " + saveFolderPath + ":");
 
-            CurrentProfileSaves.Clear();
+
+            List<SaveData> ProfileSaves = new List<SaveData>();
+
+            if (files.Length == 0)
+            {
+                Debug.Log("Create default save");
+                scriptSelections = defaultScriptSelections;
+                NewSave();
+            }
 
             foreach (string file in files)
             {
@@ -299,12 +336,19 @@ public class SaveManager : MonoBehaviour
                 Debug.Log($"found data {data.SaveInfos.GUID} {data.SaveInfos.Time}");
                 stream.Close();
 
-                CurrentProfileSaves.Add(data);
+                if (!ProfileSaves.Contains(data)) ProfileSaves.Add(data);
             }
+
+            // trier les saves du plus récent au plus ancien
+            ProfileSaves = ProfileSaves.OrderByDescending(save =>
+            DateTime.Parse(save.SaveInfos.Date + " " + save.SaveInfos.Time)).ToList();
+
+            return ProfileSaves;
         }
         else
         {
             Debug.LogWarning("Le dossier spécifié n'existe pas : " + saveFolderPath);
+            return null;
         }
     }
 }

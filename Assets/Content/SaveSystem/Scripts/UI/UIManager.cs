@@ -90,11 +90,15 @@ public class UIManager : MonoBehaviour
         }
 
         _saveManager.GetProfilesDirectories();
+        _saveManager.GetAllProfilesSaves();
+
         foreach (string profileName in _saveManager.ProfilesNames)
         {
             GameObject profile = Instantiate(_prefabProfile);
             profile.transform.SetParent(_contentProfiles.transform);
-            profile.GetComponent<Profile>().SetProfileName(profileName.ToUpper());
+            Profile profileSlot = profile.GetComponent<Profile>();
+            profileSlot.SetProfileName(profileName.ToUpper());
+            profileSlot.SetData(_saveManager.DictProfileSaveDatas[profileName][0]);
         }
     }
 
@@ -119,9 +123,12 @@ public class UIManager : MonoBehaviour
         _saveManager.GetCurrentProfileSaves();
         foreach (SaveData saveData in _saveManager.CurrentProfileSaves)
         {
-            GameObject profile = Instantiate(_prefabSave);
-            profile.transform.SetParent(_contentSaves.transform);
-            profile.GetComponent<SaveSlot>().InitSaveSlot(saveData);
+            Debug.Log("instantiate");
+            GameObject saveGameObject = Instantiate(_prefabSave);
+            saveGameObject.transform.SetParent(_contentSaves.transform);
+            SaveSlot saveSlot = saveGameObject.GetComponent<SaveSlot>();
+            saveSlot.InitSaveSlot(saveData);
         }
+        Debug.Log("end instantiate");
     }
 }
