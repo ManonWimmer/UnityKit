@@ -44,7 +44,6 @@ public class DialogueManager : MonoBehaviour
         {
             Init();
         }
-
     }
 
     #region Init
@@ -52,6 +51,7 @@ public class DialogueManager : MonoBehaviour
     {
         var temp = _idToDialogueSO.IdToDialogueConverter;
 
+        _currentNodeId = GetNodeIdEntryPoint();
         _currentDialogueId = GetDialogueIdEntryPoint();
 
         string tempText = GetDialogueFromIdDialogue(_currentDialogueId);
@@ -60,6 +60,23 @@ public class DialogueManager : MonoBehaviour
         SelectChoice(0);
     }
 
+    private string GetNodeIdEntryPoint()
+    {
+        if (_dialogueGraphSO == null) return "";
+        if (_dialogueGraphSO.nodes == null) return "";
+
+        foreach (DialogueNodeSO node in _dialogueGraphSO.nodes)
+        {
+            if (node == null) continue;
+
+            if (node.entryPoint)
+            {
+                return node.id;
+            }
+        }
+
+        return "";
+    }
     private string GetDialogueIdEntryPoint()
     {
         if (_dialogueGraphSO == null) return "";
@@ -83,15 +100,24 @@ public class DialogueManager : MonoBehaviour
     {
         DialogueNodeSO nextDialogueNode = GetNextDialogueNodeByChoiceId(choiceId);
 
+        Debug.Log("Test0");
         if (nextDialogueNode == null)   return;
 
-        string nextDialogueId = nextDialogueNode.id;
+        string nextNodeId = nextDialogueNode.id;
+        string nextDialogueId = nextDialogueNode.dialogueId;
 
-        if (!string.IsNullOrEmpty(nextDialogueId))
+
+        Debug.Log("Test1");
+
+        if (!string.IsNullOrEmpty(nextNodeId))
         {
-            _currentDialogueId = nextDialogueNode.dialogueId;
+            if (!string.IsNullOrEmpty(nextDialogueId))
+            {
+                _currentDialogueId = nextDialogueId;
+            }
+
+            _currentNodeId = nextNodeId;
             Debug.Log($"From ID {_currentDialogueId} to ID {nextDialogueId}");
-            _currentNodeId = nextDialogueId;
         }
         else
         {
@@ -137,6 +163,9 @@ public class DialogueManager : MonoBehaviour
         if (string.IsNullOrEmpty(_currentNodeId)) return null;
         if (choiceId < 0) return null;
 
+
+        Debug.Log("Test2");
+
         // Trouve le nœud actuel
         foreach (DialogueNodeSO node in _dialogueGraphSO.nodes)
         {
@@ -149,6 +178,7 @@ public class DialogueManager : MonoBehaviour
                 // Trouve le nœud cible
                 foreach (DialogueNodeSO targetNode in _dialogueGraphSO.nodes)
                 {
+                    Debug.Log($"TEST : {targetNode.id}, {edge.toNodeId}");
                     if (targetNode.id == edge.toNodeId)
                     {
                         return targetNode; // Retourne l'ID du dialogue suivant

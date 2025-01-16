@@ -290,7 +290,7 @@ MonoBehaviour:
   _choicesButtonPanel: {fileID: 7814209468373053964}
   _buttonChoicePrefab: {fileID: 1784055800379825412, guid: 02b72592466cc124bbeb1ae897861ab2, type: 3}
   _dialogueText: {fileID: 7061199657868504161}
-  _forceInitDialogueManager: 0
+  _forceInitDialogueManager: 1
 --- !u!1 &4762122925496238207
 GameObject:
   m_ObjectHideFlags: 0
