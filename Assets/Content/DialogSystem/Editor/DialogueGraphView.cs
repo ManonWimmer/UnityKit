@@ -74,7 +74,7 @@ public class DialogueGraphView : GraphView
     }
     #endregion
 
-    #region Ports / Node
+    #region Ports
     public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
     {
         var compatiblePorts = new List<Port>();
@@ -97,7 +97,36 @@ public class DialogueGraphView : GraphView
         port.name = Guid.NewGuid().ToString(); // Identifiant unique pour ce port
         return port;
     }
+    private void AddChoicePort(DialogueNode dialogueNode)
+    {
+        var generatePort = GeneratePort(dialogueNode, Direction.Output, typeof(string));
 
+        var outputPortCount = dialogueNode.outputContainer.Query("connector").ToList().Count ;
+        var outputPortName = $"Choice {outputPortCount}";
+
+        generatePort.portName = outputPortName;
+
+        // Créer un conteneur horizontal pour le port et le bouton de suppression
+        var portContainer = new VisualElement();
+        portContainer.style.flexDirection = FlexDirection.Row;
+
+        AddChoiceIdTextField(dialogueNode, generatePort, portContainer);
+
+        CreateDeleteChoiceButton(dialogueNode, portContainer);
+        
+        // Ajouter le port au conteneur
+        portContainer.Add(generatePort);
+
+        // Conteneur au node
+        dialogueNode.outputContainer.Add(portContainer);
+
+
+        dialogueNode.RefreshPorts();
+        dialogueNode.RefreshExpandedState();
+    }
+    #endregion
+
+    #region Node
     private DialogueNode GenererateEntryPointNode(Vector2 position)
     {
         if (_entryPointNode !=  null && this.Contains(_entryPointNode)) return _entryPointNode;
@@ -128,7 +157,7 @@ public class DialogueGraphView : GraphView
         AddElement(CreateDialogueNode(nodeName, position));
     }
 
-    public DialogueNode CreateDialogueNode(string nodeName, Vector2 position, List<string> outputPorts = null, string inputPortName = "")
+    public DialogueNode CreateDialogueNode(string nodeName, Vector2 position, List<string> outputPorts = null, List<string> outputPortsChoiceId = null)
     {
         var dialogueNode = new DialogueNode()
         {
@@ -138,10 +167,6 @@ public class DialogueGraphView : GraphView
         };
 
         var inputPort = GeneratePort(dialogueNode, Direction.Input, typeof(string), Port.Capacity.Multi);
-        if (inputPortName != "")
-        {
-            inputPort.name = inputPortName;
-        }
         inputPort.portName = "Input";
         dialogueNode.inputContainer.Add(inputPort);
 
@@ -151,18 +176,35 @@ public class DialogueGraphView : GraphView
         // Ajouter les ports de sortie sauvegardés
         if (outputPorts != null)
         {
-            foreach (var portName in outputPorts)
+            //foreach (var portName in outputPorts)
+            for (int i = 0; i < outputPorts.Count; ++i)
             {
                 var port = GeneratePort(dialogueNode, Direction.Output, typeof(string));
                 var portContainer = new VisualElement();
-                port.name = portName;
 
-                var outputPortCount = dialogueNode.outputContainer.Query("connector").ToList().Count;
-                var outputPortName = $"Choice {outputPortCount}";
-                port.portName = $"Choice {outputPortCount}";   // Replace by actual display name later
+                var portName = "";
+                var portChoiceId = "";
+                if (i < outputPorts.Count && outputPorts != null)
+                {
+                    portName = outputPorts[i];
+                    port.name = portName;
+                }
+                if (i < outputPortsChoiceId.Count && outputPortsChoiceId != null)
+                {
+                    portChoiceId = outputPortsChoiceId[i];
+                    port.portName = portChoiceId;
+                }
+                else
+                {
+                    var outputPortCount = dialogueNode.outputContainer.Query("connector").ToList().Count;
+                    var outputPortName = $"Choice {outputPortCount}";
+                    port.portName = $"Choice {outputPortCount}";   // DefaultName for now
+                }
+
 
                 portContainer.style.flexDirection = FlexDirection.Row;
 
+                AddChoiceIdTextField(dialogueNode, port, portContainer, portChoiceId);
                 CreateDeleteChoiceButton(dialogueNode, portContainer);
                 portContainer.Add(port);
                 dialogueNode.outputContainer.Add(portContainer);
@@ -176,33 +218,9 @@ public class DialogueGraphView : GraphView
 
         return dialogueNode;
     }
+    #endregion
 
-
-    private void AddChoicePort(DialogueNode dialogueNode)
-    {
-        var generatePort = GeneratePort(dialogueNode, Direction.Output, typeof(string));
-
-        var outputPortCount = dialogueNode.outputContainer.Query("connector").ToList().Count ;
-        var outputPortName = $"Choice {outputPortCount}";
-
-        generatePort.portName = outputPortName;
-
-        // Créer un conteneur horizontal pour le port et le bouton de suppression
-        var portContainer = new VisualElement();
-        portContainer.style.flexDirection = FlexDirection.Row;
-
-        CreateDeleteChoiceButton(dialogueNode, portContainer);
-        
-        // Ajouter le port au conteneur
-        portContainer.Add(generatePort);
-
-        // Conteneur au node
-        dialogueNode.outputContainer.Add(portContainer);
-
-
-        dialogueNode.RefreshPorts();
-        dialogueNode.RefreshExpandedState();
-    }
+    #region Add Button / Fields to node
     private void CreateDeleteChoiceButton(DialogueNode dialogueNode, VisualElement portContainer)
     {
         // Créer le bouton de suppression
@@ -245,9 +263,7 @@ public class DialogueGraphView : GraphView
         // bouton au conteneur
         portContainer.Add(deleteButton);
     }
-    #endregion
 
-    #region Add Button / Fields to node
     private void AddNewChoiceButton(DialogueNode dialogueNode)
     {
         var button = new Button(() =>
@@ -257,6 +273,26 @@ public class DialogueGraphView : GraphView
 
         button.text = "New Choice";
         dialogueNode.titleContainer.Add(button);
+    }
+    private void AddChoiceIdTextField(DialogueNode dialogueNode, Port associatedPort, VisualElement portContainer, string defaultPortName = "DefaultName")
+    {
+        var textField = new TextField()
+        {
+            value = defaultPortName, // Nom initial
+            style =
+                {
+                    flexGrow = 1,
+                    marginRight = 4, // Espacement
+                }
+        };
+
+        // Mettre à jour dynamiquement le nom du port lorsque le texte change
+        textField.RegisterValueChangedCallback(evt =>
+        {
+            associatedPort.portName = evt.newValue; // Mettre à jour le nom affiché sur le port
+        });
+
+        portContainer.Add(textField);
     }
 
     private void AddIdTextField(DialogueNode dialogueNode)
@@ -300,7 +336,12 @@ public class DialogueGraphView : GraphView
                 outputPorts = node.outputContainer.Query<Port>()
                         .ToList()
                         .Select(port => port.name )
-                        .ToList() // Sauvegarder les noms des ports de sortie
+                        .ToList(), // Sauvegarder les noms des ports de sortie
+
+                outputPortsChoiceId = node.outputContainer.Query<Port>()
+                        .ToList()
+                        .Select(port => port.portName)
+                        .ToList(), // Sauvegarder les noms des ports de sortie
             };
 
             Debug.Log($"Saving node: {nodeData.title}, EntryPoint: {nodeData.entryPoint}, Position: {nodeData.position}");
@@ -355,7 +396,7 @@ public class DialogueGraphView : GraphView
             }
             else
             {
-                node = CreateDialogueNode(nodeData.title, nodeData.position, nodeData.outputPorts);
+                node = CreateDialogueNode(nodeData.title, nodeData.position, nodeData.outputPorts, nodeData.outputPortsChoiceId);
             }
             node.GIUD = nodeData.id;
             node.DialogueText = nodeData.dialogueId; // Custom ID
