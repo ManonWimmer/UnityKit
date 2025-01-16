@@ -14,6 +14,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject _contentProfiles;
     [SerializeField] GameObject _prefabProfile;
 
+    [SerializeField] TMP_Text _profileNameInSavesTxt;
+
     [SerializeField] private SaveManager _saveManager;
 
     public static UIManager Instance;
@@ -38,10 +40,12 @@ public class UIManager : MonoBehaviour
         _saveAndLoadPanel.SetActive(false);
     }
 
-    public void OpenSaveAndLoadPanel()
+    public void OpenSaveAndLoadPanel(string profileName)
     {
         _profilesPanel.SetActive(false);
         _saveAndLoadPanel.SetActive(true);
+
+        _profileNameInSavesTxt.text = profileName;
     }
 
     public void CreateProfile()
@@ -54,6 +58,8 @@ public class UIManager : MonoBehaviour
 
     public void ShowProfiles()
     {
+        Debug.Log("show profiles");
+
         GameObject[] allChildren = new GameObject[_contentProfiles.transform.childCount];
         int tempIndex = 0;
 
@@ -67,6 +73,7 @@ public class UIManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
+        _saveManager.GetProfilesDirectories();
         foreach (string profileName in _saveManager.ProfilesNames)
         {
             GameObject profile = Instantiate(_prefabProfile);

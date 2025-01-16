@@ -2221,6 +2221,7 @@ MonoBehaviour:
   _inputProfileName: {fileID: 12670258}
   _contentProfiles: {fileID: 979304526}
   _prefabProfile: {fileID: 4829396404449647754, guid: 0c0a40a7a7ed06140b9a2fab2902ce48, type: 3}
+  _profileNameInSavesTxt: {fileID: 53113576}
   _saveManager: {fileID: 1953245973}
 --- !u!4 &524745545
 Transform:

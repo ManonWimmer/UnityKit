@@ -24,7 +24,7 @@ public class Profile : MonoBehaviour
     {
         if (_uiManager != null)
         {
-            _uiManager.OpenSaveAndLoadPanel();
+            _uiManager.OpenSaveAndLoadPanel(ProfileName);
         }
     }
 }

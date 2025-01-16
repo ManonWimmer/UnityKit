@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using System.Reflection;
 using System;
+using System.IO;
 
 public class SaveManager : MonoBehaviour
 {
@@ -36,7 +37,10 @@ public class SaveManager : MonoBehaviour
     public event Action OnAddProfile;
 
     public static SaveManager Instance;
-    
+
+    private string saveFolderPath = "";
+
+
     private void Awake()
     {
         if (Instance != null) { Destroy(this); }
@@ -216,11 +220,61 @@ public class SaveManager : MonoBehaviour
 
     public void CreateProfile(string profileName)
     {
+        profileName = profileName.ToUpper();
+
         if (!ProfilesNames.Contains(profileName))
         {
             ProfilesNames.Add(profileName);
         }
 
+        // Définir le chemin du dossier de sauvegarde
+        saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
+
+        // Vérifier et créer le dossier si nécessaire
+        CreateSaveFolder(profileName);
+
         OnAddProfile.Invoke();
+    }
+
+    private void CreateSaveFolder(string profileName)
+    {
+        string saveFolderPathProfile = Path.Combine(saveFolderPath, $"{profileName}");
+
+        if (!Directory.Exists(saveFolderPathProfile))
+        {
+            Directory.CreateDirectory(saveFolderPathProfile);
+            Debug.Log("Dossier de sauvegardes créé : " + saveFolderPathProfile);
+        }
+        else
+        {
+            Debug.Log("Dossier de sauvegardes déjà existant : " + saveFolderPathProfile);
+        }
+    }
+
+    public void GetProfilesDirectories()
+    {
+        if (string.IsNullOrEmpty(saveFolderPath))
+        {
+            saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
+        }
+
+        // Vérifier si le dossier existe
+        if (Directory.Exists(saveFolderPath))
+        {
+            // Obtenir les noms de tous les sous-dossiers
+            string[] folders = Directory.GetDirectories(saveFolderPath);
+            Debug.Log("Sous-dossiers dans " + saveFolderPath + ":");
+
+            foreach (string folder in folders)
+            {
+                Debug.Log(Path.GetFileName(folder)); // Affiche uniquement le nom du dossier
+                string folderName = Path.GetFileName(folder);
+                if (!ProfilesNames.Contains((string)folderName)) ProfilesNames.Add((string)folderName);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Le dossier spécifié n'existe pas : " + saveFolderPath);
+        }
     }
 }
