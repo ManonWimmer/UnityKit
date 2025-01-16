@@ -12,15 +12,18 @@ public class ButtonChoice : MonoBehaviour
     {
         _associatedChoiceIndex = id;
 
-        if (_choiceText != null)
-        {
-            _choiceText.text = textValue;
-        }
+        SetButtonLabel(textValue);
     }
     public void TriggerSelectChoiceButton()
     {
         if (DialogueManager.Instance == null) return;
 
         DialogueManager.Instance.SelectChoice(_associatedChoiceIndex);
+    }
+    public void SetButtonLabel(string text)
+    {
+        if (_choiceText == null) return;
+
+        _choiceText.text = text;
     }
 }

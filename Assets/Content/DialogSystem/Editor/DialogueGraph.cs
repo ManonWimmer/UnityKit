@@ -16,9 +16,15 @@ public class DialogueGraph : EditorWindow
     [MenuItem("Graph/Dialogue Graph")]
     public static void OpenDialogueGraphWindow()
     {
-        var window = GetWindow<DialogueGraph>();
+        var window = CreateWindow<DialogueGraph>(typeof(DialogueGraph), typeof(SceneView));
 
-        window.titleContent = new GUIContent("DialogueGraph");
+        window.titleContent = new GUIContent("Dialogue Graph");
+    }
+    public static void OpenDialogueGraphWindow(Object target)
+    {
+        var window = CreateWindow<DialogueGraph>(typeof(DialogueGraph), typeof(SceneView));
+
+        window.titleContent = new GUIContent("Dialogue Graph");
     }
 
     private void OnEnable()
@@ -110,6 +116,10 @@ public class DialogueGraph : EditorWindow
             if (!string.IsNullOrEmpty(path))
             {
                 _graphView.SaveGraph(path);
+
+                string relativePath = path.Substring(Application.dataPath.Length);
+
+                _currentSaveLabel.text = $"Saved : {Path.GetFileName(relativePath)}";
             }
         });
         dialogueSaveButton.text = "Save Dialogue Graph";

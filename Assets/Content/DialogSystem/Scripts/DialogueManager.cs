@@ -13,8 +13,9 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private DialogueGraphSO _dialogueGraphSO;
     [SerializeField] private IdToDialogueSO _idToDialogueSO;
 
-    private string _currentDialogueId = "";
+    private string _currentNodeId = "";
     private string _currentDialogueText = "";
+    private string _currentDialogueId = "";
 
     [SerializeField] private RectTransform _choiceButtonPanel;
 
@@ -84,12 +85,13 @@ public class DialogueManager : MonoBehaviour
 
         if (nextDialogueNode == null)   return;
 
-        string nextDialogueId = nextDialogueNode.dialogueId;
+        string nextDialogueId = nextDialogueNode.id;
 
         if (!string.IsNullOrEmpty(nextDialogueId))
         {
+            _currentDialogueId = nextDialogueNode.dialogueId;
             Debug.Log($"From ID {_currentDialogueId} to ID {nextDialogueId}");
-            _currentDialogueId = nextDialogueId;
+            _currentNodeId = nextDialogueId;
         }
         else
         {
@@ -132,13 +134,13 @@ public class DialogueManager : MonoBehaviour
     {
         if (_dialogueGraphSO.nodes == null) return null;
         if (_dialogueGraphSO.edges == null) return null;
-        if (string.IsNullOrEmpty(_currentDialogueId)) return null;
+        if (string.IsNullOrEmpty(_currentNodeId)) return null;
         if (choiceId < 0) return null;
 
         // Trouve le nœud actuel
         foreach (DialogueNodeSO node in _dialogueGraphSO.nodes)
         {
-            if (node.dialogueId == _currentDialogueId)
+            if (node.id == _currentNodeId)
             {
                 // Récupère l'edge correspondant au choix
                 DialogueEdgeSO edge = GetNextEdgeByChoiceId(choiceId, node.id);
