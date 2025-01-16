@@ -22,8 +22,8 @@ public class SaveManager : MonoBehaviour
     [System.Serializable]
     public class ScriptSelection
     {
-        public object targetGameObject;
-        public object selectedScript;
+        public GameObject targetGameObject;
+        public MonoBehaviour selectedScript;
         public List<VariableSelection> variableSelections;
         public string guid = "";
     }

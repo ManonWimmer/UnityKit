@@ -6567,7 +6567,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scriptSelections:
-  - variableSelections:
+  - targetGameObject: {fileID: 1991515355}
+    selectedScript: {fileID: 1991515359}
+    variableSelections:
     - variableName: PlayerHealth
       isSelected: 1
     - variableName: PlayerLevel
