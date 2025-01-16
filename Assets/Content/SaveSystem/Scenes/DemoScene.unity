@@ -2222,6 +2222,8 @@ MonoBehaviour:
   _contentProfiles: {fileID: 979304526}
   _prefabProfile: {fileID: 4829396404449647754, guid: 0c0a40a7a7ed06140b9a2fab2902ce48, type: 3}
   _profileNameInSavesTxt: {fileID: 53113576}
+  _contentSaves: {fileID: 1145327350}
+  _prefabSave: {fileID: 7049053987947764853, guid: d266b9660e7c2424391eb500bf8990e4, type: 3}
   _saveManager: {fileID: 1953245973}
 --- !u!4 &524745545
 Transform:
@@ -7864,6 +7866,8 @@ MonoBehaviour:
       isSelected: 1
     guid: 723abf68-49d0-4e02-b7de-7912a605de35
   ProfilesNames: []
+  CurrentProfileSaves: []
+  CurrentProfile: 
 --- !u!1 &1971201133
 GameObject:
   m_ObjectHideFlags: 0
@@ -8474,9 +8478,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1953245973}
-        m_TargetAssemblyTypeName: SaveManager, Assembly-CSharp
-        m_MethodName: Save
+      - m_Target: {fileID: 524745544}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: NewSave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

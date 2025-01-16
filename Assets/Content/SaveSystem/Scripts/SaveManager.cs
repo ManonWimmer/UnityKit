@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class SaveManager : MonoBehaviour
 {
@@ -34,8 +35,11 @@ public class SaveManager : MonoBehaviour
     public List<ScriptSelection> scriptSelections = new List<ScriptSelection>();
 
     public List<string> ProfilesNames = new List<string>();
+    public List<SaveData> CurrentProfileSaves = new List<SaveData>();
     public string CurrentProfile = "";
+
     public event Action OnAddProfile;
+    public event Action OnAddSave;
 
     public static SaveManager Instance;
 
@@ -94,16 +98,18 @@ public class SaveManager : MonoBehaviour
     }
     
 
-    public void Save()
+    public void NewSave()
     {
+        if (CurrentProfile == "" || scriptSelections == null) return;
         Dictionary <string, object> data = new Dictionary<string, object>();
 
+        string saveGUID = Guid.NewGuid().ToString();
         DateTime now = DateTime.Now;
         string currentDate = now.ToString("yyyy-MM-dd"); // Format : "2025-01-16"
         Debug.Log("Date actuelle : " + currentDate);
         string currentTime = now.ToString("HH:mm:ss"); // Format : "16:45:30"
         Debug.Log("Heure actuelle : " + currentTime);
-        SaveInfos dataInfos = new SaveInfos("", currentDate, currentTime);
+        SaveInfos dataInfos = new SaveInfos(saveGUID, currentDate, currentTime);
 
         foreach (var selection in scriptSelections)
         {
@@ -125,12 +131,16 @@ public class SaveManager : MonoBehaviour
 
         SaveData saveData = new SaveData(data, dataInfos);
 
-        SaveSystem.Save(saveData);
+        SaveSystem.NewSave(saveData, CurrentProfile);
+
+        OnAddSave.Invoke();
     }
 
-    public void Load()
+    public void LoadSave(SaveInfos SaveInfos)
     {
-        SaveData data = SaveSystem.Load();
+        if (CurrentProfile == "" || SaveInfos == null) return;
+
+        SaveData data = SaveSystem.LoadSave(SaveInfos, CurrentProfile);
 
         foreach (var entry in data.DictVariables)
         {
@@ -261,6 +271,40 @@ public class SaveManager : MonoBehaviour
     {
         if (CurrentProfile == "") return;
 
+        if (string.IsNullOrEmpty(saveFolderPath))
+        {
+            saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
+        }
 
+        string saveFolderPathProfile = Path.Combine(saveFolderPath, $"{CurrentProfile}");
+
+        // Vérifier si le dossier existe
+        if (Directory.Exists(saveFolderPathProfile))
+        {
+            // Obtenir les noms de tous les sous-dossiers
+            string[] files = Directory.GetFiles(saveFolderPathProfile, "*.save");
+            Debug.Log("Fichiers dans " + saveFolderPath + ":");
+
+            CurrentProfileSaves.Clear();
+
+            foreach (string file in files)
+            {
+                Debug.Log(Path.GetFileName(file)); // Affiche uniquement le nom du dossier
+                string filePath = Path.GetFullPath(file);
+
+                BinaryFormatter binaryFormatter = new BinaryFormatter();
+                FileStream stream = new FileStream(filePath, FileMode.Open);
+
+                SaveData data = binaryFormatter.Deserialize(stream) as SaveData;
+                Debug.Log($"found data {data.SaveInfos.GUID} {data.SaveInfos.Time}");
+                stream.Close();
+
+                CurrentProfileSaves.Add(data);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Le dossier spécifié n'existe pas : " + saveFolderPath);
+        }
     }
 }

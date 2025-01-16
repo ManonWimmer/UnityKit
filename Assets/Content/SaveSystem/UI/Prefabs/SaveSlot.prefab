@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4450913478871581176}
   - component: {fileID: 7438143994382861217}
+  - component: {fileID: 3992675736993878753}
   m_Layer: 5
   m_Name: SaveInfos
   m_TagString: Untagged
@@ -35,8 +36,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 12.5, y: -12.5}
-  m_SizeDelta: {x: -25, y: -25}
+  m_AnchoredPosition: {x: -7.5, y: 22.500006}
+  m_SizeDelta: {x: -65, y: -94.99999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7438143994382861217
 MonoBehaviour:
@@ -59,11 +60,24 @@ MonoBehaviour:
   m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
+  m_ChildControlWidth: 1
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &3992675736993878753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2561662477158412778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShowMaskGraphic: 0
 --- !u!1 &3004416891963017747
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,7 +425,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'NAME : XXXXXXXXX'
+  m_text: 'NAME : XXXXXXXXX  ssssssss'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 79cfb54ba95c04449a175ffaaae876a8, type: 2}
   m_sharedMaterial: {fileID: 21261991626553910, guid: 79cfb54ba95c04449a175ffaaae876a8, type: 2}
@@ -456,7 +470,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -739,9 +753,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SaveManager, Assembly-CSharp
-        m_MethodName: Load
+      - m_Target: {fileID: 8564337571904373148}
+        m_TargetAssemblyTypeName: SaveSlot, Assembly-CSharp
+        m_MethodName: LoadSave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -895,6 +909,7 @@ GameObject:
   m_Component:
   - component: {fileID: 760609769901844553}
   - component: {fileID: 3508960741237225892}
+  - component: {fileID: 8564337571904373148}
   m_Layer: 5
   m_Name: SaveSlot
   m_TagString: Untagged
@@ -933,6 +948,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7049053987947764853}
   m_CullTransparentMesh: 1
+--- !u!114 &8564337571904373148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7049053987947764853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c922dbe29bf6bec44af05051ac617d39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SaveData:
+    SaveInfos:
+      GUID: 
+      Date: 
+      Time: 
+  _saveNameTxt: {fileID: 3599136384891828482}
+  _saveInfosTxt: {fileID: 7429096860648189597}
 --- !u!1 &7562174708344938227
 GameObject:
   m_ObjectHideFlags: 0
@@ -1157,7 +1191,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2962646654867492519
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1403,7 +1437,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2154402247340157280
 RectTransform:
   m_ObjectHideFlags: 0
