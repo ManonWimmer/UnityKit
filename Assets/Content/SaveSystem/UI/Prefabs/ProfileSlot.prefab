@@ -120,9 +120,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SaveManager, Assembly-CSharp
-        m_MethodName: Load
+      - m_Target: {fileID: 4649186473327410841}
+        m_TargetAssemblyTypeName: Profile, Assembly-CSharp
+        m_MethodName: DeleteProfile
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -511,8 +511,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 317600620027770959}
-  - {fileID: 7770681444703238056}
   - {fileID: 27054055113905118}
+  - {fileID: 7770681444703238056}
   - {fileID: 2105031117247816607}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

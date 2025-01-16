@@ -36,6 +36,7 @@ public class UIManager : MonoBehaviour
         _saveManager.OnAddSave += ShowProfiles;
         _saveManager.OnAddSave += ShowSaves;
         _saveManager.OnAllProfilesData += SetProfiles;
+        _saveManager.OnRemoveProfile += ShowProfiles;
         ShowProfiles();
         OpenProfilesPanel();
     }
@@ -75,6 +76,7 @@ public class UIManager : MonoBehaviour
 
     public void ShowProfiles()
     {
+        if (!_profilesPanel.activeSelf) return;
         Debug.Log("show profiles");
 
         // Destroy all
@@ -133,6 +135,7 @@ public class UIManager : MonoBehaviour
 
     public void ShowSaves()
     {
+        if (!_saveAndLoadPanel.activeSelf) return;
         Debug.Log("show saves");
 
         // Destroy all

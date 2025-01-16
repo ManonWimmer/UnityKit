@@ -37,6 +37,11 @@ public class SaveSlot : MonoBehaviour
         _saveManager.LoadSave(SaveData.SaveInfos);
     }
 
+    public void DeleteSave()
+    {
+        _saveManager.DeleteSave(SaveData.SaveInfos);
+    }
+
     public void SetIsLoaded(bool isLoaded)
     {
         _isLoaded = isLoaded;

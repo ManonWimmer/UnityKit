@@ -9,11 +9,13 @@ public class Profile : MonoBehaviour
     [SerializeField] private TMP_Text _profileNameTxt;
     [SerializeField] private TMP_Text _profileInfosTxt;
     private UIManager _uiManager;
+    private SaveManager _saveManager;
     public SaveData SaveData;
 
     private void Start()
     {
         _uiManager = UIManager.Instance;
+        _saveManager = SaveManager.Instance;
     }
 
     public void SetProfileName(string profileName)
@@ -28,6 +30,11 @@ public class Profile : MonoBehaviour
         {
             _uiManager.OpenSaveAndLoadPanel(ProfileName);
         }
+    }
+
+    public void DeleteProfile()
+    {
+        _saveManager.DeleteProfile(ProfileName);
     }
 
     public void SetData(SaveData saveData)

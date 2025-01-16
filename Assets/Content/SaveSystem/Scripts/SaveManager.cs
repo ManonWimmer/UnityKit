@@ -45,6 +45,7 @@ public class SaveManager : MonoBehaviour
     public event Action OnAddProfile;
     public event Action OnAddSave;
     public event Action OnAllProfilesData;
+    public event Action OnRemoveProfile;
 
     public static SaveManager Instance;
 
@@ -192,6 +193,23 @@ public class SaveManager : MonoBehaviour
                 Debug.LogWarning($"Script selection with GUID {guid} not found.");
             }
         }
+    }
+
+    public void DeleteSave(SaveInfos saveInfos)
+    {
+        SaveSystem.DeleteSave(saveInfos, CurrentProfile);
+
+        OnAddSave.Invoke();
+    }
+
+    public void DeleteProfile(string profileName)
+    {
+        Debug.Log("delete profile");
+        SaveSystem.DeleteProfile(profileName);
+        ProfilesNames.Remove(profileName);
+        DictProfileSaveDatas.Remove(profileName);
+
+        OnRemoveProfile.Invoke();
     }
 
     private void SetFieldValue(object obj, string fieldName, object value)
