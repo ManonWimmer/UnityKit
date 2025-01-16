@@ -31,6 +31,17 @@ public class SaveManager : MonoBehaviour
 
     // ----- FIELDS ----- //
     public List<ScriptSelection> scriptSelections = new List<ScriptSelection>();
+
+    public List<string> ProfilesNames = new List<string>();
+    public event Action OnAddProfile;
+
+    public static SaveManager Instance;
+    
+    private void Awake()
+    {
+        if (Instance != null) { Destroy(this); }
+        Instance = this;
+    }
     // ----- FIELDS ----- //
 
     private void Start()
@@ -201,5 +212,15 @@ public class SaveManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void CreateProfile(string profileName)
+    {
+        if (!ProfilesNames.Contains(profileName))
+        {
+            ProfilesNames.Add(profileName);
+        }
+
+        OnAddProfile.Invoke();
     }
 }

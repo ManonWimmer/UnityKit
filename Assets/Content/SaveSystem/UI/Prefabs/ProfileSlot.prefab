@@ -490,6 +490,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4500816436003087324}
   - component: {fileID: 3164468363102325646}
+  - component: {fileID: 4649186473327410841}
   m_Layer: 5
   m_Name: ProfileSlot
   m_TagString: Untagged
@@ -528,6 +529,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4829396404449647754}
   m_CullTransparentMesh: 1
+--- !u!114 &4649186473327410841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4829396404449647754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb129b7e6707064f897092c29f56453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ProfileName: 
+  _profileNameTxt: {fileID: 8437151466338450700}
 --- !u!1 &4877403946109953125
 GameObject:
   m_ObjectHideFlags: 0
@@ -921,9 +936,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: OpenSaveAndLoadPanel
+      - m_Target: {fileID: 4649186473327410841}
+        m_TargetAssemblyTypeName: Profile, Assembly-CSharp
+        m_MethodName: SelectProfile
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
