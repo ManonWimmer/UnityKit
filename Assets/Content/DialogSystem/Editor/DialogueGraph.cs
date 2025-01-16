@@ -25,7 +25,38 @@ public class DialogueGraph : EditorWindow
         var window = CreateWindow<DialogueGraph>(typeof(DialogueGraph), typeof(SceneView));
 
         window.titleContent = new GUIContent("Dialogue Graph");
+
+        var tempDialogueGraphSO = (DialogueGraphSO)target as DialogueGraphSO;
+
+        if (tempDialogueGraphSO != null)
+        {
+            window.Show();
+            window.LoadGraphAutomatic(tempDialogueGraphSO);
+        }
+        else
+        {
+            Debug.LogError("The provided target is not a valid DialogueGraphSO.");
+        }
     }
+    private void LoadGraphAutomatic(DialogueGraphSO dialogueGraphSO)
+    {
+        if (dialogueGraphSO == null)
+        {
+            Debug.LogError("DialogueGraphSO is null. Cannot load graph.");
+            return;
+        }
+
+        // Charge les données dans _graphView
+        if (_graphView == null)
+        {
+            Debug.LogError("Graph view is not initialized.");
+            return;
+        }
+
+        _graphView.LoadGraph(dialogueGraphSO);
+        _currentSaveLabel.text = $"Loaded: {dialogueGraphSO.name}";
+    }
+
 
     private void OnEnable()
     {

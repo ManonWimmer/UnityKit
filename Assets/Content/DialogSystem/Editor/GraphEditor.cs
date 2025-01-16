@@ -13,7 +13,7 @@ public class GraphEditor : Editor
         Object @object = EditorUtility.InstanceIDToObject(instanceId);
         if (@object.GetType() == typeof(DialogueGraphSO))
         {
-            DialogueGraph.OpenDialogueGraphWindow();
+            DialogueGraph.OpenDialogueGraphWindow(@object);
 
             return true;
         }
