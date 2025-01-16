@@ -8,6 +8,7 @@ using System.Reflection;
 using UnityEditor;
 using System.Linq;
 using System.IO;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class DialogueGraphView : GraphView
 {
@@ -41,6 +42,7 @@ public class DialogueGraphView : GraphView
 
         RegisterCallback<MouseDownEvent>(OnMouseDown);
     }
+    
 
 
     #region Setup Context action events
@@ -172,9 +174,48 @@ public class DialogueGraphView : GraphView
 
         generatePort.portName = outputPortName;
 
-        dialogueNode.outputContainer.Add(generatePort);
+        // Créer un conteneur horizontal pour le port et le bouton de suppression
+        var portContainer = new VisualElement();
+        portContainer.style.flexDirection = FlexDirection.Row;
+
+        CreateDeleteChoiceButton(dialogueNode, portContainer);
+        
+        // Ajouter le port au conteneur
+        portContainer.Add(generatePort);
+
+        // Conteneur au node
+        dialogueNode.outputContainer.Add(portContainer);
+
+
         dialogueNode.RefreshPorts();
         dialogueNode.RefreshExpandedState();
+    }
+    private void CreateDeleteChoiceButton(DialogueNode dialogueNode, VisualElement portContainer)
+    {
+        // Créer le bouton de suppression
+        var deleteButton = new Button(() =>
+        {
+            //Edge edge = dialogueNode.outputContainer
+
+            // Supprimer le port de l'UI
+            dialogueNode.outputContainer.Remove(portContainer);
+
+            // Rafraîchir les ports et l'état du nœud
+            dialogueNode.RefreshPorts();
+            dialogueNode.RefreshExpandedState();
+        })
+        {
+            text = "X" // Texte ou icône du bouton
+        };
+
+        // style bouton pour qu'il soit petit
+        deleteButton.style.marginLeft = 4;
+        deleteButton.style.backgroundColor = new Color(0.8f, 0.2f, 0.2f);
+        deleteButton.style.color = Color.white;
+        deleteButton.style.width = 20;
+
+        // bouton au conteneur
+        portContainer.Add(deleteButton);
     }
     #endregion
 
