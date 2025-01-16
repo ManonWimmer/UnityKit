@@ -128,7 +128,7 @@ public class DialogueGraphView : GraphView
         AddElement(CreateDialogueNode(nodeName, position));
     }
 
-    public DialogueNode CreateDialogueNode(string nodeName, Vector2 position, List<string> outputPorts = null)
+    public DialogueNode CreateDialogueNode(string nodeName, Vector2 position, List<string> outputPorts = null, string inputPortName = "")
     {
         var dialogueNode = new DialogueNode()
         {
@@ -138,11 +138,14 @@ public class DialogueGraphView : GraphView
         };
 
         var inputPort = GeneratePort(dialogueNode, Direction.Input, typeof(string), Port.Capacity.Multi);
+        if (inputPortName != "")
+        {
+            inputPort.name = inputPortName;
+        }
         inputPort.portName = "Input";
         dialogueNode.inputContainer.Add(inputPort);
 
         AddNewChoiceButton(dialogueNode);
-
         AddIdTextField(dialogueNode);
 
         // Ajouter les ports de sortie sauvegardés
@@ -151,8 +154,18 @@ public class DialogueGraphView : GraphView
             foreach (var portName in outputPorts)
             {
                 var port = GeneratePort(dialogueNode, Direction.Output, typeof(string));
-                port.portName = portName;
-                dialogueNode.outputContainer.Add(port);
+                var portContainer = new VisualElement();
+                port.name = portName;
+
+                var outputPortCount = dialogueNode.outputContainer.Query("connector").ToList().Count;
+                var outputPortName = $"Choice {outputPortCount}";
+                port.portName = $"Choice {outputPortCount}";   // Replace by actual display name later
+
+                portContainer.style.flexDirection = FlexDirection.Row;
+
+                CreateDeleteChoiceButton(dialogueNode, portContainer);
+                portContainer.Add(port);
+                dialogueNode.outputContainer.Add(portContainer);
             }
         }
 
@@ -195,7 +208,22 @@ public class DialogueGraphView : GraphView
         // Créer le bouton de suppression
         var deleteButton = new Button(() =>
         {
-            //Edge edge = dialogueNode.outputContainer
+            // trouver port du choix suppr
+            var port = portContainer.Q<Port>();
+
+            // Verif si lien depuis ce port
+            if (port != null)
+            {
+                var connectedEdges = edges.ToList().Where(edge => edge.input == port || edge.output == port).ToList();
+
+                foreach (var edge in connectedEdges)
+                {
+                    edge.input.Disconnect(edge);
+                    edge.output.Disconnect(edge);
+                    RemoveElement(edge);
+                }
+            }
+
 
             // Supprimer le port de l'UI
             dialogueNode.outputContainer.Remove(portContainer);
@@ -269,12 +297,10 @@ public class DialogueGraphView : GraphView
                 title = node.title,
                 position = node.GetPosition().position,
                 entryPoint = node.EntryPoint,
-                outputPorts = node.outputContainer.Children()
-                        .OfType<Port>()
-                        .Select(port => port.portName)
+                outputPorts = node.outputContainer.Query<Port>()
+                        .ToList()
+                        .Select(port => port.name )
                         .ToList() // Sauvegarder les noms des ports de sortie
-                ,
-                
             };
 
             Debug.Log($"Saving node: {nodeData.title}, EntryPoint: {nodeData.entryPoint}, Position: {nodeData.position}");
@@ -363,13 +389,32 @@ public class DialogueGraphView : GraphView
             }
 
             // Recup ports en utilisant l'index
-            var fromPort = fromNode.outputContainer.Children().OfType<Port>().ElementAt(edgeData.fromPortIndex);
+            //var fromPort = fromNode.outputContainer.Children().OfType<Port>().ElementAt(edgeData.fromPortIndex);
+            //var toPort = toNode.inputContainer.Children().OfType<Port>().ElementAt(edgeData.toPortIndex);
+
+            var fromPort = fromNode.outputContainer.Query<Port>().ToList().FirstOrDefault(p => p.name == edgeData.fromPortId);
+            if (fromNode.EntryPoint)
+            {
+                fromPort = fromNode.outputContainer.Children().OfType<Port>().ElementAt(edgeData.fromPortIndex);
+            }
+            //var toPort = toNode.inputContainer.Query<Port>().ToList().FirstOrDefault(p => p.name == edgeData.toPortId);
             var toPort = toNode.inputContainer.Children().OfType<Port>().ElementAt(edgeData.toPortIndex);
 
+            //Debug.Log("FromPortId Name : " + edgeData.fromPortId + " / node name = " + edgeData.fromNodeId);
+            //Debug.Log("ToPortId Name : " + edgeData.toPortId + " / node name = " + edgeData.toNodeId);
 
             if (fromPort == null || toPort == null)
             {
                 Debug.LogWarning($"Failed to retrieve ports for edge: {fromNode.title} -> {toNode.title}");
+
+                //if (fromPort == null)
+                //{
+                //    Debug.LogWarning("Failed to find FromPort");
+                //}
+                //if (toPort == null)
+                //{
+                //    Debug.LogWarning("Failed to find ToPort");
+                //}
                 continue;
             }
 

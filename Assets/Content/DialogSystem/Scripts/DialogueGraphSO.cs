@@ -19,6 +19,7 @@ public class DialogueNodeSO
     public Vector2 position;
     public bool entryPoint = false;
     public List<string> outputPorts = new List<string>(); // Liste des noms des ports de sortie
+    public string inputPort = "";
 }
 
 [System.Serializable]
