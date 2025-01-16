@@ -7,6 +7,7 @@ using System.Reflection;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using static UnityEngine.Rendering.DebugUI;
 
 public class SaveManager : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class SaveManager : MonoBehaviour
         public string variableName;
         public bool isSelected;
         public object value;
+        public object defaultValue;
     }
     // ----- VARIABLES ----- //
 
@@ -33,7 +35,6 @@ public class SaveManager : MonoBehaviour
 
     // ----- FIELDS ----- //
     public List<ScriptSelection> scriptSelections = new List<ScriptSelection>();
-    public List<ScriptSelection> defaultScriptSelections = new List<ScriptSelection>();
 
     public List<string> ProfilesNames = new List<string>();
     public List<SaveData> CurrentProfileSaves = new List<SaveData>();
@@ -43,6 +44,7 @@ public class SaveManager : MonoBehaviour
 
     public event Action OnAddProfile;
     public event Action OnAddSave;
+    public event Action OnAllProfilesData;
 
     public static SaveManager Instance;
 
@@ -53,13 +55,11 @@ public class SaveManager : MonoBehaviour
     {
         if (Instance != null) { Destroy(this); }
         Instance = this;
+
+        GetDefaultSavedVariables();
     }
     // ----- FIELDS ----- //
 
-    private void Start()
-    {
-        GetDefaultSavedVariables();
-    }
 
     private object GetFieldValue(object obj, string fieldName)
     {
@@ -82,30 +82,28 @@ public class SaveManager : MonoBehaviour
     
     private void GetDefaultSavedVariables()
     {
-        // Check each gameobject -> script -> variable if is selected
+        Debug.Log("get default saved variables");
         foreach (var selection in scriptSelections)
         {
             if (selection.selectedScript != null)
             {
                 foreach (var varSelection in selection.variableSelections)
                 {
-                    if (varSelection.isSelected)
-                    {
-                        GameObject gameObject = selection.targetGameObject as GameObject;
-                        object value = GetFieldValue(selection.selectedScript, varSelection.variableName);
-                        Debug.Log($"Save Variable: {varSelection.variableName}, Value: {value} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
-                    }
+                    object value = GetFieldValue(selection.selectedScript, varSelection.variableName);
+                    varSelection.defaultValue = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
+                    Debug.Log("default " + varSelection.defaultValue);
                 }
             }
-
-            defaultScriptSelections.Add(selection);
         }
     }
-    
 
-    public void NewSave()
+
+
+    public void NewSave(bool isDefault, string profileName)
     {
-        if (CurrentProfile == "" || scriptSelections == null) return;
+        Debug.Log($"SAVE {isDefault} {profileName}");
+        CurrentProfile = profileName;
+        if (profileName == "" || scriptSelections == null) return;
         Dictionary <string, object> data = new Dictionary<string, object>();
 
         string saveGUID = Guid.NewGuid().ToString();
@@ -125,9 +123,21 @@ public class SaveManager : MonoBehaviour
                 foreach (var varSelection in selection.variableSelections) 
                 {
                     GameObject gameObject = selection.targetGameObject as GameObject;
-                    object value = GetFieldValue(selection.selectedScript, varSelection.variableName);
-                    Debug.Log($"Save Variable: {varSelection.variableName}, Value: {value}, Is Selected: {varSelection.isSelected} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
-                    varSelection.value = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
+                    if (isDefault)
+                    {
+                        object value = varSelection.defaultValue;
+                        varSelection.value = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
+                        Debug.Log($"Save Default Variable: {varSelection.variableName}, Value: {value}, Is Selected: {varSelection.isSelected} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
+
+                    }
+                    else
+                    {
+                        object value = GetFieldValue(selection.selectedScript, varSelection.variableName);
+                        varSelection.value = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
+                        Debug.Log($"Save Variable: {varSelection.variableName}, Value: {value}, Is Selected: {varSelection.isSelected} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
+
+                    }
+                    Debug.Log("default value " + varSelection.defaultValue);
                 }
             }
         }
@@ -136,10 +146,11 @@ public class SaveManager : MonoBehaviour
 
         SaveData saveData = new SaveData(data, dataInfos);
 
-        SaveSystem.NewSave(saveData, CurrentProfile);
+        SaveSystem.NewSave(saveData, profileName);
 
         OnAddSave.Invoke();
     }
+
 
     public void LoadSave(SaveInfos SaveInfos)
     {
@@ -218,16 +229,20 @@ public class SaveManager : MonoBehaviour
 
         if (!ProfilesNames.Contains(profileName))
         {
+            Debug.Log("create profile");
             ProfilesNames.Add(profileName);
+
+            // Définir le chemin du dossier de sauvegarde
+            saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
+
+            // Vérifier et créer le dossier si nécessaire
+            CreateSaveFolder(profileName);
+
+            NewSave(true, profileName);
+
+            //OnAddProfile.Invoke();
         }
-
-        // Définir le chemin du dossier de sauvegarde
-        saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
-
-        // Vérifier et créer le dossier si nécessaire
-        CreateSaveFolder(profileName);
-
-        OnAddProfile.Invoke();
+        
     }
 
     private void CreateSaveFolder(string profileName)
@@ -294,6 +309,9 @@ public class SaveManager : MonoBehaviour
             ProfileSaves = GetProfileSaves(profileName);
             DictProfileSaveDatas.Add(profileName, ProfileSaves);
         }
+
+        Debug.Log("end profiles saves");
+        OnAllProfilesData.Invoke();
     }
 
     public List<SaveData> GetProfileSaves(string profileName)
@@ -317,12 +335,12 @@ public class SaveManager : MonoBehaviour
 
             List<SaveData> ProfileSaves = new List<SaveData>();
 
+            /*
             if (files.Length == 0)
             {
                 Debug.Log("Create default save");
-                scriptSelections = defaultScriptSelections;
-                NewSave();
-            }
+                NewSave(true, profileName);
+            }*/
 
             foreach (string file in files)
             {

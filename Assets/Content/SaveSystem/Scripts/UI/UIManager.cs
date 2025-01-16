@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -32,8 +33,9 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        _saveManager.OnAddProfile += ShowProfiles;
+        _saveManager.OnAddSave += ShowProfiles;
         _saveManager.OnAddSave += ShowSaves;
+        _saveManager.OnAllProfilesData += SetProfiles;
         ShowProfiles();
         OpenProfilesPanel();
     }
@@ -68,7 +70,7 @@ public class UIManager : MonoBehaviour
 
     public void NewSave()
     {
-        _saveManager.NewSave();
+        _saveManager.NewSave(false, _saveManager.CurrentProfile);
     }
 
     public void ShowProfiles()
@@ -91,14 +93,41 @@ public class UIManager : MonoBehaviour
 
         _saveManager.GetProfilesDirectories();
         _saveManager.GetAllProfilesSaves();
+    }
+
+    public void SetProfiles()
+    {
+        Dictionary<string, List<SaveData>> dict = new Dictionary<string, List<SaveData>>();
+        dict = _saveManager.DictProfileSaveDatas;
+
+        Debug.Log($"dict count : {dict.Count}");
+        if (dict.Count == 0) return;
+
+        foreach (var entry in dict)
+        {
+            string key = entry.Key;
+            List<SaveData> value = entry.Value;
+
+            Debug.Log($"Key: {key}");
+            Debug.Log("Value:");
+            foreach (var data in value)
+            {
+                Debug.Log($"{data.SaveInfos.GUID}");
+            }
+        }
 
         foreach (string profileName in _saveManager.ProfilesNames)
         {
             GameObject profile = Instantiate(_prefabProfile);
             profile.transform.SetParent(_contentProfiles.transform);
             Profile profileSlot = profile.GetComponent<Profile>();
+
+            Debug.Log("set profile name " + profileName);
             profileSlot.SetProfileName(profileName.ToUpper());
-            profileSlot.SetData(_saveManager.DictProfileSaveDatas[profileName][0]);
+
+            Debug.Log("set profile data");
+            Debug.Log($"dict save count : {dict[profileName].Count}");
+            profileSlot.SetData(dict[profileName][0]);
         }
     }
 
