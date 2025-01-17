@@ -12,16 +12,16 @@ public class DialogueManager : MonoBehaviour
 
     [SerializeField] private DialogueGraphSO _dialogueGraphSO;
     [SerializeField] private IdToDialogueSO _idToDialogueSO;
+    [SerializeField] private IdToDialogueSO _idToDialogueChoicesSO;
 
     private string _currentNodeId = "";
     private string _currentDialogueText = "";
     private string _currentDialogueId = "";
 
-    [SerializeField] private RectTransform _choiceButtonPanel;
-
 
     public static DialogueManager Instance { get => _instance; set => _instance = value; }
     public string CurrentDialogueText { get => _currentDialogueText; set => _currentDialogueText = value; }
+    public IdToDialogueSO IdToDialogueChoicesSO { get => _idToDialogueChoicesSO; set => _idToDialogueChoicesSO = value; }
 
     public UnityEvent OnNextDialogueUnity;
     public event Action<string> OnNextDialogue;

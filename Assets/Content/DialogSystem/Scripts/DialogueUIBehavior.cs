@@ -60,18 +60,27 @@ public class DialogueUIBehavior : MonoBehaviour
         }
 
 
-        for (int i = 0; i < dialogueNode.outputPorts.Count; ++i)
+        for (int i = 0; i < dialogueNode.outputPortsChoiceId.Count; ++i)
         {
-            CreateButtonChoice(i, dialogueNode.outputPorts[i]);
+            if (DialogueManager.Instance != null)
+            {
+                if (i < DialogueManager.Instance.IdToDialogueChoicesSO.IdToDialogueConverter.Count)
+                {
+                    CreateButtonChoice(i, DialogueManager.Instance.IdToDialogueChoicesSO.IdToDialogueConverter[dialogueNode.outputPortsChoiceId[i]]);
+                    continue;
+                }
+            }
+            
+            CreateButtonChoice(i, dialogueNode.outputPortsChoiceId[i]);
         }
     }
-    private void CreateButtonChoice (int Id, string textValue = "Default Choice")
+    private void CreateButtonChoice (int id, string textValue = "Default Choice")
     {
         GameObject buttonChoiceGameObject = Instantiate(_buttonChoicePrefab, _choicesButtonPanel);
 
         ButtonChoice buttonChoice = buttonChoiceGameObject.GetComponent<ButtonChoice>();
 
-        buttonChoice.Init(Id, textValue);
+        buttonChoice.Init(id, textValue);
     }
 
     public void DisplayText(string text)

@@ -388,15 +388,19 @@ PrefabInstance:
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
       propertyPath: _idToDialogueSO
       value: 
-      objectReference: {fileID: 11400000, guid: 6f96ad0143eea3d48a70a7775133f5fb, type: 2}
+      objectReference: {fileID: 11400000, guid: 7fa64d0d084813749969545f94aece95, type: 2}
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
       propertyPath: _dialogueGraphSO
       value: 
-      objectReference: {fileID: 11400000, guid: 61ef9b0aff2134f42935c990f29daef6, type: 2}
+      objectReference: {fileID: 11400000, guid: eafd05538d412aa48b89a944a48cd89d, type: 2}
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
       propertyPath: _choiceButtonPanel
       value: 
       objectReference: {fileID: 99178915}
+    - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
+      propertyPath: _idToDialogueChoicesSO
+      value: 
+      objectReference: {fileID: 11400000, guid: 041c9aa33a4b6a44c9f360576d21325d, type: 2}
     - target: {fileID: 3938295699592777552, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
       propertyPath: m_Name
       value: Manager_Dialogue
