@@ -12,6 +12,7 @@ public class SaveManagerEditor : Editor
 {
     // ----- FIELDS ----- //
     private List<bool> showVariablesFoldout = new List<bool>();
+    private List<bool> showTransformFoldout = new List<bool>();
 
     private GUIStyle removeButtonStyle; 
     private GUIStyle titleStyle;
@@ -49,8 +50,12 @@ public class SaveManagerEditor : Editor
             {
                 scriptSelection.targetGameObject = newTargetGameObject;
                 scriptSelection.selectedScript = null; 
+
                 if (scriptSelection.variableSelections != null)
                     scriptSelection.variableSelections.Clear();
+
+                if (scriptSelection.transformSelection != null)
+                    scriptSelection.transformSelection = null;
             }
 
             if (scriptSelection.targetGameObject != null)
@@ -82,6 +87,8 @@ public class SaveManagerEditor : Editor
                         );
                     }
 
+
+                    // ----- VARIABLES ----- //
                     // Get script -> variables
                     var fields = scriptSelection.selectedScript.GetType()
                         .GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic)
@@ -105,12 +112,23 @@ public class SaveManagerEditor : Editor
                     scriptSelection.variableSelections = scriptSelection.variableSelections
                         .Where(v => fields.Any(f => f.Name == v.variableName))
                     .ToList();
+                    // ----- VARIABLES ----- //
+
+                    // ----- TRANSFORM ----- //
+                    // Get script -> transform
+                    Transform transform = scriptSelection.selectedScript.transform;
+                    Debug.Log($"get transform {transform}");
+                    scriptSelection.transform = transform;
+                    //scriptSelection.transformSelection = new SaveManager.TransformSelection(transform);
+                    //Debug.Log($"ADD TRANSFORM {transform}");
+                    // ----- TRANSFORM ----- //
 
                     // GUID
                     if (scriptSelection.guid == "") scriptSelection.guid = Guid.NewGuid().ToString();
                     EditorGUILayout.LabelField($"GUID : {scriptSelection.guid}");
 
-                    // Foldout menu
+                    // ----- VARIABLES ----- //
+                    // Foldout menu variables
                     if (showVariablesFoldout.Count < i + 1) showVariablesFoldout.Add(false);
 
                     showVariablesFoldout[i] = EditorGUILayout.Foldout(showVariablesFoldout[i], "Save Variables", boldStyle);
@@ -129,6 +147,49 @@ public class SaveManagerEditor : Editor
                             EditorGUILayout.EndHorizontal();
                         }
                     }
+                    // ----- VARIABLES ----- //
+
+                    // ----- TRANSFORM ----- //
+                    // Foldout menu variables
+                    if (showTransformFoldout.Count < i + 1) showTransformFoldout.Add(false);
+
+                    showTransformFoldout[i] = EditorGUILayout.Foldout(showTransformFoldout[i], "Save Transform", boldStyle);
+                    if (showTransformFoldout[i])
+                    {
+                        // -- POSITION -- //
+                        GUIStyle positionStyle = new GUIStyle(EditorStyles.label);
+                        positionStyle.normal.textColor = scriptSelection.transformSelection.positionSelected ? Color.white : Color.gray;
+
+                        // Set toggle & style
+                        EditorGUILayout.BeginHorizontal();
+                        scriptSelection.transformSelection.positionSelected = EditorGUILayout.Toggle(scriptSelection.transformSelection.positionSelected, GUILayout.Width(20));
+                        EditorGUILayout.LabelField("Position", positionStyle);
+                        EditorGUILayout.EndHorizontal();
+                        // -- POSITION -- //
+
+                        // -- ROTATION -- //
+                        GUIStyle rotationStyle = new GUIStyle(EditorStyles.label);
+                        rotationStyle.normal.textColor = scriptSelection.transformSelection.rotationSelected ? Color.white : Color.gray;
+
+                        // Set toggle & style
+                        EditorGUILayout.BeginHorizontal();
+                        scriptSelection.transformSelection.rotationSelected = EditorGUILayout.Toggle(scriptSelection.transformSelection.rotationSelected, GUILayout.Width(20));
+                        EditorGUILayout.LabelField("Rotation", rotationStyle);
+                        EditorGUILayout.EndHorizontal();
+                        // -- ROTATION -- //
+
+                        // -- SCALE -- //
+                        GUIStyle scaleStyle = new GUIStyle(EditorStyles.label);
+                        scaleStyle.normal.textColor = scriptSelection.transformSelection.scaleSelected ? Color.white : Color.gray;
+
+                        // Set toggle & style
+                        EditorGUILayout.BeginHorizontal();
+                        scriptSelection.transformSelection.scaleSelected = EditorGUILayout.Toggle(scriptSelection.transformSelection.scaleSelected, GUILayout.Width(20));
+                        EditorGUILayout.LabelField("Scale", scaleStyle);
+                        EditorGUILayout.EndHorizontal();
+                        // -- SCALE -- //
+                    }
+                    // ----- VARIABLES ----- //
                 }
                 else
                 {

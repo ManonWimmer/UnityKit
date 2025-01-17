@@ -7,8 +7,9 @@ using static SaveManager;
 public class SaveData
 {
     public Dictionary<string, object> DictVariables = new Dictionary<string, object>(); // GUID - List variables
+    public Dictionary<string, TransformSelection> DictTransforms = new Dictionary<string, TransformSelection>(); // GUID - Transform Selection
     public SaveInfos SaveInfos;
-    public SaveData(Dictionary<string, object> data, SaveInfos saveInfos) { this.DictVariables = data; this.SaveInfos = saveInfos; } 
+    public SaveData(Dictionary<string, object> data, Dictionary<string, TransformSelection> dictTransforms, SaveInfos saveInfos) { this.DictVariables = data; this.DictTransforms = dictTransforms; this.SaveInfos = saveInfos; } 
 }
 
 [System.Serializable]

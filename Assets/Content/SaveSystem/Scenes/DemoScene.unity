@@ -7864,6 +7864,37 @@ MonoBehaviour:
       isSelected: 1
     - variableName: PlayerLevel
       isSelected: 1
+    transformSelection:
+      positionSelected: 1
+      positionValue:
+      - 0
+      - 0
+      - 0
+      defaultPositionValue:
+      - 0
+      - 0
+      - 0
+      rotationSelected: 0
+      rotationValue:
+      - 0
+      - 0
+      - 0
+      - 0
+      defaultRotationValue:
+      - 0
+      - 0
+      - 0
+      - 0
+      scaleSelected: 0
+      scaleValue:
+      - 0
+      - 0
+      - 0
+      defaultScaleValue:
+      - 0
+      - 0
+      - 0
+    transform: {fileID: 1991515358}
     guid: 723abf68-49d0-4e02-b7de-7912a605de35
   ProfilesNames: []
   CurrentProfileSaves: []

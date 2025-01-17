@@ -39,7 +39,7 @@ public class SaveSlot : MonoBehaviour
         //_saveNameTxt.text = SaveData.SaveInfos.GUID;
         _saveNameTxt.text = $"SAVE N°{SaveData.SaveInfos.SaveNbr}";
         _saveInfosTxt.text = $"Date : {saveData.SaveInfos.Date} \n\n Time : {saveData.SaveInfos.Time}";
-        Debug.Log($"Date : {saveData.SaveInfos.Date} \n\n Time : {saveData.SaveInfos.Time}");
+        //Debug.Log($"Date : {saveData.SaveInfos.Date} \n\n Time : {saveData.SaveInfos.Time}");
 
         if (autoLoad) LoadSave();
     }
@@ -81,7 +81,7 @@ public class SaveSlot : MonoBehaviour
     public void SetCanDelete(bool canDelete)
     {
         _canDelete = canDelete;
-        Debug.Log($"Can delete : {_canDelete}");
+        //Debug.Log($"Can delete : {_canDelete}");
 
         _deleteImage.color = _canDelete ? _canDeleteColor : _cantDeleteColor;
     }
