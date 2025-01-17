@@ -104,6 +104,7 @@ public static class SaveSystem
 
     public static SaveData LoadSave(SaveInfos SaveInfos, string ProfileName)
     {
+        Debug.Log("load save system");
         string saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
         string saveFolderPathProfile = Path.Combine(saveFolderPath, $"{ProfileName}");
         string savePath = Path.Combine(saveFolderPathProfile + $"/{SaveInfos.GUID}.save");

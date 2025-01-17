@@ -153,13 +153,22 @@ public class UIManager : MonoBehaviour
         }
 
         _saveManager.GetCurrentProfileSaves();
+        int i = 0;
         foreach (SaveData saveData in _saveManager.CurrentProfileSaves)
         {
             Debug.Log("instantiate");
             GameObject saveGameObject = Instantiate(_prefabSave);
             saveGameObject.transform.SetParent(_contentSaves.transform);
             SaveSlot saveSlot = saveGameObject.GetComponent<SaveSlot>();
-            saveSlot.InitSaveSlot(saveData);
+            
+
+            if (i == 0)
+                saveSlot.InitSaveSlot(saveData, true);
+            else
+                saveSlot.InitSaveSlot(saveData, false);
+
+            i++;
+
         }
         Debug.Log("end instantiate");
     }

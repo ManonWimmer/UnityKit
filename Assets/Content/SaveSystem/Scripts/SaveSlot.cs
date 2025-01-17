@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class SaveSlot : MonoBehaviour
 {
+    // ----- FIELDS ----- //
     public SaveData SaveData;
     [SerializeField] private TMP_Text _saveNameTxt;
     [SerializeField] private TMP_Text _saveInfosTxt;
@@ -16,6 +17,7 @@ public class SaveSlot : MonoBehaviour
     private SaveManager _saveManager;
 
     private bool _isLoaded = false;
+    // ----- FIELDS ----- //
 
     private void Start()
     {
@@ -23,18 +25,24 @@ public class SaveSlot : MonoBehaviour
         _saveManager = SaveManager.Instance;
     }
 
-    public void InitSaveSlot(SaveData saveData)
+    public void InitSaveSlot(SaveData saveData, bool autoLoad = false)
     {
-        SaveData = saveData;
         Debug.Log($"init save {SaveData.SaveInfos.Time}");
+        SaveData = saveData;
 
         _saveNameTxt.text = SaveData.SaveInfos.GUID;
         _saveInfosTxt.text = $"Date : {saveData.SaveInfos.Date} \n\n Time : {saveData.SaveInfos.Time}";
+        Debug.Log($"Date : {saveData.SaveInfos.Date} \n\n Time : {saveData.SaveInfos.Time}");
+
+        if (autoLoad) LoadSave();
     }
 
     public void LoadSave()
     {
+        if (_saveManager == null) _saveManager = SaveManager.Instance;
         _saveManager.LoadSave(SaveData.SaveInfos);
+
+        SetIsLoaded(true);
     }
 
     public void DeleteSave()
