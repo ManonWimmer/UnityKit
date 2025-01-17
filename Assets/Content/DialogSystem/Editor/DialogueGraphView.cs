@@ -355,12 +355,33 @@ public class DialogueGraphView : GraphView
             if (edge.input == null || edge.output == null)
                 continue;
 
+            // -------------------------------------------
+            // partie pas propre : j'init l'index du port différement en fonction de si c'est un port dialogue ou pas (donc compris dans une VE parent)
+            
+            var tempFromDialogueNode = ((DialogueNode)edge.output.node);
+            int tempFromPortIndex = 0;
+            if (tempFromDialogueNode != null)
+            {
+                if (tempFromDialogueNode.EntryPoint)
+                {
+                    tempFromPortIndex = edge.output.parent.IndexOf(edge.output);
+                }
+                else
+                {
+                    tempFromPortIndex = edge.output.parent.parent.IndexOf(edge.output.parent);
+                }
+            }
+
+            // --------------------------------------------
+
             var edgeData = new DialogueEdgeSO
             {
                 fromNodeId = ((DialogueNode)edge.output.node).GIUD,
                 fromPortId = edge.output.name, // Sauvegarder l'identifiant unique du port
 
-                fromPortIndex = edge.output.parent.IndexOf(edge.output),
+                
+                //fromPortIndex = edge.output.parent.parent.IndexOf(edge.output.parent),
+                fromPortIndex = tempFromPortIndex,  // -> suite de partie pas propre juste au dessus
 
                 toNodeId = ((DialogueNode)edge.input.node).GIUD,
                 toPortId = edge.input.name, // Sauvegarder l'identifiant unique du port
