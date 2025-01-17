@@ -969,6 +969,9 @@ MonoBehaviour:
   _saveInfosTxt: {fileID: 7429096860648189597}
   _isLoadedContent: {fileID: 9047339319265999865}
   _isNotLoadedContent: {fileID: 8620374803690756062}
+  _deleteImage: {fileID: 777561433849171289}
+  _canDeleteColor: {r: 0.8980392, g: 0.3137255, b: 0.3137255, a: 1}
+  _cantDeleteColor: {r: 0.36862746, g: 0.36862746, b: 0.36862746, a: 1}
 --- !u!1 &7562174708344938227
 GameObject:
   m_ObjectHideFlags: 0
@@ -1166,9 +1169,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SaveManager, Assembly-CSharp
-        m_MethodName: Save
+      - m_Target: {fileID: 8564337571904373148}
+        m_TargetAssemblyTypeName: SaveSlot, Assembly-CSharp
+        m_MethodName: OverrideSave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

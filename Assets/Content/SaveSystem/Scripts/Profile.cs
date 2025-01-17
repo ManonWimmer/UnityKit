@@ -5,12 +5,16 @@ using UnityEngine;
 
 public class Profile : MonoBehaviour 
 {
+    // ----- FIELDS ----- //
     public string ProfileName = "";
+
     [SerializeField] private TMP_Text _profileNameTxt;
     [SerializeField] private TMP_Text _profileInfosTxt;
+
     private UIManager _uiManager;
     private SaveManager _saveManager;
     public SaveData SaveData;
+    // ----- FIELDS ----- //
 
     private void Start()
     {
