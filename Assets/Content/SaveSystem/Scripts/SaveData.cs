@@ -17,8 +17,9 @@ public class SaveInfos
     public string GUID = "";
     public string Date = "";
     public string Time = "";
+    public int SaveNbr = 0;
 
-    public SaveInfos(string guid, string date, string time) { this.GUID = guid; this.Date = date; this.Time = time; }
+    public SaveInfos(string guid, string date, string time, int saveNbr) { this.GUID = guid; this.Date = date; this.Time = time; this.SaveNbr = saveNbr; }
 }
 
 

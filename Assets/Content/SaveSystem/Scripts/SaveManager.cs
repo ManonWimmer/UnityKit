@@ -41,6 +41,7 @@ public class SaveManager : MonoBehaviour
     public string CurrentProfile = "";
 
     public Dictionary<string, List<SaveData>> DictProfileSaveDatas = new Dictionary<string, List<SaveData>>();
+    public Dictionary<string, int> DictProfileNbrSaves = new Dictionary<string, int>();
 
     public event Action OnAddProfile;
     public event Action OnAddSave;
@@ -108,12 +109,17 @@ public class SaveManager : MonoBehaviour
         Dictionary <string, object> data = new Dictionary<string, object>();
 
         string saveGUID = Guid.NewGuid().ToString();
+
         DateTime now = DateTime.Now;
         string currentDate = now.ToString("yyyy-MM-dd"); // Format : "2025-01-16"
         Debug.Log("Date actuelle : " + currentDate);
         string currentTime = now.ToString("HH:mm:ss"); // Format : "16:45:30"
         Debug.Log("Heure actuelle : " + currentTime);
-        SaveInfos dataInfos = new SaveInfos(saveGUID, currentDate, currentTime);
+
+        int saveNbr = DictProfileNbrSaves[CurrentProfile] + 1;
+        Debug.Log($"SAVE NBR {saveNbr}");
+
+        SaveInfos dataInfos = new SaveInfos(saveGUID, currentDate, currentTime, saveNbr);
 
         foreach (var selection in scriptSelections)
         {
@@ -162,10 +168,15 @@ public class SaveManager : MonoBehaviour
 
         // Keep GUID but new date & time
         string saveGUID = overrideSave.SaveInfos.GUID;
+
         DateTime now = DateTime.Now;
         string currentDate = now.ToString("yyyy-MM-dd"); // Format : "2025-01-16"
         string currentTime = now.ToString("HH:mm:ss"); // Format : "16:45:30"
-        SaveInfos dataInfos = new SaveInfos(saveGUID, currentDate, currentTime);
+
+        int saveNbr = DictProfileNbrSaves[CurrentProfile] + 1;
+        Debug.Log($"SAVE NBR {saveNbr}");
+
+        SaveInfos dataInfos = new SaveInfos(saveGUID, currentDate, currentTime, saveNbr);
 
         foreach (var selection in scriptSelections)
         {
@@ -250,6 +261,7 @@ public class SaveManager : MonoBehaviour
         SaveSystem.DeleteProfile(profileName);
         ProfilesNames.Remove(profileName);
         DictProfileSaveDatas.Remove(profileName);
+        DictProfileNbrSaves.Remove(profileName);
 
         OnRemoveProfile.Invoke();
     }
@@ -291,6 +303,7 @@ public class SaveManager : MonoBehaviour
         {
             Debug.Log("create profile");
             ProfilesNames.Add(profileName);
+            DictProfileNbrSaves[profileName] = 0;
 
             // Définir le chemin du dossier de sauvegarde
             saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
@@ -350,6 +363,13 @@ public class SaveManager : MonoBehaviour
     public void GetCurrentProfileSaves()
     {
         CurrentProfileSaves = GetProfileSaves(CurrentProfile);
+        int saveNbr = 0;
+        foreach(SaveData saveData in CurrentProfileSaves)
+        {
+            if (saveData.SaveInfos.SaveNbr > saveNbr) saveNbr = saveData.SaveInfos.SaveNbr;
+        }
+        Debug.Log($"MAX SAVE NBR {saveNbr}");
+        DictProfileNbrSaves[CurrentProfile] = saveNbr;
     }
 
     public void GetAllProfilesSaves()

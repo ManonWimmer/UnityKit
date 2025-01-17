@@ -36,7 +36,8 @@ public class SaveSlot : MonoBehaviour
         Debug.Log($"init save {SaveData.SaveInfos.Time}");
         SaveData = saveData;
 
-        _saveNameTxt.text = SaveData.SaveInfos.GUID;
+        //_saveNameTxt.text = SaveData.SaveInfos.GUID;
+        _saveNameTxt.text = $"SAVE N°{SaveData.SaveInfos.SaveNbr}";
         _saveInfosTxt.text = $"Date : {saveData.SaveInfos.Date} \n\n Time : {saveData.SaveInfos.Time}";
         Debug.Log($"Date : {saveData.SaveInfos.Date} \n\n Time : {saveData.SaveInfos.Time}");
 
