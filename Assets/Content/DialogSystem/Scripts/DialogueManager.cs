@@ -63,9 +63,9 @@ public class DialogueManager : MonoBehaviour
     private string GetNodeIdEntryPoint()
     {
         if (_dialogueGraphSO == null) return "";
-        if (_dialogueGraphSO.nodes == null) return "";
+        if (_dialogueGraphSO.Nodes == null) return "";
 
-        foreach (DialogueNodeSO node in _dialogueGraphSO.nodes)
+        foreach (DialogueNodeSO node in _dialogueGraphSO.Nodes)
         {
             if (node == null) continue;
 
@@ -80,9 +80,9 @@ public class DialogueManager : MonoBehaviour
     private string GetDialogueIdEntryPoint()
     {
         if (_dialogueGraphSO == null) return "";
-        if (_dialogueGraphSO.nodes == null) return "";
+        if (_dialogueGraphSO.Nodes == null) return "";
 
-        foreach (DialogueNodeSO node in _dialogueGraphSO.nodes)
+        foreach (DialogueNodeSO node in _dialogueGraphSO.Nodes)
         {
             if (node ==  null) continue;
 
@@ -158,8 +158,8 @@ public class DialogueManager : MonoBehaviour
     #region Parcours Graph Data
     private DialogueNodeSO GetNextDialogueNodeByChoiceId(int choiceId)
     {
-        if (_dialogueGraphSO.nodes == null) return null;
-        if (_dialogueGraphSO.edges == null) return null;
+        if (_dialogueGraphSO.Nodes == null) return null;
+        if (_dialogueGraphSO.Edges == null) return null;
         if (string.IsNullOrEmpty(_currentNodeId)) return null;
         if (choiceId < 0) return null;
 
@@ -167,7 +167,7 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("Test2");
 
         // Trouve le nœud actuel
-        foreach (DialogueNodeSO node in _dialogueGraphSO.nodes)
+        foreach (DialogueNodeSO node in _dialogueGraphSO.Nodes)
         {
             if (node.id == _currentNodeId)
             {
@@ -176,7 +176,7 @@ public class DialogueManager : MonoBehaviour
                 if (edge == null) return null; // Pas d'edge trouvé pour ce choix
 
                 // Trouve le nœud cible
-                foreach (DialogueNodeSO targetNode in _dialogueGraphSO.nodes)
+                foreach (DialogueNodeSO targetNode in _dialogueGraphSO.Nodes)
                 {
                     Debug.Log($"TEST : {targetNode.id}, {edge.toNodeId}");
                     if (targetNode.id == edge.toNodeId)
@@ -192,7 +192,7 @@ public class DialogueManager : MonoBehaviour
 
     private DialogueEdgeSO GetNextEdgeByChoiceId(int choiceId, string currentNodeId)    // Retourne l'edge qui fait le lien vers le node cible
     {
-        foreach (DialogueEdgeSO edge in _dialogueGraphSO.edges)
+        foreach (DialogueEdgeSO edge in _dialogueGraphSO.Edges)
         {
             if (edge.fromNodeId == currentNodeId && edge.fromPortIndex == choiceId) // Si depuis bon node && bon choix
             {
