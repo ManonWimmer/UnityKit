@@ -8,7 +8,6 @@ using UnityEngine.Networking;
 
 public class GetCSV : MonoBehaviour
 {
-    [SerializeField] LocalizationSystem localizationSystem;
     private string CSVText;
     private int indexOffset = 1;
     private 
@@ -35,39 +34,46 @@ public class GetCSV : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     //Debug.Log("Received: " + webRequest.downloadHandler.text);
                     CSVText = webRequest.downloadHandler.text;
+                    CSVtoList();
                     break;
             }
         }
     }
 
-    string[][] CSVtoList()
+    List<List<string>> CSVtoList()
     {
-        string[][] listValues;
+        string[] listContainList;
         CSVText = CSVText.Replace("\"", "");
-        //listValues = CSVText.Split("");
-        return null;
+        listContainList = CSVText.Split("\n");
+        List<List<string>> result = new List<List<string>>();
+        foreach (string line in listContainList)
+        {
+            string[] words = line.Split(',');
+            result.Add(new List<string>(words));
+        }
+        return result;
     }
 
-    private Dictionary<string,string> GetDictionaryValues(string language)
+    public Dictionary<string,string> GetDictionaryValues(string language)
     {
-        string[][] listData = CSVtoList();
+        List<List<string>> listData = CSVtoList();
         Dictionary<string, string> DictionaryValues = new Dictionary<string, string>();
         switch (language) 
         {
             case "FR":
-                foreach(string[] line in listData)
+                foreach(List<string> line in listData)
                 {
                     DictionaryValues.Add(line[indexOffset + 0], line[indexOffset + 1]);
                 }
                 break;
             case "EN":
-                foreach (string[] line in listData)
+                foreach (List<string> line in listData)
                 {
                     DictionaryValues.Add(line[indexOffset + 0], line[indexOffset + 2]);
                 }
                 break;
             case "ES":
-                foreach (string[] line in listData)
+                foreach (List<string> line in listData)
                 {
                     DictionaryValues.Add(line[indexOffset + 0], line[indexOffset + 3]);
                 }
