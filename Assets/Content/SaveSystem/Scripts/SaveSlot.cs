@@ -56,6 +56,8 @@ public class SaveSlot : MonoBehaviour
 
         if (isLoaded)
         {
+            if (_uiManager == null) _uiManager = UIManager.Instance;
+            _uiManager.DeselectAllSaveSlots();
             _isLoadedContent.SetActive(true);
             _isNotLoadedContent.SetActive(false);
         }

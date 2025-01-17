@@ -24,6 +24,8 @@ public class UIManager : MonoBehaviour
 
     public static UIManager Instance;
 
+    private List<SaveSlot> _saveSlots = new List<SaveSlot>();
+
     private void Awake()
     {
         if (Instance != null) { Destroy(this); }
@@ -152,6 +154,7 @@ public class UIManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
+        _saveSlots.Clear();
         _saveManager.GetCurrentProfileSaves();
         int i = 0;
         foreach (SaveData saveData in _saveManager.CurrentProfileSaves)
@@ -160,7 +163,7 @@ public class UIManager : MonoBehaviour
             GameObject saveGameObject = Instantiate(_prefabSave);
             saveGameObject.transform.SetParent(_contentSaves.transform);
             SaveSlot saveSlot = saveGameObject.GetComponent<SaveSlot>();
-            
+            _saveSlots.Add(saveSlot);
 
             if (i == 0)
                 saveSlot.InitSaveSlot(saveData, true);
@@ -171,5 +174,13 @@ public class UIManager : MonoBehaviour
 
         }
         Debug.Log("end instantiate");
+    }
+
+    public void DeselectAllSaveSlots()
+    {
+        foreach(SaveSlot saveSlot in _saveSlots)
+        {
+            saveSlot.SetIsLoaded(false);
+        }
     }
 }
