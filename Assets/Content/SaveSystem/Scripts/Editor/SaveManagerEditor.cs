@@ -97,7 +97,7 @@ public class SaveManagerEditor : Editor
                     {
                         if (!scriptSelection.variableSelections.Any(v => v.variableName == field.Name))
                         {
-                            scriptSelection.variableSelections.Add(new SaveManager.VariableSelection { variableName = field.Name, isSelected = false });
+                            scriptSelection.variableSelections.Add(new SaveManager.VariableSelection { variableName = field.Name, isSelected = false});
                         }
                     }
 
