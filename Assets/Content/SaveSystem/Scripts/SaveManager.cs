@@ -239,12 +239,6 @@ public class SaveManager : MonoBehaviour
 
     public void DeleteSave(SaveInfos saveInfos)
     {
-        GetCurrentProfileSaves();
-        if (CurrentProfileSaves.Count <= 1)
-        {
-            Debug.Log("CANT DELETE LAST SAVE");
-            return;
-        }
         SaveSystem.DeleteSave(saveInfos, CurrentProfile);
 
         OnAddSave.Invoke();

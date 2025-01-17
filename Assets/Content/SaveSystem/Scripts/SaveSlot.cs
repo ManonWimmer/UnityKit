@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SaveSlot : MonoBehaviour
 {
@@ -13,10 +14,15 @@ public class SaveSlot : MonoBehaviour
     [SerializeField] private GameObject _isLoadedContent;
     [SerializeField] private GameObject _isNotLoadedContent;
 
+    [SerializeField] private Image _deleteImage;
+    [SerializeField] private Color _canDeleteColor;
+    [SerializeField] private Color _cantDeleteColor;
+
     private UIManager _uiManager;
     private SaveManager _saveManager;
 
     private bool _isLoaded = false;
+    private bool _canDelete = false;
     // ----- FIELDS ----- //
 
     private void Start()
@@ -47,7 +53,10 @@ public class SaveSlot : MonoBehaviour
 
     public void DeleteSave()
     {
-        _saveManager.DeleteSave(SaveData.SaveInfos);
+        if (_canDelete)
+        {
+            _saveManager.DeleteSave(SaveData.SaveInfos);
+        }
     }
 
     public void SetIsLoaded(bool isLoaded)
@@ -66,6 +75,14 @@ public class SaveSlot : MonoBehaviour
             _isLoadedContent.SetActive(false);
             _isNotLoadedContent.SetActive(true);
         }
+    }
+
+    public void SetCanDelete(bool canDelete)
+    {
+        _canDelete = canDelete;
+        Debug.Log($"Can delete : {_canDelete}");
+
+        _deleteImage.color = _canDelete ? _canDeleteColor : _cantDeleteColor;
     }
 
     public void OverrideSave()

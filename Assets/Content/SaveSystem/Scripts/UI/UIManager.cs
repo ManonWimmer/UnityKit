@@ -169,10 +169,15 @@ public class UIManager : MonoBehaviour
                 saveSlot.InitSaveSlot(saveData, true);
             else
                 saveSlot.InitSaveSlot(saveData, false);
-
             i++;
 
         }
+
+        if (_saveManager.CurrentProfileSaves.Count <= 1)
+            foreach(SaveSlot saveSlot in _saveSlots) { saveSlot.SetCanDelete(false);  }
+        else
+            foreach (SaveSlot saveSlot in _saveSlots) { saveSlot.SetCanDelete(true); }
+
         Debug.Log("end instantiate");
     }
 
