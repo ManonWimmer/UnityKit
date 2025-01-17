@@ -346,7 +346,7 @@ public class DialogueGraphView : GraphView
 
             Debug.Log($"Saving node: {nodeData.title}, EntryPoint: {nodeData.entryPoint}, Position: {nodeData.position}");
 
-            dialogueGraph.nodes.Add(nodeData);
+            dialogueGraph.Nodes.Add(nodeData);
         }
 
         // Save edges
@@ -389,7 +389,7 @@ public class DialogueGraphView : GraphView
                 toPortIndex = edge.input.parent.IndexOf(edge.input),
             };
 
-            dialogueGraph.edges.Add(edgeData);
+            dialogueGraph.Edges.Add(edgeData);
         }
 
         // Save the ScriptableObject as an asset
@@ -406,7 +406,7 @@ public class DialogueGraphView : GraphView
         ClearGraph();
 
         // Load nodes
-        foreach (var nodeData in dialogueGraph.nodes)
+        foreach (var nodeData in dialogueGraph.Nodes)
         {
             Debug.Log($"Loading node: {nodeData.title}, EntryPoint: {nodeData.entryPoint}, Position: {nodeData.position}");
 
@@ -433,7 +433,7 @@ public class DialogueGraphView : GraphView
         }
 
         // Load edges
-        foreach (var edgeData in dialogueGraph.edges)
+        foreach (var edgeData in dialogueGraph.Edges)
         {
             var fromNode = nodes.ToList().OfType<DialogueNode>().FirstOrDefault(n => n.GIUD == edgeData.fromNodeId);
             var toNode = nodes.ToList().OfType<DialogueNode>().FirstOrDefault(n => n.GIUD == edgeData.toNodeId);
