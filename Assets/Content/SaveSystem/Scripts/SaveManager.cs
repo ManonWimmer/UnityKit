@@ -173,7 +173,7 @@ public class SaveManager : MonoBehaviour
         string currentDate = now.ToString("yyyy-MM-dd"); // Format : "2025-01-16"
         string currentTime = now.ToString("HH:mm:ss"); // Format : "16:45:30"
 
-        int saveNbr = DictProfileNbrSaves[CurrentProfile] + 1;
+        int saveNbr = lastSave.SaveInfos.SaveNbr;
         Debug.Log($"SAVE NBR {saveNbr}");
 
         SaveInfos dataInfos = new SaveInfos(saveGUID, currentDate, currentTime, saveNbr);
