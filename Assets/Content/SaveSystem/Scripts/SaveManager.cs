@@ -152,9 +152,51 @@ public class SaveManager : MonoBehaviour
         OnAddSave.Invoke();
     }
 
+    public void OverrideSave(SaveData lastSave)
+    {
+        SaveData overrideSave = lastSave;
+        Debug.Log($"OVERRIDE SAVE {overrideSave.SaveInfos.GUID} {CurrentProfile}");
+
+        if (CurrentProfile == "" || scriptSelections == null) return;
+        Dictionary<string, object> data = new Dictionary<string, object>();
+
+        // Keep GUID but new date & time
+        string saveGUID = overrideSave.SaveInfos.GUID;
+        DateTime now = DateTime.Now;
+        string currentDate = now.ToString("yyyy-MM-dd"); // Format : "2025-01-16"
+        string currentTime = now.ToString("HH:mm:ss"); // Format : "16:45:30"
+        SaveInfos dataInfos = new SaveInfos(saveGUID, currentDate, currentTime);
+
+        foreach (var selection in scriptSelections)
+        {
+            if (selection.targetGameObject != null && selection.selectedScript != null && selection.variableSelections.Count > 0)
+            {
+                data.Add(selection.guid, selection.variableSelections); // GUID - List variables
+                Debug.Log($"add to dict data, guid : {selection.guid}, game object : {selection.targetGameObject}, script : {selection.selectedScript}, list variables :");
+                foreach (var varSelection in selection.variableSelections)
+                {
+                    GameObject gameObject = selection.targetGameObject as GameObject;
+                    object value = GetFieldValue(selection.selectedScript, varSelection.variableName);
+                    varSelection.value = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
+                    Debug.Log($"Save Variable: {varSelection.variableName}, Value: {value}, Is Selected: {varSelection.isSelected} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
+
+                }
+            }
+        }
+
+        Debug.Log($"Save Infos: GUID {dataInfos.GUID}, Date {dataInfos.Date}, Time {dataInfos.Time}");
+
+        SaveData saveData = new SaveData(data, dataInfos);
+
+        SaveSystem.NewSave(saveData, CurrentProfile);
+
+        OnAddSave.Invoke();
+    }
+
 
     public void LoadSave(SaveInfos SaveInfos)
     {
+        Debug.Log("ici");
         if (CurrentProfile == "" || SaveInfos == null) return;
 
         SaveData data = SaveSystem.LoadSave(SaveInfos, CurrentProfile);

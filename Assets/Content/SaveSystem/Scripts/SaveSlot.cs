@@ -67,4 +67,9 @@ public class SaveSlot : MonoBehaviour
             _isNotLoadedContent.SetActive(true);
         }
     }
+
+    public void OverrideSave()
+    {
+        _saveManager.OverrideSave(SaveData);
+    }
 }

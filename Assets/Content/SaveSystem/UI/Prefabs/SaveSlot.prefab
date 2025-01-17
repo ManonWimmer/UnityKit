@@ -1166,9 +1166,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SaveManager, Assembly-CSharp
-        m_MethodName: Save
+      - m_Target: {fileID: 8564337571904373148}
+        m_TargetAssemblyTypeName: SaveSlot, Assembly-CSharp
+        m_MethodName: OverrideSave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
