@@ -15,6 +15,8 @@ public class SaveManagerEditor : Editor
     private GUIStyle removeButtonStyle;
     private GUIStyle titleStyle;
     private GUIStyle boldStyle;
+    private GUIStyle boxStyle;
+    private Color lightBlueColor;
     // ----- FIELDS ----- //
 
     public override void OnInspectorGUI()
@@ -115,112 +117,108 @@ public class SaveManagerEditor : Editor
                 {
                     foreach (var scriptData in savedEntry.ScriptDatas)
                     {
-                        // Définir un style pour la boîte de fond
-                        GUIStyle boxStyle = new GUIStyle();
-                        boxStyle.normal.background = Texture2D.whiteTexture;  // Fond de la boîte
-                        boxStyle.padding = new RectOffset(100, 100, 100, 100); // Ajoute de l'espace autour des éléments
-
-                        // Créer la boîte avec un fond
-                        Rect rect = EditorGUILayout.BeginVertical();
-                        GUI.Box(rect, GUIContent.none, boxStyle);
-
-
-
-                        MonoBehaviour[] scripts = gameObject.GetComponents<MonoBehaviour>();
-                        string[] scriptNames = scripts.Select(s => s.GetType().Name).ToArray();
-                        int selectedIndex = ArrayUtility.IndexOf(scripts, scriptData.SelectedScript);
-                        selectedIndex = EditorGUILayout.Popup("Select Script", selectedIndex, scriptNames);
-
-                        if (selectedIndex >= 0)
+                        GUILayout.BeginVertical(boxStyle);
                         {
-                            scriptData.SelectedScript = scripts[selectedIndex];
+                            MonoBehaviour[] scripts = gameObject.GetComponents<MonoBehaviour>();
+                            string[] scriptNames = scripts.Select(s => s.GetType().Name).ToArray();
+                            int selectedIndex = ArrayUtility.IndexOf(scripts, scriptData.SelectedScript);
+                            selectedIndex = EditorGUILayout.Popup("Select Script", selectedIndex, scriptNames);
 
-                            // Duplication check
-                            bool isDuplicate = false;
-                            foreach (var script in savedEntry.ScriptDatas)
+                            if (selectedIndex >= 0)
                             {
-                                if (script != scriptData && script.SelectedScript == scriptData.SelectedScript)
-                                    isDuplicate = true;
+                                scriptData.SelectedScript = scripts[selectedIndex];
+
+                                // Duplication check
+                                bool isDuplicate = false;
+                                foreach (var script in savedEntry.ScriptDatas)
+                                {
+                                    if (script != scriptData && script.SelectedScript == scriptData.SelectedScript)
+                                        isDuplicate = true;
+                                }
+
+                                if (isDuplicate)
+                                {
+                                    EditorGUILayout.HelpBox(
+                                        $"Error: This script is already selected for the same GameObject.",
+                                        MessageType.Error
+                                    );
+                                }
+
+
+                                // ----- VARIABLES ----- //
+                                // Get script -> variables
+                                var fields = scriptData.SelectedScript.GetType()
+                                    .GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic)
+                                    .Where(f => !f.IsDefined(typeof(HideInInspector), true))
+                                    .ToList();
+
+                                // Create selection if doesn't exists
+                                if (scriptData.VariableSelections == null)
+                                    scriptData.VariableSelections = new List<SaveManager.VariableSelection>();
+
+                                // Check if variable exists in selection
+                                foreach (var field in fields)
+                                {
+                                    if (!scriptData.VariableSelections.Any(v => v.VariableName == field.Name))
+                                    {
+                                        scriptData.VariableSelections.Add(new SaveManager.VariableSelection { VariableName = field.Name, IsSaved = false });
+                                    }
+                                }
+
+                                // Delete selection if not variables from script
+                                scriptData.VariableSelections = scriptData.VariableSelections
+                                    .Where(v => fields.Any(f => f.Name == v.VariableName))
+                                .ToList();
+                                // ----- VARIABLES ----- //
+
+                                // ----- VARIABLES ----- //
+                                // Foldout menu variables
+                                if (showVariablesFoldout.Count < i + 1) showVariablesFoldout.Add(false);
+
+                                showVariablesFoldout[i] = EditorGUILayout.Foldout(showVariablesFoldout[i], "Save Variables", boldStyle);
+                                if (showVariablesFoldout[i])
+                                {
+                                    foreach (var variable in scriptData.VariableSelections)
+                                    {
+                                        // Change style if selected or not
+                                        GUIStyle variableStyle = new GUIStyle(EditorStyles.label);
+                                        variableStyle.normal.textColor = variable.IsSaved ? Color.white : Color.gray;
+
+                                        // Set toggle & style
+                                        EditorGUILayout.BeginHorizontal();
+                                        variable.IsSaved = EditorGUILayout.Toggle(variable.IsSaved, GUILayout.Width(20));
+                                        EditorGUILayout.LabelField(variable.VariableName, variableStyle);
+                                        EditorGUILayout.EndHorizontal();
+                                    }
+                                }
                             }
-
-                            if (isDuplicate)
+                            else
                             {
+                                // Error when no script selected
                                 EditorGUILayout.HelpBox(
-                                    $"Error: This script is already selected for the same GameObject.",
+                                    $"Error: You need to select a script",
                                     MessageType.Error
                                 );
                             }
 
-
-                            // ----- VARIABLES ----- //
-                            // Get script -> variables
-                            var fields = scriptData.SelectedScript.GetType()
-                                .GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic)
-                                .Where(f => !f.IsDefined(typeof(HideInInspector), true))
-                                .ToList();
-
-                            // Create selection if doesn't exists
-                            if (scriptData.VariableSelections == null)
-                                scriptData.VariableSelections = new List<SaveManager.VariableSelection>();
-
-                            // Check if variable exists in selection
-                            foreach (var field in fields)
+                            // Remove script
+                            if (GUILayout.Button("Remove Script Variables", removeButtonStyle))
                             {
-                                if (!scriptData.VariableSelections.Any(v => v.VariableName == field.Name))
-                                {
-                                    scriptData.VariableSelections.Add(new SaveManager.VariableSelection { VariableName = field.Name, IsSaved = false });
-                                }
-                            }
-
-                            // Delete selection if not variables from script
-                            scriptData.VariableSelections = scriptData.VariableSelections
-                                .Where(v => fields.Any(f => f.Name == v.VariableName))
-                            .ToList();
-                            // ----- VARIABLES ----- //
-
-                            // ----- VARIABLES ----- //
-                            // Foldout menu variables
-                            if (showVariablesFoldout.Count < i + 1) showVariablesFoldout.Add(false);
-
-                            showVariablesFoldout[i] = EditorGUILayout.Foldout(showVariablesFoldout[i], "Save Variables", boldStyle);
-                            if (showVariablesFoldout[i])
-                            {
-                                foreach (var variable in scriptData.VariableSelections)
-                                {
-                                    // Change style if selected or not
-                                    GUIStyle variableStyle = new GUIStyle(EditorStyles.label);
-                                    variableStyle.normal.textColor = variable.IsSaved ? Color.white : Color.gray;
-
-                                    // Set toggle & style
-                                    EditorGUILayout.BeginHorizontal();
-                                    variable.IsSaved = EditorGUILayout.Toggle(variable.IsSaved, GUILayout.Width(20));
-                                    EditorGUILayout.LabelField(variable.VariableName, variableStyle);
-                                    EditorGUILayout.EndHorizontal();
-                                }
+                                Debug.Log("Remove script variables");
+                                savedEntry.ScriptDatas.RemoveAt(savedEntry.ScriptDatas.IndexOf(scriptData));
+                                GUI.changed = true;
+                                break;
                             }
                         }
-                        else
-                        {
-                            // Error when no script selected
-                            EditorGUILayout.HelpBox(
-                                $"Error: You need to select a script",
-                                MessageType.Error
-                            );
-                        }
 
-                        // Remove script
-                        if (GUILayout.Button("Remove Script Variables", removeButtonStyle))
-                        {
-                            Debug.Log("Remove script variables");
-                            savedEntry.ScriptDatas.RemoveAt(savedEntry.ScriptDatas.IndexOf(scriptData));
-                            GUI.changed = true;
-                            break;
-                        }
+
+
+                        
 
 
 
 
-                        EditorGUILayout.EndVertical();
+                        GUILayout.EndVertical();
                         // ----- VARIABLES ----- //
                     }
                 }
@@ -288,7 +286,7 @@ public class SaveManagerEditor : Editor
     private void DrawLine()
     {
         var rect = EditorGUILayout.BeginHorizontal();
-        Handles.color = Color.cyan;
+        Handles.color = lightBlueColor;
         Handles.DrawLine(new Vector2(rect.x - 15, rect.y), new Vector2(rect.width + 15, rect.y));
         EditorGUILayout.EndHorizontal();
 
@@ -297,6 +295,8 @@ public class SaveManagerEditor : Editor
 
     private void SetStyles()
     {
+        lightBlueColor = new Color(0.6681648f, 0.8293654f, 0.990566f, 1f);
+
         // Remove button
         removeButtonStyle = new GUIStyle();
         removeButtonStyle.normal.textColor = Color.red;
@@ -312,9 +312,25 @@ public class SaveManagerEditor : Editor
         // Bold
         boldStyle = new GUIStyle(EditorStyles.foldout);
         boldStyle.fontStyle = FontStyle.Bold;
-        boldStyle.normal.textColor = Color.cyan;
-        boldStyle.onNormal.textColor = Color.cyan;
-        boldStyle.hover.textColor = Color.cyan;
-        boldStyle.onHover.textColor = Color.cyan;
+        boldStyle.normal.textColor = lightBlueColor;
+        boldStyle.onNormal.textColor = lightBlueColor;
+        boldStyle.hover.textColor = lightBlueColor;
+        boldStyle.onHover.textColor = lightBlueColor;
+
+        // Script Box
+        Texture2D backgroundTexture = new Texture2D(1, 1);
+        backgroundTexture.SetPixel(0, 0, new Color(0.15f, 0.15f, 0.15f, 1f));
+        backgroundTexture.Apply();
+
+        boxStyle = new GUIStyle();
+        boxStyle.normal.background = backgroundTexture;
+        boxStyle.border = new RectOffset(10, 10, 10, 10);
+
+        boxStyle.margin = new RectOffset(0, 0, 10, 10);     // Espaces autour de la boîte
+        boxStyle.padding = new RectOffset(20, 20, 10, 10);  // Ajoute de l'espace autour des éléments
     }
+
+
 }
+
+
