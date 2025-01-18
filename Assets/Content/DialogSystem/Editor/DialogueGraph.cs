@@ -192,7 +192,6 @@ public class DialogueGraph : EditorWindow
     {
         var dialogueLoadButton = new Button(() =>
         {
-
             var absolutePath = EditorUtility.OpenFilePanel("Load Dialogue Graph", Application.dataPath, "asset");
 
             if (!string.IsNullOrEmpty(absolutePath))
@@ -247,7 +246,7 @@ public class DialogueGraph : EditorWindow
         {
             _graphView.ClearGraph();
 
-            _currentSaveLabel.text = "No Save Loaded";
+            SetCurrentSaveLabel("No Save Loaded");
         });
         dialogueClearGraphButton.text = "Clear graph";
         SetButtonStyle(dialogueClearGraphButton, Color.red, Color.black);
