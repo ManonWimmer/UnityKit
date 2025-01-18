@@ -6,12 +6,10 @@ using UnityEngine.SocialPlatforms.Impl;
 public class LocalizationSystem : MonoBehaviour
 {
     public static Language language = Language.English;
-    private bool isInit = false;
-    [SerializeField]GetCSV getCSV;
-
-    private Dictionary<string, string> localisedEN;
-    private Dictionary<string, string> localisedFR;
-    private Dictionary<string, string> localisedES;
+    private static bool isInit = false;
+    private static Dictionary<string, string> localisedEN;
+    private static Dictionary<string, string> localisedFR;
+    private static Dictionary<string, string> localisedES;
 
     public enum Language
     {
@@ -20,38 +18,32 @@ public class LocalizationSystem : MonoBehaviour
         Español
     }
 
-    private void Init()
+    private static void Init()
     {
-        getCSV = new GetCSV();
-        localisedEN = getCSV.GetDictionaryValues("en");
-        localisedFR = getCSV.GetDictionaryValues("fr");
-        localisedES = getCSV.GetDictionaryValues("es");
+        CSVLoader csvLoader = new CSVLoader();
+        localisedEN = csvLoader.GetDictionaryValues("en");
+        localisedFR = csvLoader.GetDictionaryValues("fr");
+        localisedES = csvLoader.GetDictionaryValues("es");
         isInit = true;
     }
 
-    public string GetLocalisedValue(string key)
+    public static string GetLocalisedValue(string key)
     {
-        if (isInit)
+        if (!isInit) { Init(); }
+   
+        string value = key;
+        switch (language)
         {
-            string value = key;
-            switch (language)
-            {
-                case Language.English:
-                    localisedEN.TryGetValue(key, out value);
-                            break;
-                case Language.Français:
-                    localisedFR.TryGetValue(key, out value);
-                    break;
-                case Language.Español:
-                    localisedES.TryGetValue(key, out value);
-                    break;
-            }
-            return value;
+            case Language.English:
+                localisedEN.TryGetValue(key, out value);
+                        break;
+            case Language.Français:
+                localisedFR.TryGetValue(key, out value);
+                break;
+            case Language.Español:
+                localisedES.TryGetValue(key, out value);
+                break;
         }
-        else
-        {
-            Init();
-        }
-        return null;
+        return value;
     }
 }

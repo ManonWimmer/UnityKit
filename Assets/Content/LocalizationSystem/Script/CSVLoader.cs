@@ -6,11 +6,12 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class GetCSV : MonoBehaviour
+public class CSVLoader : MonoBehaviour
 {
     private string CSVText;
     private int indexOffset = 1;
-    private 
+    public bool CSVisLoad = false;
+    
     void Start()
     {
         StartCoroutine(GetRequest("https://docs.google.com/spreadsheets/d/e/2PACX-1vSXqS5FKCsIi3my0kWlN2RHHga0aSIUu7gs3SEM3jj1TtUS2Pxm7NRfWXWxVk0jgVlo16IPRBYhcuYK/pub?output=csv"));
@@ -34,7 +35,6 @@ public class GetCSV : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     //Debug.Log("Received: " + webRequest.downloadHandler.text);
                     CSVText = webRequest.downloadHandler.text;
-                    CSVtoList();
                     break;
             }
         }
@@ -60,19 +60,19 @@ public class GetCSV : MonoBehaviour
         Dictionary<string, string> DictionaryValues = new Dictionary<string, string>();
         switch (language) 
         {
-            case "FR":
+            case "fr":
                 foreach(List<string> line in listData)
                 {
                     DictionaryValues.Add(line[indexOffset + 0], line[indexOffset + 1]);
                 }
                 break;
-            case "EN":
+            case "en":
                 foreach (List<string> line in listData)
                 {
                     DictionaryValues.Add(line[indexOffset + 0], line[indexOffset + 2]);
                 }
                 break;
-            case "ES":
+            case "es":
                 foreach (List<string> line in listData)
                 {
                     DictionaryValues.Add(line[indexOffset + 0], line[indexOffset + 3]);
