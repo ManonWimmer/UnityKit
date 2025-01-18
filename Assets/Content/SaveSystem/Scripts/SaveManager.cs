@@ -17,10 +17,10 @@ public class SaveManager : MonoBehaviour
     [System.Serializable]
     public class VariableSelection
     {
-        public string variableName;
-        public bool isSelected;
-        public object value;
-        public object defaultValue;
+        public string VariableName;
+        public bool IsSaved;
+        public object SavedValue;
+        public object DefaultValue;
     }
     // ----- VARIABLES ----- //
 
@@ -28,7 +28,7 @@ public class SaveManager : MonoBehaviour
     [System.Serializable]
     public class TransformSelection
     {
-        public object transform;
+        public object Transform;
 
         // Position
         public bool positionSelected;
@@ -45,33 +45,6 @@ public class SaveManager : MonoBehaviour
         public float[] scaleValue = new float[3];
         public float[] defaultScaleValue = new float[3];
 
-        /*
-        public TransformSelection(Transform transform, bool positionSelected = false, bool rotationSelected = false, bool scaleSelected = false)
-        {
-            Debug.Log($"SET TRANSFORM VALUES {transform}");
-            this.transform = transform ;
-
-            // Position
-            positionValue[0] = transform.position.x;
-            positionValue[1] = transform.position.y;
-            positionValue[2] = transform.position.z;
-            this.positionSelected = positionSelected;
-
-            // Rotation
-            rotationValue[0] = transform.localRotation.w;
-            rotationValue[1] = transform.localRotation.x;
-            rotationValue[2] = transform.localRotation.y;
-            rotationValue[3] = transform.localRotation.z;
-            this.rotationSelected = rotationSelected;
-
-            // Scale
-            scaleValue[0] = transform.localScale.x;
-            scaleValue[1] = transform.localScale.y;
-            scaleValue[2] = transform.localScale.z;
-            this.scaleSelected = scaleSelected;
-        }
-        */
-
         public TransformSelection(bool positionSelected = false, bool rotationSelected = false, bool scaleSelected = false)
         {
             this.positionSelected = positionSelected;
@@ -85,17 +58,17 @@ public class SaveManager : MonoBehaviour
     [System.Serializable]
     public class ScriptSelection
     {
-        public GameObject targetGameObject;
-        public MonoBehaviour selectedScript;
-        public List<VariableSelection> variableSelections;
-        public TransformSelection transformSelection;
-        public Transform transform;
-        public string guid = "";
+        public GameObject SelectedGameObject;
+        public MonoBehaviour SelectedScript;
+        public List<VariableSelection> VariableSelections;
+        public TransformSelection TransformSelection;
+        public Transform Transform;
+        public string SelectionGUID = "";
     }
     // ----- GAME OBJECT, SCRIPT & VARIABLES ----- //
 
     // ----- FIELDS ----- //
-    public List<ScriptSelection> scriptSelections = new List<ScriptSelection>();
+    public List<ScriptSelection> ScriptSelections = new List<ScriptSelection>();
 
     public List<string> ProfilesNames = new List<string>();
     public List<SaveData> CurrentProfileSaves = new List<SaveData>();
@@ -104,15 +77,14 @@ public class SaveManager : MonoBehaviour
     public Dictionary<string, List<SaveData>> DictProfileSaveDatas = new Dictionary<string, List<SaveData>>();
     public Dictionary<string, int> DictProfileNbrSaves = new Dictionary<string, int>();
 
-    public event Action OnAddProfile;
-    public event Action OnAddSave;
+    public event Action OnUpdateSave;
     public event Action OnAllProfilesData;
     public event Action OnRemoveProfile;
 
     public static SaveManager Instance;
 
     private string saveFolderPath = "";
-
+    // ----- FIELDS ----- //
 
     private void Awake()
     {
@@ -120,10 +92,10 @@ public class SaveManager : MonoBehaviour
         Instance = this;
 
         GetDefaultSavedVariables();
+        GetDefaultTransformValues();
     }
-    // ----- FIELDS ----- //
 
-
+    #region Get & Set Values - Variables
     private object GetFieldValue(object obj, string fieldName)
     {
         var field = obj.GetType().GetField(fieldName, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
@@ -140,341 +112,6 @@ public class SaveManager : MonoBehaviour
 
         Debug.LogWarning($"Field or Property '{fieldName}' not found on {obj.GetType().Name}");
         return null;
-    }
-
-    
-    private void GetDefaultSavedVariables()
-    {
-        Debug.Log("get default saved variables");
-        foreach (var selection in scriptSelections)
-        {
-            if (selection.selectedScript != null)
-            {
-                // VARIABLES 
-                foreach (var varSelection in selection.variableSelections)
-                {
-                    object value = GetFieldValue(selection.selectedScript, varSelection.variableName);
-                    varSelection.defaultValue = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
-                    //Debug.Log("default " + varSelection.defaultValue);
-                }
-
-                SetTransformValues(selection);
-
-                // TRANSFORM
-                float[] positionValue = new float[3];
-                positionValue[0] = selection.transform.position.x;
-                positionValue[1] = selection.transform.position.y;
-                positionValue[2] = selection.transform.position.z;
-                selection.transformSelection.defaultPositionValue = (float[])positionValue.Clone();
-                //Debug.Log($"Transform position : {positionValue[0]}, {positionValue[1]}, {positionValue[2]}");
-                Debug.Log($"Default position : {selection.transformSelection.defaultPositionValue[0]}, {selection.transformSelection.defaultPositionValue[1]}, {selection.transformSelection.defaultPositionValue[2]}");
-
-                float[] rotationValue = new float[4];
-                rotationValue[0] = selection.transform.localRotation.w;
-                rotationValue[1] = selection.transform.localRotation.x;
-                rotationValue[2] = selection.transform.localRotation.y;
-                rotationValue[3] = selection.transform.localRotation.z;
-                selection.transformSelection.defaultRotationValue = (float[])rotationValue.Clone();
-
-                float[] scaleValue = new float[3];
-                scaleValue[0] = selection.transform.localScale.x;
-                scaleValue[1] = selection.transform.localScale.y;
-                scaleValue[2] = selection.transform.localScale.z;
-                selection.transformSelection.defaultScaleValue = (float[])scaleValue.Clone();
-            }
-        }
-    }
-
-    private void SetTransformValues(ScriptSelection selection)
-    {
-        Transform transformS = selection.transform;
-        // Position
-        float[] positionValue = new float[3];
-        positionValue[0] = transformS.position.x;
-        positionValue[1] = transformS.position.y;
-        positionValue[2] = transformS.position.z;
-        
-        selection.transformSelection.positionValue = positionValue;
-        Debug.Log($"Set Transform position : {positionValue[0]}, {positionValue[1]}, {positionValue[2]}");
-
-        // Rotation
-        float[] rotationValue = new float[4];
-        rotationValue[0] = transformS.localRotation.w;
-        rotationValue[1] = transformS.localRotation.x;
-        rotationValue[2] = transformS.localRotation.y;
-        rotationValue[3] = transformS.localRotation.z;
-
-        selection.transformSelection.rotationValue = rotationValue;
-
-        // Scale
-        float[] scaleValue = new float[3];
-        scaleValue[0] = transformS.localScale.x;
-        scaleValue[1] = transformS.localScale.y;
-        scaleValue[2] = transformS.localScale.z;
-
-        selection.transformSelection.scaleValue = scaleValue;
-        //this.scaleSelected = scaleSelected;
-    }
-
-    private void SetTransformDefaultValues(ScriptSelection selection)
-    {
-        TransformSelection transformSelection = selection.transformSelection;
-
-        // Position
-        float[] positionValue = new float[3];
-        positionValue[0] = transformSelection.defaultPositionValue[0];
-        positionValue[1] = transformSelection.defaultPositionValue[1];
-        positionValue[2] = transformSelection.defaultPositionValue[2];
-
-        selection.transformSelection.positionValue = positionValue;
-        Debug.Log($"Set Transform Default position : {selection.transformSelection.positionValue[0]}, {selection.transformSelection.positionValue[1]}, {selection.transformSelection.positionValue[2]}");
-
-        // Rotation
-        float[] rotationValue = new float[4];
-        rotationValue[0] = selection.transform.localRotation.w;
-        rotationValue[1] = selection.transform.localRotation.x;
-        rotationValue[2] = selection.transform.localRotation.y;
-        rotationValue[3] = selection.transform.localRotation.z;
-
-        selection.transformSelection.rotationValue = rotationValue;
-
-        // Scale
-        float[] scaleValue = new float[3];
-        scaleValue[0] = selection.transform.localScale.x;
-        scaleValue[1] = selection.transform.localScale.y;
-        scaleValue[2] = selection.transform.localScale.z;
-
-        selection.transformSelection.scaleValue = scaleValue;
-        //this.scaleSelected = scaleSelected;
-    }
-
-
-    public void NewSave(bool isDefault, string profileName)
-    {
-        Debug.Log($"SAVE {isDefault} {profileName}");
-        CurrentProfile = profileName;
-        if (profileName == "" || scriptSelections == null) return;
-        Dictionary <string, object> data = new Dictionary<string, object>();
-        Dictionary<string, TransformSelection> transforms = new Dictionary<string, TransformSelection>();
-
-        string saveGUID = Guid.NewGuid().ToString();
-
-        DateTime now = DateTime.Now;
-        string currentDate = now.ToString("yyyy-MM-dd"); // Format : "2025-01-16"
-        //Debug.Log("Date actuelle : " + currentDate);
-        string currentTime = now.ToString("HH:mm:ss"); // Format : "16:45:30"
-        //Debug.Log("Heure actuelle : " + currentTime);
-
-        int saveNbr = DictProfileNbrSaves[CurrentProfile] + 1;
-        //Debug.Log($"SAVE NBR {saveNbr}");
-
-        SaveInfos dataInfos = new SaveInfos(saveGUID, currentDate, currentTime, saveNbr);
-
-        foreach (var selection in scriptSelections)
-        {
-            if (selection.targetGameObject != null && selection.selectedScript != null && selection.variableSelections.Count > 0)
-            {
-                data.Add(selection.guid, selection.variableSelections); // GUID - List variables
-                //Debug.Log($"add to dict data, guid : {selection.guid}, game object : {selection.targetGameObject}, script : {selection.selectedScript}, list variables :");
-
-                // SAVE VARIABLES 
-                foreach (var varSelection in selection.variableSelections) 
-                {
-                    GameObject gameObject = selection.targetGameObject as GameObject;
-                    if (isDefault)
-                    {
-                        object value = varSelection.defaultValue;
-                        varSelection.value = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
-                        //Debug.Log($"Save Default Variable: {varSelection.variableName}, Value: {value}, Is Selected: {varSelection.isSelected} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
-                    }
-                    else
-                    {
-                        object value = GetFieldValue(selection.selectedScript, varSelection.variableName);
-                        varSelection.value = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
-                        //Debug.Log($"Save Variable: {varSelection.variableName}, Value: {value}, Is Selected: {varSelection.isSelected} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
-                    }
-                    //Debug.Log("default value " + varSelection.defaultValue);
-                }
-
-                // SAVE TRANSFORM
-                Transform transformS = selection.transform;
-                Debug.Log($"Saved transform {transformS}");
-
-                
-
-                if (isDefault)
-                {
-                    SetTransformDefaultValues(selection);
-                }
-                else
-                {
-                    SetTransformValues(selection);
-                }
-
-                Debug.Log($"Saved position : {selection.transformSelection.positionValue[0]}, {selection.transformSelection.positionValue[1]}, {selection.transformSelection.positionValue[2]} Save N° {dataInfos.SaveNbr}");
-
-                transforms.Add(selection.guid, selection.transformSelection);
-            }
-        }
-
-        //Debug.Log($"Save Infos: GUID {dataInfos.GUID}");
-
-        SaveData saveData = new SaveData(data, transforms, dataInfos);
-
-        SaveSystem.NewSave(saveData, profileName);
-
-        OnAddSave.Invoke();
-    }
-
-    public void OverrideSave(SaveData lastSave)
-    {
-        SaveData overrideSave = lastSave;
-        Debug.Log($"OVERRIDE SAVE {overrideSave.SaveInfos.GUID} {CurrentProfile}");
-
-        if (CurrentProfile == "" || scriptSelections == null) return;
-        Dictionary<string, object> data = new Dictionary<string, object>();
-        Dictionary<string, TransformSelection> transforms = new Dictionary<string, TransformSelection>();
-
-        // Keep GUID but new date & time
-        string saveGUID = overrideSave.SaveInfos.GUID;
-
-        DateTime now = DateTime.Now;
-        string currentDate = now.ToString("yyyy-MM-dd"); // Format : "2025-01-16"
-        string currentTime = now.ToString("HH:mm:ss"); // Format : "16:45:30"
-
-        int saveNbr = lastSave.SaveInfos.SaveNbr;
-        //Debug.Log($"SAVE NBR {saveNbr}");
-
-        SaveInfos dataInfos = new SaveInfos(saveGUID, currentDate, currentTime, saveNbr);
-
-        foreach (var selection in scriptSelections)
-        {
-            if (selection.targetGameObject != null && selection.selectedScript != null && selection.variableSelections.Count > 0)
-            {
-                data.Add(selection.guid, selection.variableSelections); // GUID - List variables
-                //Debug.Log($"add to dict data, guid : {selection.guid}, game object : {selection.targetGameObject}, script : {selection.selectedScript}, list variables :");
-
-                // SAVE VARIABLES 
-                foreach (var varSelection in selection.variableSelections)
-                {
-                    GameObject gameObject = selection.targetGameObject as GameObject;
-                    object value = GetFieldValue(selection.selectedScript, varSelection.variableName);
-                    varSelection.value = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
-                }
-
-                // SAVE TRANSFORM
-                Transform transformS = selection.transform;
-                Debug.Log($"Saved transform {transformS}");
-
-                SetTransformValues(selection);
-
-                Debug.Log($"Saved position : {selection.transformSelection.positionValue[0]}, {selection.transformSelection.positionValue[1]}, {selection.transformSelection.positionValue[2]} Save N° {dataInfos.SaveNbr}");
-
-                transforms.Add(selection.guid, selection.transformSelection);
-            }
-        }
-
-        //Debug.Log($"Save Infos: GUID {dataInfos.GUID}");
-
-        SaveData saveData = new SaveData(data, transforms, dataInfos);
-
-        SaveSystem.NewSave(saveData, CurrentProfile);
-
-        OnAddSave.Invoke();
-    }
-
-
-    public void LoadSave(SaveInfos SaveInfos)
-    {
-        if (CurrentProfile == "" || SaveInfos == null) return;
-
-        SaveData data = SaveSystem.LoadSave(SaveInfos, CurrentProfile);
-
-        foreach (var entry in data.DictVariables)
-        {
-            string guid = entry.Key;
-            List<SaveManager.VariableSelection> variables = entry.Value as List<SaveManager.VariableSelection>;
-            TransformSelection transformSelection = data.DictTransforms[guid] as TransformSelection;
-
-            SaveManager.ScriptSelection selection = GetScriptSelectionFromGUID(guid);
-
-            if (selection != null)
-            {
-                GameObject gameObject = selection.targetGameObject as GameObject;
-                Component component = selection.selectedScript as Component;
-
-                if (gameObject != null && component != null)
-                {
-                    // LOAD VARIABLES
-                    foreach (var varSelection in variables)
-                    {
-                        if (varSelection.isSelected)
-                        {
-                            // Définir la valeur chargée dans la variable du script
-                            SetFieldValue(component, varSelection.variableName, varSelection.value);
-                            //Debug.Log($"Loaded Variable: {varSelection.variableName}, Set Value: {varSelection.value} in GameObject: {gameObject.name}, Script: {component.ToString()}");
-                        }
-                    }
-
-                    Transform transformS = selection.transform;
-                    if (transformS != null)
-                    {
-                        if (transformSelection != null)
-                        {
-                            // Position
-                            if (transformSelection.positionSelected)
-                            {
-                                Debug.Log($"AVANT LOAD POSITION : {transformS.position}");
-                                Vector3 position = new Vector3(transformSelection.positionValue[0], transformSelection.positionValue[1], transformSelection.positionValue[2]);
-                                transformS.position = position;
-                                Debug.Log($"LOAD POSITION : {position} guid {data.SaveInfos.GUID} Save N° {data.SaveInfos.SaveNbr}");
-                            }
-
-                            // Rotation
-                            if (transformSelection.rotationSelected)
-                            {
-                                Quaternion rotation = new Quaternion(transformSelection.rotationValue[0], transformSelection.rotationValue[1], transformSelection.rotationValue[2], transformSelection.rotationValue[3]);
-                                transformS.rotation = rotation;
-                            }
-
-                            // Scale
-                            if (transformSelection.scaleSelected)
-                            {
-                                Vector3 scale = new Vector3(transformSelection.scaleValue[0], transformSelection.scaleValue[1], transformSelection.scaleValue[2]);
-                                transformS.localScale = scale;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogError($"Invalid GameObject or Component for GUID: {guid}");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning($"Script selection with GUID {guid} not found.");
-                }
-            }
-        }
-        
-    }
-
-    public void DeleteSave(SaveInfos saveInfos)
-    {
-        SaveSystem.DeleteSave(saveInfos, CurrentProfile);
-
-        OnAddSave.Invoke();
-    }
-
-    public void DeleteProfile(string profileName)
-    {
-        Debug.Log("delete profile");
-        SaveSystem.DeleteProfile(profileName);
-        ProfilesNames.Remove(profileName);
-        DictProfileSaveDatas.Remove(profileName);
-        DictProfileNbrSaves.Remove(profileName);
-
-        OnRemoveProfile.Invoke();
     }
 
     private void SetFieldValue(object obj, string fieldName, object value)
@@ -496,16 +133,404 @@ public class SaveManager : MonoBehaviour
         Debug.LogWarning($"Field or Property '{fieldName}' not found or not writable on {obj.GetType().Name}");
     }
 
-    private ScriptSelection GetScriptSelectionFromGUID(string guid)
+    private void GetDefaultSavedVariables()
     {
-        foreach(var selection in scriptSelections) {
-            if (guid == selection.guid)
+        foreach (var selection in ScriptSelections)
+        {
+            if (selection.SelectedScript != null)
+            {
+                // ----- VARIABLES ----- //
+                foreach (var varSelection in selection.VariableSelections)
+                {
+                    object value = GetFieldValue(selection.SelectedScript, varSelection.VariableName);
+                    varSelection.DefaultValue = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
+                    //Debug.Log("default " + varSelection.defaultValue);
+                }
+                // ----- VARIABLES ----- //
+
+                // ----- TRANSFORM ----- //
+                SetTransformValues(selection);
+
+                // -- Position -- //
+                float[] positionValue = new float[3];
+                positionValue[0] = selection.Transform.position.x;
+                positionValue[1] = selection.Transform.position.y;
+                positionValue[2] = selection.Transform.position.z;
+
+                selection.TransformSelection.defaultPositionValue = (float[])positionValue.Clone();
+                Debug.Log($"Default position : {selection.TransformSelection.defaultPositionValue[0]}, {selection.TransformSelection.defaultPositionValue[1]}, {selection.TransformSelection.defaultPositionValue[2]}");
+                // -- Position -- //
+
+                // -- Rotation -- //
+                float[] rotationValue = new float[4];
+                rotationValue[0] = selection.Transform.localRotation.w;
+                rotationValue[1] = selection.Transform.localRotation.x;
+                rotationValue[2] = selection.Transform.localRotation.y;
+                rotationValue[3] = selection.Transform.localRotation.z;
+
+                selection.TransformSelection.defaultRotationValue = (float[])rotationValue.Clone();
+                // -- Rotation -- //
+
+                // -- Scale -- //
+                float[] scaleValue = new float[3];
+                scaleValue[0] = selection.Transform.localScale.x;
+                scaleValue[1] = selection.Transform.localScale.y;
+                scaleValue[2] = selection.Transform.localScale.z;
+
+                selection.TransformSelection.defaultScaleValue = (float[])scaleValue.Clone();
+                // -- Scale -- //
+                // ----- TRANSFORM ----- //
+            }
+        }
+    }
+    #endregion
+
+    #region Set & Get Values - Transform
+    private void SetTransformValues(ScriptSelection selection)
+    {
+        Transform selectedTransform = selection.Transform;
+
+        // -- Position -- //
+        float[] positionValue = new float[3];
+        positionValue[0] = selectedTransform.position.x;
+        positionValue[1] = selectedTransform.position.y;
+        positionValue[2] = selectedTransform.position.z;
+        
+        selection.TransformSelection.positionValue = positionValue;
+        Debug.Log($"Set Transform position : {positionValue[0]}, {positionValue[1]}, {positionValue[2]}");
+        // -- Position -- //
+
+        // -- Rotation -- //
+        float[] rotationValue = new float[4];
+        rotationValue[0] = selectedTransform.localRotation.w;
+        rotationValue[1] = selectedTransform.localRotation.x;
+        rotationValue[2] = selectedTransform.localRotation.y;
+        rotationValue[3] = selectedTransform.localRotation.z;
+
+        selection.TransformSelection.rotationValue = rotationValue;
+        // -- Rotation -- //
+
+        // -- Scale -- //
+        float[] scaleValue = new float[3];
+        scaleValue[0] = selectedTransform.localScale.x;
+        scaleValue[1] = selectedTransform.localScale.y;
+        scaleValue[2] = selectedTransform.localScale.z;
+
+        selection.TransformSelection.scaleValue = scaleValue;
+        // -- Scale -- //
+    }
+
+    private void GetDefaultTransformValues()
+    {
+        foreach (var selection in ScriptSelections)
+        {
+            // Position
+            float[] positionValue = new float[3];
+            positionValue[0] = selection.Transform.position[0];
+            positionValue[1] = selection.Transform.position[1];
+            positionValue[2] = selection.Transform.position[2];
+
+            selection.TransformSelection.defaultPositionValue = positionValue;
+            Debug.Log($"Get Transform Default position : {selection.TransformSelection.positionValue[0]}, {selection.TransformSelection.positionValue[1]}, {selection.TransformSelection.positionValue[2]}");
+
+            // Rotation
+            float[] rotationValue = new float[4];
+            rotationValue[0] = selection.Transform.localRotation.w;
+            rotationValue[1] = selection.Transform.localRotation.x;
+            rotationValue[2] = selection.Transform.localRotation.y;
+            rotationValue[3] = selection.Transform.localRotation.z;
+
+            selection.TransformSelection.defaultRotationValue = rotationValue;
+
+            // Scale
+            float[] scaleValue = new float[3];
+            scaleValue[0] = selection.Transform.localScale.x;
+            scaleValue[1] = selection.Transform.localScale.y;
+            scaleValue[2] = selection.Transform.localScale.z;
+
+            selection.TransformSelection.defaultScaleValue = scaleValue;
+        }
+    }
+
+    private void SetTransformDefaultValues(ScriptSelection selection)
+    {
+        TransformSelection transformSelection = selection.TransformSelection;
+
+        // Position
+        float[] positionValue = new float[3];
+        positionValue[0] = transformSelection.defaultPositionValue[0];
+        positionValue[1] = transformSelection.defaultPositionValue[1];
+        positionValue[2] = transformSelection.defaultPositionValue[2];
+
+        selection.TransformSelection.positionValue = positionValue;
+        Debug.Log($"Set Transform Default position : {selection.TransformSelection.positionValue[0]}, {selection.TransformSelection.positionValue[1]}, {selection.TransformSelection.positionValue[2]}");
+
+        // Rotation
+        float[] rotationValue = new float[4];
+        rotationValue[0] = transformSelection.defaultRotationValue[0];
+        rotationValue[1] = transformSelection.defaultRotationValue[1];
+        rotationValue[2] = transformSelection.defaultRotationValue[2];
+        rotationValue[3] = transformSelection.defaultRotationValue[3];
+
+        selection.TransformSelection.rotationValue = rotationValue;
+
+        // Scale
+        float[] scaleValue = new float[3];
+        scaleValue[0] = transformSelection.defaultScaleValue[0];
+        scaleValue[1] = transformSelection.defaultScaleValue[1];
+        scaleValue[2] = transformSelection.defaultScaleValue[2];
+
+        selection.TransformSelection.scaleValue = scaleValue;
+    }
+    #endregion
+
+    #region Create & Override Save
+    public void NewSave(bool isDefault, string profileName)
+    {
+        Debug.Log($"SAVE {isDefault} {profileName}");
+        CurrentProfile = profileName;
+
+        if (profileName == "" || ScriptSelections == null) return;
+
+        Dictionary <string, object> DictGUIDListVariables = new Dictionary<string, object>();
+        Dictionary<string, TransformSelection> DictGUIDTransformSelection = new Dictionary<string, TransformSelection>();
+
+        string saveGUID = Guid.NewGuid().ToString();
+
+        // Get Data & Time
+        DateTime now = DateTime.Now;
+        string currentDate = now.ToString("yyyy-MM-dd"); 
+        string currentTime = now.ToString("HH:mm:ss");
+
+        int saveNbr = DictProfileNbrSaves[CurrentProfile] + 1;
+
+        SaveInfos dataInfos = new SaveInfos(saveGUID, currentDate, currentTime, saveNbr);
+
+        foreach (var selection in ScriptSelections)
+        {
+            if (selection.SelectedGameObject != null && selection.SelectedScript != null && selection.VariableSelections.Count > 0)
+            {
+                DictGUIDListVariables.Add(selection.SelectionGUID, selection.VariableSelections); 
+
+                // -- SAVE VARIABLES -- //
+                foreach (var varSelection in selection.VariableSelections) 
+                {
+                    if (isDefault)
+                    {
+                        object value = varSelection.DefaultValue;
+                        varSelection.SavedValue = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
+                        //Debug.Log($"Save Default Variable: {varSelection.variableName}, Value: {value}, Is Selected: {varSelection.isSelected} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
+                    }
+                    else
+                    {
+                        object value = GetFieldValue(selection.SelectedScript, varSelection.VariableName);
+                        varSelection.SavedValue = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
+                        //Debug.Log($"Save Variable: {varSelection.variableName}, Value: {value}, Is Selected: {varSelection.isSelected} | in GameObject: {gameObject.name} & Script : {selection.selectedScript}");
+                    }
+                }
+                // -- SAVE VARIABLES -- //
+
+                // -- SAVE TRANSFORM -- //
+                Transform selectedTransform = selection.Transform;
+                Debug.Log($"Saved transform {selectedTransform}");
+
+                if (isDefault)
+                {
+                    SetTransformDefaultValues(selection);
+                }
+                else
+                {
+                    SetTransformValues(selection);
+                }
+
+                Debug.Log($"Saved position : {selection.TransformSelection.positionValue[0]}, {selection.TransformSelection.positionValue[1]}, {selection.TransformSelection.positionValue[2]} Save N° {dataInfos.SaveNbr}");
+
+                DictGUIDTransformSelection.Add(selection.SelectionGUID, selection.TransformSelection);
+                // -- SAVE TRANSFORM -- //
+            }
+        }
+
+        SaveData saveData = new SaveData(DictGUIDListVariables, DictGUIDTransformSelection, dataInfos);
+
+        SaveSystem.NewSave(saveData, profileName);
+
+        OnUpdateSave.Invoke();
+    }
+
+    public void OverrideSave(SaveData lastSave)
+    {
+        SaveData overrideSave = lastSave;
+        Debug.Log($"OVERRIDE SAVE {overrideSave.SaveInfos.SelectionGUID} {CurrentProfile}");
+
+        if (CurrentProfile == "" || ScriptSelections == null) return;
+
+        Dictionary<string, object> DictGUIDListVariables = new Dictionary<string, object>();
+        Dictionary<string, TransformSelection> DictGUIDTransformSelection = new Dictionary<string, TransformSelection>();
+
+        // Keep GUID
+        string saveGUID = overrideSave.SaveInfos.SelectionGUID;
+
+        // New Date & Time
+        DateTime now = DateTime.Now;
+        string currentDate = now.ToString("yyyy-MM-dd"); 
+        string currentTime = now.ToString("HH:mm:ss"); 
+
+        int saveNbr = lastSave.SaveInfos.SaveNbr;
+
+        SaveInfos dataInfos = new SaveInfos(saveGUID, currentDate, currentTime, saveNbr);
+
+        foreach (var selection in ScriptSelections)
+        {
+            if (selection.SelectedGameObject != null && selection.SelectedScript != null && selection.VariableSelections.Count > 0)
+            {
+                DictGUIDListVariables.Add(selection.SelectionGUID, selection.VariableSelections); // GUID - List variables
+   
+                // -- SAVE VARIABLES -- //
+                foreach (var varSelection in selection.VariableSelections)
+                {
+                    object value = GetFieldValue(selection.SelectedScript, varSelection.VariableName);
+                    varSelection.SavedValue = (value is ICloneable) ? ((ICloneable)value).Clone() : value;
+                }
+                // -- SAVE VARIABLES -- //
+
+                // -- SAVE TRANSFORM -- //
+                Transform selectedTransform = selection.Transform;
+                Debug.Log($"Saved transform {selectedTransform}");
+
+                SetTransformValues(selection);
+
+                Debug.Log($"Saved position : {selection.TransformSelection.positionValue[0]}, {selection.TransformSelection.positionValue[1]}, {selection.TransformSelection.positionValue[2]} Save N° {dataInfos.SaveNbr}");
+
+                DictGUIDTransformSelection.Add(selection.SelectionGUID, selection.TransformSelection);
+                // -- SAVE TRANSFORM -- //
+            }
+        }
+
+        SaveData saveData = new SaveData(DictGUIDListVariables, DictGUIDTransformSelection, dataInfos);
+
+        SaveSystem.NewSave(saveData, CurrentProfile);
+
+        OnUpdateSave.Invoke();
+    }
+    #endregion
+
+    #region Load Save
+    public void LoadSave(SaveInfos SaveInfos)
+    {
+        if (CurrentProfile == "" || SaveInfos == null) return;
+
+        SaveData data = SaveSystem.LoadSave(SaveInfos, CurrentProfile);
+
+        foreach (var entry in data.DictVariables)
+        {
+            string selectionGUID = entry.Key;
+            List<SaveManager.VariableSelection> ListVariableSelections = entry.Value as List<SaveManager.VariableSelection>;
+            TransformSelection transformSelection = data.DictTransforms[selectionGUID];
+
+            SaveManager.ScriptSelection selection = GetScriptSelectionFromGUID(selectionGUID);
+
+            if (selection != null)
+            {
+                GameObject gameObject = selection.SelectedGameObject;
+                Component component = selection.SelectedScript;
+
+                if (gameObject != null && component != null)
+                {
+                    // -- LOAD VARIABLES -- //
+                    foreach (var varSelection in ListVariableSelections)
+                    {
+                        if (varSelection.IsSaved)
+                        {
+                            SetFieldValue(component, varSelection.VariableName, varSelection.SavedValue);
+                            //Debug.Log($"Loaded Variable: {varSelection.variableName}, Set Value: {varSelection.value} in GameObject: {gameObject.name}, Script: {component.ToString()}");
+                        }
+                    }
+                    // -- LOAD VARIABLES -- //
+
+                    // -- LOAD TRANSFORMS -- //
+                    Transform selectedTransform = selection.Transform;
+                    if (selectedTransform != null)
+                    {
+                        if (transformSelection != null)
+                        {
+                            // -- Position -- //
+                            if (transformSelection.positionSelected)
+                            {
+                                Vector3 position = new Vector3(transformSelection.positionValue[0], transformSelection.positionValue[1], transformSelection.positionValue[2]);
+                                selectedTransform.position = position;
+
+                                Debug.Log($"LOAD POSITION : {position} guid {data.SaveInfos.SelectionGUID} Save N° {data.SaveInfos.SaveNbr}");
+                            }
+                            // -- Position -- //
+
+                            // -- Rotation -- //
+                            if (transformSelection.rotationSelected)
+                            {
+                                Quaternion rotation = new Quaternion(transformSelection.rotationValue[0], transformSelection.rotationValue[1], transformSelection.rotationValue[2], transformSelection.rotationValue[3]);
+                                selectedTransform.rotation = rotation;
+                            }
+                            // -- Rotation -- //
+
+                            // -- Scale -- //
+                            if (transformSelection.scaleSelected)
+                            {
+                                Vector3 scale = new Vector3(transformSelection.scaleValue[0], transformSelection.scaleValue[1], transformSelection.scaleValue[2]);
+                                selectedTransform.localScale = scale;
+                            }
+                            // -- Scale -- //
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError($"Invalid GameObject or Component for GUID: {selectionGUID}");
+                    }
+                    // -- LOAD TRANSFORMS -- //
+                }
+                else
+                {
+                    Debug.LogWarning($"Script selection with GUID {selectionGUID} not found.");
+                }
+            }
+        }
+        
+    }
+    #endregion
+
+    #region Delete Save & Profile
+    public void DeleteSave(SaveInfos saveInfos)
+    {
+        SaveSystem.DeleteSave(saveInfos, CurrentProfile);
+
+        OnUpdateSave.Invoke();
+    }
+
+    public void DeleteProfile(string profileName)
+    {
+        Debug.Log("delete profile");
+
+        SaveSystem.DeleteProfile(profileName);
+
+        ProfilesNames.Remove(profileName);
+        DictProfileSaveDatas.Remove(profileName);
+        DictProfileNbrSaves.Remove(profileName);
+
+        OnRemoveProfile.Invoke();
+    }
+    #endregion
+
+    #region Get Selection From GUID
+    private ScriptSelection GetScriptSelectionFromGUID(string SelectionGUID)
+    {
+        foreach(var selection in ScriptSelections) {
+            if (SelectionGUID == selection.SelectionGUID)
                 return selection;
         }
 
         return null;
     }
+    #endregion
 
+    #region Create Profile & Save Directory
     public void CreateProfile(string profileName)
     {
         profileName = profileName.ToUpper();
@@ -516,15 +541,11 @@ public class SaveManager : MonoBehaviour
             ProfilesNames.Add(profileName);
             DictProfileNbrSaves[profileName] = 0;
 
-            // Définir le chemin du dossier de sauvegarde
             saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
 
-            // Vérifier et créer le dossier si nécessaire
             CreateSaveFolder(profileName);
 
             NewSave(true, profileName);
-
-            //OnAddProfile.Invoke();
         }
         
     }
@@ -543,7 +564,9 @@ public class SaveManager : MonoBehaviour
             Debug.Log("Dossier de sauvegardes déjà existant : " + saveFolderPathProfile);
         }
     }
+    #endregion
 
+    #region Get Profiles Directories & Saves
     public void GetProfilesDirectories()
     {
         if (string.IsNullOrEmpty(saveFolderPath))
@@ -551,16 +574,12 @@ public class SaveManager : MonoBehaviour
             saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
         }
 
-        // Vérifier si le dossier existe
         if (Directory.Exists(saveFolderPath))
         {
-            // Obtenir les noms de tous les sous-dossiers
             string[] folders = Directory.GetDirectories(saveFolderPath);
-            //Debug.Log("Sous-dossiers dans " + saveFolderPath + ":");
 
             foreach (string folder in folders)
             {
-                //Debug.Log(Path.GetFileName(folder)); // Affiche uniquement le nom du dossier
                 string folderName = Path.GetFileName(folder);
                 if (!ProfilesNames.Contains((string)folderName)) ProfilesNames.Add((string)folderName);
             }
@@ -574,12 +593,14 @@ public class SaveManager : MonoBehaviour
     public void GetCurrentProfileSaves()
     {
         CurrentProfileSaves = GetProfileSaves(CurrentProfile);
+
         int saveNbr = 0;
+
         foreach(SaveData saveData in CurrentProfileSaves)
         {
             if (saveData.SaveInfos.SaveNbr > saveNbr) saveNbr = saveData.SaveInfos.SaveNbr;
         }
-        //Debug.Log($"MAX SAVE NBR {saveNbr}");
+
         DictProfileNbrSaves[CurrentProfile] = saveNbr;
     }
 
@@ -601,7 +622,6 @@ public class SaveManager : MonoBehaviour
             DictProfileSaveDatas.Add(profileName, ProfileSaves);
         }
 
-        //Debug.Log("end profiles saves");
         OnAllProfilesData.Invoke();
     }
 
@@ -616,26 +636,15 @@ public class SaveManager : MonoBehaviour
 
         string saveFolderPathProfile = Path.Combine(saveFolderPath, $"{profileName}");
 
-        // Vérifier si le dossier existe
         if (Directory.Exists(saveFolderPathProfile))
         {
-            // Obtenir les noms de tous les sous-dossiers
             string[] files = Directory.GetFiles(saveFolderPathProfile, "*.save");
-            //Debug.Log("Fichiers dans " + saveFolderPath + ":");
-
 
             List<SaveData> ProfileSaves = new List<SaveData>();
 
-            /*
-            if (files.Length == 0)
-            {
-                Debug.Log("Create default save");
-                NewSave(true, profileName);
-            }*/
-
             foreach (string file in files)
             {
-                //Debug.Log(Path.GetFileName(file)); // Affiche uniquement le nom du dossier
+                //Debug.Log(Path.GetFileName(file)); 
                 string filePath = Path.GetFullPath(file);
 
                 BinaryFormatter binaryFormatter = new BinaryFormatter();
@@ -648,7 +657,7 @@ public class SaveManager : MonoBehaviour
                 if (!ProfileSaves.Contains(data)) ProfileSaves.Add(data);
             }
 
-            // trier les saves du plus récent au plus ancien
+            // Order from most recent
             ProfileSaves = ProfileSaves.OrderByDescending(save =>
             DateTime.Parse(save.SaveInfos.Date + " " + save.SaveInfos.Time)).ToList();
 
@@ -660,4 +669,5 @@ public class SaveManager : MonoBehaviour
             return null;
         }
     }
+    #endregion 
 }
