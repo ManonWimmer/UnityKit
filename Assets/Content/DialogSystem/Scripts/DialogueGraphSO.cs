@@ -1,0 +1,41 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "NewDialogueGraph", menuName = "Dialogue/Dialogue Graph")]
+public class DialogueGraphSO : ScriptableObject
+{
+    private List<DialogueNodeSO> nodes = new List<DialogueNodeSO>();
+    private List<DialogueEdgeSO> edges = new List<DialogueEdgeSO>();
+
+
+    public List<DialogueNodeSO> Nodes { get => nodes; set => nodes = value; }
+    public List<DialogueEdgeSO> Edges { get => edges; set => edges = value; }
+}
+
+[System.Serializable]
+public class DialogueNodeSO
+{
+    public string id;
+    public string dialogueId;
+    public string title;
+    public Vector2 position;
+    public bool entryPoint = false;
+    public List<string> outputPorts = new List<string>(); // Liste des GUID des ports de sortie
+
+    public List<string> outputPortsChoiceId = new List<string>(); // List des custom ID des ports de sortie
+}
+
+[System.Serializable]
+public class DialogueEdgeSO
+{
+    public string fromNodeId;
+    public string fromPortId;
+
+    public string toNodeId;
+    public string toPortId;
+
+    public int fromPortIndex;
+    public int toPortIndex;
+}

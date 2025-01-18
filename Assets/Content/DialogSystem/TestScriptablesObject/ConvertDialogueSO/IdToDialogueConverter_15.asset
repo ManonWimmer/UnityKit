@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8136f6899c9ba37459b532445abbc1e1, type: 3}
+  m_Name: IdToDialogueConverter_15
+  m_EditorClassIdentifier: 
+  _dialogueEntries:
+  - id: ID_0
+    dialogueText: "Vous allez \xEAtre arret\xE9 !"
+  - id: ID_1
+    dialogueText: "Vous fuyez ! Vous courez le plus vite possible jusqu'\xE0 tomber
+      sur un carrefour !"
+  - id: ID_2
+    dialogueText: Le policier vous menottes et vous fait entrer dans sa voiture.
+  - id: ID_3
+    dialogueText: "Vous voulez affronter le policier ! Il semble beaucoup plus pr\xE9par\xE9
+      que vous !"
+  - id: ID_4
+    dialogueText: "Vous avez pris \xE0 gauche... mauvaise d\xE9cision, c'est un cul-de-sac.
+      Vous \xEAtes arret\xE9 !"
+  - id: ID_5
+    dialogueText: "Vous avez pris \xE0 droite ! Bien jou\xE9, vous vous \xEAtes enfuis
+      !"
+  - id: ID_6
+    dialogueText: "Fin du jeu, vous \xEAtes arr\xEAt\xE9"
+  - id: ID_7
+    dialogueText: "Vous courez \xE0 toutes vitesse pour fuir !"
