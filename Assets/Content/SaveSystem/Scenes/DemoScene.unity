@@ -7856,26 +7856,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b5205c874d69b8489e18923d438c94c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptSelections:
+  SavedEntries:
   - SelectedGameObject: {fileID: 1991515355}
-    SelectedScript: {fileID: 1991515359}
-    VariableSelections:
-    - VariableName: PlayerHealth
-      IsSaved: 1
-    - VariableName: PlayerLevel
-      IsSaved: 1
+    ScriptDatas:
+    - SelectedScript: {fileID: 1991515359}
+      VariableSelections:
+      - VariableName: PlayerHealth
+        IsSaved: 1
+      - VariableName: PlayerLevel
+        IsSaved: 1
+    - SelectedScript: {fileID: 1991515360}
+      VariableSelections:
+      - VariableName: _privateValue
+        IsSaved: 1
+      - VariableName: _privateString
+        IsSaved: 1
+      - VariableName: PublicString
+        IsSaved: 1
+    - SelectedScript: {fileID: 1991515359}
+      VariableSelections:
+      - VariableName: PlayerHealth
+        IsSaved: 0
+      - VariableName: PlayerLevel
+        IsSaved: 0
     TransformSelection:
-      positionSelected: 1
+      positionSelected: 0
       positionValue: []
       defaultPositionValue: []
-      rotationSelected: 1
+      rotationSelected: 0
       rotationValue: []
       defaultRotationValue: []
-      scaleSelected: 1
+      scaleSelected: 0
       scaleValue: []
       defaultScaleValue: []
     Transform: {fileID: 1991515358}
-    SelectionGUID: 8bbce488-90ac-4fe7-a67b-33e9abce940a
+    SelectionGUID: 118d2848-fb7c-4cb3-88f8-3818c1f716b5
   ProfilesNames: []
   CurrentProfileSaves: []
   CurrentProfile: 
