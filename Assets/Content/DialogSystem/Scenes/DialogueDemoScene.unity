@@ -392,7 +392,7 @@ PrefabInstance:
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
       propertyPath: _dialogueGraphSO
       value: 
-      objectReference: {fileID: 11400000, guid: 197c05f2dae54744fbbd228dc5369625, type: 2}
+      objectReference: {fileID: 11400000, guid: c8c11ce01d104fa4b9ed317dabcfa2f9, type: 2}
     - target: {fileID: 3094222987888279272, guid: 83c54e35dc21de74c81da5c7038b52b6, type: 3}
       propertyPath: _choiceButtonPanel
       value: 

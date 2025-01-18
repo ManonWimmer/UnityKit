@@ -24,8 +24,7 @@ MonoBehaviour:
     dialogueText: "Vous voulez affronter le policier ! Il semble beaucoup plus pr\xE9par\xE9
       que vous !"
   - id: ID_4
-    dialogueText: "Vous avez pris \xE0 gauche... mauvaise d\xE9cision, c'est un cul-de-sac.
-      Vous \xEAtes arret\xE9 !"
+    dialogueText: "Vous avez pris \xE0 gauche... mauvaise d\xE9cision, c'est un cul-de-sac."
   - id: ID_5
     dialogueText: "Vous avez pris \xE0 droite ! Bien jou\xE9, vous vous \xEAtes enfuis
       !"

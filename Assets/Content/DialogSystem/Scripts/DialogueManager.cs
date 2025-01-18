@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class DialogueManager : MonoBehaviour
 {
+    #region Fields
     private static DialogueManager _instance;
 
     [SerializeField] private bool _autoInit;
@@ -18,17 +19,26 @@ public class DialogueManager : MonoBehaviour
     private string _currentDialogueText = "";
     private string _currentDialogueId = "";
 
+    #endregion
 
+
+
+    #region Properties
     public static DialogueManager Instance { get => _instance; set => _instance = value; }
     public string CurrentDialogueText { get => _currentDialogueText; set => _currentDialogueText = value; }
     public IdToDialogueSO IdToDialogueChoicesSO { get => _idToDialogueChoicesSO; set => _idToDialogueChoicesSO = value; }
 
-    public UnityEvent OnNextDialogueUnity;
-    public event Action<string> OnNextDialogue;
+    #endregion
 
-    public UnityEvent OnChoiceChangeUnity;
-    public event Action<DialogueNodeSO> OnChoiceChange;
 
+    #region Delegates
+    public UnityEvent OnDialogueUpdatedUnity;
+    public event Action<string> OnDialogueUpdated;
+
+    public UnityEvent OnChoiceUpdatedUnity;
+    public event Action<DialogueNodeSO> OnUpdatedChange;
+
+    #endregion
 
     private void Awake()
     {
@@ -134,13 +144,13 @@ public class DialogueManager : MonoBehaviour
     }
     private void NotifyDialogueChange(string dialogueText)
     {
-        OnNextDialogue?.Invoke(dialogueText);
-        OnNextDialogueUnity?.Invoke();
+        OnDialogueUpdated?.Invoke(dialogueText);
+        OnDialogueUpdatedUnity?.Invoke();
     }
     private void NotifyChoiceChange(DialogueNodeSO dialogueNode)
     {
-        OnChoiceChange?.Invoke(dialogueNode);
-        OnChoiceChangeUnity?.Invoke();
+        OnUpdatedChange?.Invoke(dialogueNode);
+        OnChoiceUpdatedUnity?.Invoke();
     }
 
     private string GetDialogueFromIdDialogue(string idDialogue)

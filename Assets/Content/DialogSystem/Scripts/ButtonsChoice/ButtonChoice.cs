@@ -5,16 +5,20 @@ using UnityEngine;
 
 public class ButtonChoice : MonoBehaviour
 {
+    #region Fields
     private int _associatedChoiceIndex;
     [SerializeField] private TextMeshProUGUI _choiceText;
 
-    public void Init(int id, string textValue = "Default Choice")
+    #endregion
+
+
+    public void Init(int id, string textValue = "Default Choice")   // Init Button data
     {
-        _associatedChoiceIndex = id;
+        _associatedChoiceIndex = id;    // init id to indicate wich path to take
 
         SetButtonLabel(textValue);
     }
-    public void TriggerSelectChoiceButton()
+    public void TriggerSelectChoiceButton()     // send id button to indicate wich path to take -> trough UnityEvent
     {
         if (DialogueManager.Instance == null) return;
 

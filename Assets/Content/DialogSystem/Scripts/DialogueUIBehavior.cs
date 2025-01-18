@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DialogueUIBehavior : MonoBehaviour
 {
-
+    #region Fields
 
     [SerializeField] private RectTransform _choicesButtonPanel;
     [SerializeField] private GameObject _buttonChoicePrefab;
@@ -14,14 +14,16 @@ public class DialogueUIBehavior : MonoBehaviour
 
     [SerializeField] private bool _forceInitDialogueManager;
 
+    #endregion
+
 
     private void Start()
     {
         if (DialogueManager.Instance != null)
         {
-            DialogueManager.Instance.OnChoiceChange += DisplayChoicesButton;
+            DialogueManager.Instance.OnUpdatedChange += DisplayChoicesButton;
 
-            DialogueManager.Instance.OnNextDialogue += DisplayText;
+            DialogueManager.Instance.OnDialogueUpdated += DisplayText;
             DisplayText(DialogueManager.Instance.CurrentDialogueText);
 
 
@@ -36,9 +38,9 @@ public class DialogueUIBehavior : MonoBehaviour
     {
         if (DialogueManager.Instance != null)
         {
-            DialogueManager.Instance.OnChoiceChange -= DisplayChoicesButton;
+            DialogueManager.Instance.OnUpdatedChange -= DisplayChoicesButton;
 
-            DialogueManager.Instance.OnNextDialogue -= DisplayText;
+            DialogueManager.Instance.OnDialogueUpdated -= DisplayText;
         }
     }
 

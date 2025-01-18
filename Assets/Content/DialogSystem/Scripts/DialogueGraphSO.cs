@@ -30,12 +30,12 @@ public class DialogueNodeSO
 [System.Serializable]
 public class DialogueEdgeSO
 {
-    public string fromNodeId;
-    public string fromPortId;
+    public string fromNodeId;   // Guid node de départ
+    public string fromPortId;   // Guid port de départ
 
-    public string toNodeId;
-    public string toPortId;
+    public string toNodeId;     // Guid node d'arrivée
+    public string toPortId;     // Guid port d'arrivée
 
-    public int fromPortIndex;
-    public int toPortIndex;
+    public int fromPortIndex;   // position du port de départ (pas utilisé car bug à cause du container visual element)
+    public int toPortIndex;     // position du port d'arrivée (utilisé car pas de container sur ce port)
 }
