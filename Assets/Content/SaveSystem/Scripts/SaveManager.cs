@@ -292,8 +292,8 @@ public class SaveManager : MonoBehaviour
 
         if (profileName == "" || ScriptSelections == null) return;
 
-        Dictionary <string, object> DictGUIDListVariables = new Dictionary<string, object>();
-        Dictionary<string, TransformSelection> DictGUIDTransformSelection = new Dictionary<string, TransformSelection>();
+        Dictionary <string, object> DictSelectionGUIDListVariables = new Dictionary<string, object>();
+        Dictionary<string, TransformSelection> DictSelectionGUIDTransformSelection = new Dictionary<string, TransformSelection>();
 
         string saveGUID = Guid.NewGuid().ToString();
 
@@ -310,7 +310,7 @@ public class SaveManager : MonoBehaviour
         {
             if (selection.SelectedGameObject != null && selection.SelectedScript != null && selection.VariableSelections.Count > 0)
             {
-                DictGUIDListVariables.Add(selection.SelectionGUID, selection.VariableSelections); 
+                DictSelectionGUIDListVariables.Add(selection.SelectionGUID, selection.VariableSelections); 
 
                 // -- SAVE VARIABLES -- //
                 foreach (var varSelection in selection.VariableSelections) 
@@ -345,12 +345,12 @@ public class SaveManager : MonoBehaviour
 
                 Debug.Log($"Saved position : {selection.TransformSelection.positionValue[0]}, {selection.TransformSelection.positionValue[1]}, {selection.TransformSelection.positionValue[2]} Save N° {dataInfos.SaveNbr}");
 
-                DictGUIDTransformSelection.Add(selection.SelectionGUID, selection.TransformSelection);
+                DictSelectionGUIDTransformSelection.Add(selection.SelectionGUID, selection.TransformSelection);
                 // -- SAVE TRANSFORM -- //
             }
         }
 
-        SaveData saveData = new SaveData(DictGUIDListVariables, DictGUIDTransformSelection, dataInfos);
+        SaveData saveData = new SaveData(DictSelectionGUIDListVariables, DictSelectionGUIDTransformSelection, dataInfos);
 
         SaveSystem.NewSave(saveData, profileName);
 
@@ -360,15 +360,15 @@ public class SaveManager : MonoBehaviour
     public void OverrideSave(SaveData lastSave)
     {
         SaveData overrideSave = lastSave;
-        Debug.Log($"OVERRIDE SAVE {overrideSave.SaveInfos.SelectionGUID} {CurrentProfile}");
+        Debug.Log($"OVERRIDE SAVE {overrideSave.SaveInfos.SaveGUID} {CurrentProfile}");
 
         if (CurrentProfile == "" || ScriptSelections == null) return;
 
-        Dictionary<string, object> DictGUIDListVariables = new Dictionary<string, object>();
-        Dictionary<string, TransformSelection> DictGUIDTransformSelection = new Dictionary<string, TransformSelection>();
+        Dictionary<string, object> DictSelectionGUIDListVariables = new Dictionary<string, object>();
+        Dictionary<string, TransformSelection> DictSelectionGUIDTransformSelection = new Dictionary<string, TransformSelection>();
 
         // Keep GUID
-        string saveGUID = overrideSave.SaveInfos.SelectionGUID;
+        string saveGUID = overrideSave.SaveInfos.SaveGUID;
 
         // New Date & Time
         DateTime now = DateTime.Now;
@@ -383,7 +383,7 @@ public class SaveManager : MonoBehaviour
         {
             if (selection.SelectedGameObject != null && selection.SelectedScript != null && selection.VariableSelections.Count > 0)
             {
-                DictGUIDListVariables.Add(selection.SelectionGUID, selection.VariableSelections); // GUID - List variables
+                DictSelectionGUIDListVariables.Add(selection.SelectionGUID, selection.VariableSelections); // GUID - List variables
    
                 // -- SAVE VARIABLES -- //
                 foreach (var varSelection in selection.VariableSelections)
@@ -401,12 +401,12 @@ public class SaveManager : MonoBehaviour
 
                 Debug.Log($"Saved position : {selection.TransformSelection.positionValue[0]}, {selection.TransformSelection.positionValue[1]}, {selection.TransformSelection.positionValue[2]} Save N° {dataInfos.SaveNbr}");
 
-                DictGUIDTransformSelection.Add(selection.SelectionGUID, selection.TransformSelection);
+                DictSelectionGUIDTransformSelection.Add(selection.SelectionGUID, selection.TransformSelection);
                 // -- SAVE TRANSFORM -- //
             }
         }
 
-        SaveData saveData = new SaveData(DictGUIDListVariables, DictGUIDTransformSelection, dataInfos);
+        SaveData saveData = new SaveData(DictSelectionGUIDListVariables, DictSelectionGUIDTransformSelection, dataInfos);
 
         SaveSystem.NewSave(saveData, CurrentProfile);
 
@@ -421,11 +421,11 @@ public class SaveManager : MonoBehaviour
 
         SaveData data = SaveSystem.LoadSave(SaveInfos, CurrentProfile);
 
-        foreach (var entry in data.DictVariables)
+        foreach (var entry in data.DictSelectionGUIDListVariables)
         {
             string selectionGUID = entry.Key;
             List<SaveManager.VariableSelection> ListVariableSelections = entry.Value as List<SaveManager.VariableSelection>;
-            TransformSelection transformSelection = data.DictTransforms[selectionGUID];
+            TransformSelection transformSelection = data.DictSelectionGUIDTransformSelection[selectionGUID];
 
             SaveManager.ScriptSelection selection = GetScriptSelectionFromGUID(selectionGUID);
 
@@ -459,7 +459,7 @@ public class SaveManager : MonoBehaviour
                                 Vector3 position = new Vector3(transformSelection.positionValue[0], transformSelection.positionValue[1], transformSelection.positionValue[2]);
                                 selectedTransform.position = position;
 
-                                Debug.Log($"LOAD POSITION : {position} guid {data.SaveInfos.SelectionGUID} Save N° {data.SaveInfos.SaveNbr}");
+                                Debug.Log($"LOAD POSITION : {position} guid {data.SaveInfos.SaveGUID} Save N° {data.SaveInfos.SaveNbr}");
                             }
                             // -- Position -- //
 

@@ -14,7 +14,7 @@ public static class SaveSystem
 
         string saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
         string saveFolderPathProfile = Path.Combine(saveFolderPath, $"{ProfileName}");
-        string savePath = Path.Combine(saveFolderPathProfile + $"/{Data.SaveInfos.SelectionGUID}.save");
+        string savePath = Path.Combine(saveFolderPathProfile + $"/{Data.SaveInfos.SaveGUID}.save");
 
         FileStream stream = new FileStream(savePath, FileMode.Create);
 
@@ -32,7 +32,7 @@ public static class SaveSystem
 
         string saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
         string saveFolderPathProfile = Path.Combine(saveFolderPath, $"{ProfileName}");
-        string savePath = Path.Combine(saveFolderPathProfile + $"/{SaveInfos.SelectionGUID}.save");
+        string savePath = Path.Combine(saveFolderPathProfile + $"/{SaveInfos.SaveGUID}.save");
 
         if (File.Exists(savePath))
         {
@@ -107,7 +107,7 @@ public static class SaveSystem
         Debug.Log("load save system");
         string saveFolderPath = Path.Combine(Application.persistentDataPath, "Saves");
         string saveFolderPathProfile = Path.Combine(saveFolderPath, $"{ProfileName}");
-        string savePath = Path.Combine(saveFolderPathProfile + $"/{SaveInfos.SelectionGUID}.save");
+        string savePath = Path.Combine(saveFolderPathProfile + $"/{SaveInfos.SaveGUID}.save");
 
         if (File.Exists(savePath))
         {
