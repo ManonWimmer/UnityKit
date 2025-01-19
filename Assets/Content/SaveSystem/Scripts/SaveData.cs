@@ -6,10 +6,10 @@ using static SaveManager;
 [System.Serializable]
 public class SaveData
 {
-    public Dictionary<string, object> DictSelectionGUIDListVariables = new Dictionary<string, object>(); // GUID - List variables
+    public List<(string, object)> ListTupleSelectionGUIDListVariables = new List<(string, object)>(); // GUID - List variables
     public Dictionary<string, TransformSelection> DictSelectionGUIDTransformSelection = new Dictionary<string, TransformSelection>(); // GUID - Transform Selection
     public SaveInfos SaveInfos;
-    public SaveData(Dictionary<string, object> data, Dictionary<string, TransformSelection> dictTransforms, SaveInfos saveInfos) { this.DictSelectionGUIDListVariables = data; this.DictSelectionGUIDTransformSelection = dictTransforms; this.SaveInfos = saveInfos; } 
+    public SaveData(List<(string, object)> data, Dictionary<string, TransformSelection> dictTransforms, SaveInfos saveInfos) { this.ListTupleSelectionGUIDListVariables = data; this.DictSelectionGUIDTransformSelection = dictTransforms; this.SaveInfos = saveInfos; } 
 }
 
 [System.Serializable]

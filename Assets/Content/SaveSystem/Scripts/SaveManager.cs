@@ -136,7 +136,7 @@ public class SaveManager : MonoBehaviour
             return;
         }
 
-        Debug.LogWarning($"Field or Property '{fieldName}' not found or not writable on {obj.GetType().Name}");
+        //Debug.LogWarning($"Field or Property '{fieldName}' not found or not writable on {obj.GetType().Name}");
     }
 
     private void GetDefaultSavedVariables()
@@ -209,7 +209,7 @@ public class SaveManager : MonoBehaviour
             positionValue[2] = savedEntry.Transform.position[2];
 
             savedEntry.TransformSelection.defaultPositionValue = positionValue;
-            Debug.Log($"Get Transform Default position : {savedEntry.TransformSelection.positionValue[0]}, {savedEntry.TransformSelection.positionValue[1]}, {savedEntry.TransformSelection.positionValue[2]}");
+            Debug.Log($"Get Transform Default position : {savedEntry.TransformSelection.defaultPositionValue[0]}, {savedEntry.TransformSelection.defaultPositionValue[1]}, {savedEntry.TransformSelection.defaultPositionValue[2]}");
 
             // Rotation
             float[] rotationValue = new float[4];
@@ -270,7 +270,7 @@ public class SaveManager : MonoBehaviour
 
         if (profileName == "" || SavedEntries == null) return;
 
-        Dictionary <string, object> DictSelectionGUIDListVariables = new Dictionary<string, object>();
+        List<(string, object)> ListTupleSelectionGUIDListVariables = new List<(string, object)>();
         Dictionary<string, TransformSelection> DictSelectionGUIDTransformSelection = new Dictionary<string, TransformSelection>();
 
         string saveGUID = Guid.NewGuid().ToString();
@@ -290,9 +290,10 @@ public class SaveManager : MonoBehaviour
             {
                 foreach (var scriptData in savedEntry.ScriptDatas)
                 {
+                    Debug.Log("script data : " + scriptData.SelectedScript.ToString());
                     if (savedEntry.SelectedGameObject != null && scriptData.SelectedScript != null && scriptData.VariableSelections.Count > 0)
                     {
-                        DictSelectionGUIDListVariables.Add(savedEntry.SelectionGUID, scriptData.VariableSelections);
+                        ListTupleSelectionGUIDListVariables.Add((savedEntry.SelectionGUID, scriptData.VariableSelections));
 
                         // -- SAVE VARIABLES -- //
                         foreach (var varSelection in scriptData.VariableSelections)
@@ -334,7 +335,7 @@ public class SaveManager : MonoBehaviour
             // -- SAVE TRANSFORM -- //
         }
 
-        SaveData saveData = new SaveData(DictSelectionGUIDListVariables, DictSelectionGUIDTransformSelection, dataInfos);
+        SaveData saveData = new SaveData(ListTupleSelectionGUIDListVariables, DictSelectionGUIDTransformSelection, dataInfos);
 
         SaveSystem.NewSave(saveData, profileName);
 
@@ -348,7 +349,7 @@ public class SaveManager : MonoBehaviour
 
         if (CurrentProfile == "" || SavedEntries == null) return;
 
-        Dictionary<string, object> DictSelectionGUIDListVariables = new Dictionary<string, object>();
+        List<(string, object)> ListTupleSelectionGUIDListVariables = new List<(string, object)>();
         Dictionary<string, TransformSelection> DictSelectionGUIDTransformSelection = new Dictionary<string, TransformSelection>();
 
         // Keep GUID
@@ -371,7 +372,7 @@ public class SaveManager : MonoBehaviour
                 {
                     if (savedEntry.SelectedGameObject != null && scriptData.SelectedScript != null && scriptData.VariableSelections.Count > 0)
                     {
-                        DictSelectionGUIDListVariables.Add(savedEntry.SelectionGUID, scriptData.VariableSelections); // GUID - List variables
+                        ListTupleSelectionGUIDListVariables.Add((savedEntry.SelectionGUID, scriptData.VariableSelections)); // GUID - List variables
 
                         // -- SAVE VARIABLES -- //
                         foreach (var varSelection in scriptData.VariableSelections)
@@ -396,7 +397,7 @@ public class SaveManager : MonoBehaviour
             // -- SAVE TRANSFORM -- //
         }
 
-        SaveData saveData = new SaveData(DictSelectionGUIDListVariables, DictSelectionGUIDTransformSelection, dataInfos);
+        SaveData saveData = new SaveData(ListTupleSelectionGUIDListVariables, DictSelectionGUIDTransformSelection, dataInfos);
 
         SaveSystem.NewSave(saveData, CurrentProfile);
 
@@ -411,10 +412,9 @@ public class SaveManager : MonoBehaviour
 
         SaveData data = SaveSystem.LoadSave(SaveInfos, CurrentProfile);
 
-        foreach (var entry in data.DictSelectionGUIDListVariables)
+        foreach (var (selectionGUID, variablesObject) in data.ListTupleSelectionGUIDListVariables)
         {
-            string selectionGUID = entry.Key;
-            List<SaveManager.VariableSelection> ListVariableSelections = entry.Value as List<SaveManager.VariableSelection>;
+            List<VariableSelection> ListVariableSelections = variablesObject as List<VariableSelection>;
             TransformSelection transformSelection = data.DictSelectionGUIDTransformSelection[selectionGUID];
 
             SaveManager.SavedEntry savedEntry = GetScriptSelectionFromGUID(selectionGUID);
