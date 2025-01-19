@@ -10,11 +10,21 @@ using static LocalizationSystem;
 using static System.Net.WebRequestMethods;
 using static Unity.VisualScripting.StickyNote;
 
+
+[CreateAssetMenu(fileName = "DialogueSO", menuName = "LocalizationSystem/SO")]
+public class DictionarySO : ScriptableObject
+{
+    public Dictionary<string, Dictionary<Enum, string>> dico;
+}
+
+
 public class CSVLoader : MonoBehaviour
 {
     private static string CSVText;
     private static List<List<string>> sortCSV;
     private static int indexOffset = 1;
+
+    private DictionarySO dictionarySO;
 
     private bool isLoad = false;
     public delegate void CSVisLoad();
@@ -50,6 +60,7 @@ public class CSVLoader : MonoBehaviour
                         CSVText = webRequest.downloadHandler.text;
                         CSVtoList();
                         csvIsLoad?.Invoke();
+                        dictionarySO.dico = GetDialogueDictionary();
                         isLoad = true;
                     }
                     break;
@@ -73,6 +84,7 @@ public class CSVLoader : MonoBehaviour
         sortCSV = result;
     }
 
+
     Dictionary<string, Dictionary<Enum, string>> GetDialogueDictionary()
     {
         Dictionary<Enum, string> dicoLngTxt = new Dictionary<Enum, string>();
@@ -92,6 +104,7 @@ public class CSVLoader : MonoBehaviour
         }
         return resultDico;
     }
+
 
     public static Dictionary<string,string> GetDictionaryValues(LocalizationSystem.Language language)
     {

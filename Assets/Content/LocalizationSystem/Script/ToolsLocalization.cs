@@ -5,7 +5,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ToolsLocalization : EditorWindow
+/*public class ToolsLocalization : EditorWindow
 {
     [SerializeField]private List<Text> textList = new List<Text>();
     [MenuItem("Utilities/Localization/Text Finder")]
@@ -47,4 +47,4 @@ public class ToolsLocalization : EditorWindow
         }
         Repaint();
     }
-}
+}*/
