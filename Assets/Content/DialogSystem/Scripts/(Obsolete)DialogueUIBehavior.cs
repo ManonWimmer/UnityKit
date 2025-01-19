@@ -66,9 +66,9 @@ public class DialogueUIBehavior : MonoBehaviour
         {
             if (DialogueManager.Instance != null)
             {
-                if (i < DialogueManager.Instance.IdToDialogueChoicesSO.IdToDialogueConverter.Count)
+                if (i < DialogueManager.Instance.IdToDialogueChoicesSO.IdToTextConverter.Count)
                 {
-                    CreateButtonChoice(i, DialogueManager.Instance.IdToDialogueChoicesSO.IdToDialogueConverter[dialogueNode.outputPortsChoiceId[i]]);
+                    CreateButtonChoice(i, DialogueManager.Instance.IdToDialogueChoicesSO.IdToTextConverter[dialogueNode.outputPortsChoiceId[i]]);
                     continue;
                 }
             }

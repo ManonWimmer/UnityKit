@@ -4,16 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class DialogueManager : MonoBehaviour
+public class DialogueController : MonoBehaviour
 {
     #region Fields
-    private static DialogueManager _instance;
-
     [SerializeField] private bool _autoInit;
 
     [SerializeField] private DialogueGraphSO _dialogueGraphSO;
-    [SerializeField] private IdToDialogueSO _idToDialogueSO;
-    [SerializeField] private IdToDialogueSO _idToDialogueChoicesSO;
+    //[SerializeField] private IdToDialogueSO _idToDialogueSO;
+    //[SerializeField] private IdToDialogueSO _idToDialogueChoicesSO;
 
     private string _currentNodeId = "";
     private string _currentDialogueText = "";
@@ -24,9 +22,8 @@ public class DialogueManager : MonoBehaviour
 
 
     #region Properties
-    public static DialogueManager Instance { get => _instance; set => _instance = value; }
     public string CurrentDialogueText { get => _currentDialogueText; set => _currentDialogueText = value; }
-    public IdToDialogueSO IdToDialogueChoicesSO { get => _idToDialogueChoicesSO; set => _idToDialogueChoicesSO = value; }
+    //public IdToDialogueSO IdToDialogueChoicesSO { get => _idToDialogueChoicesSO; set => _idToDialogueChoicesSO = value; }
 
     #endregion
 
@@ -36,18 +33,10 @@ public class DialogueManager : MonoBehaviour
     public event Action<string> OnDialogueUpdated;
 
     public UnityEvent OnChoiceUpdatedUnity;
-    public event Action<DialogueNodeSO> OnUpdatedChange;
+    public event Action<List<string>> OnChoiceUpdated;
 
     #endregion
 
-    private void Awake()
-    {
-        if (_instance != null)
-        {
-            Destroy(this);
-        }
-        _instance = this;
-    }
     private void Start()
     {
         if (_autoInit)
@@ -59,13 +48,12 @@ public class DialogueManager : MonoBehaviour
     #region Init
     public void Init()
     {
-        var temp = _idToDialogueSO.IdToDialogueConverter;
+        //var temp = _idToDialogueSO.IdToDialogueConverter;   // Init dictionnary converter
 
         _currentNodeId = GetNodeIdEntryPoint();
         _currentDialogueId = GetDialogueIdEntryPoint();
 
-        string tempText = GetDialogueFromIdDialogue(_currentDialogueId);
-        _currentDialogueText = tempText;
+        //_currentDialogueText = GetDialogueFromIdDialogue(_currentDialogueId);
 
         SelectChoice(0);
     }
@@ -94,7 +82,7 @@ public class DialogueManager : MonoBehaviour
 
         foreach (DialogueNodeSO node in _dialogueGraphSO.Nodes)
         {
-            if (node ==  null) continue;
+            if (node == null) continue;
 
             if (node.entryPoint)
             {
@@ -111,7 +99,7 @@ public class DialogueManager : MonoBehaviour
         DialogueNodeSO nextDialogueNode = GetNextDialogueNodeByChoiceId(choiceId);
 
         Debug.Log("Test0");
-        if (nextDialogueNode == null)   return;
+        if (nextDialogueNode == null) return;
 
         string nextNodeId = nextDialogueNode.id;
         string nextDialogueId = nextDialogueNode.dialogueId;
@@ -133,26 +121,25 @@ public class DialogueManager : MonoBehaviour
         {
             Debug.LogWarning("No valid dialogue found for this choice : " + nextDialogueId);
         }
-        
-        string tempText = GetDialogueFromIdDialogue(_currentDialogueId);
 
-        _currentDialogueText = tempText;
+        //_currentDialogueText = GetDialogueFromIdDialogue(_currentDialogueId);
 
-        NotifyDialogueChange(tempText);
+        NotifyDialogueChange(_currentDialogueId);
 
-        NotifyChoiceChange(nextDialogueNode);
+        NotifyChoiceChange(nextDialogueNode.outputPortsChoiceId);
     }
     private void NotifyDialogueChange(string dialogueText)
     {
         OnDialogueUpdated?.Invoke(dialogueText);
         OnDialogueUpdatedUnity?.Invoke();
     }
-    private void NotifyChoiceChange(DialogueNodeSO dialogueNode)
+    private void NotifyChoiceChange(List<string> choicesText)
     {
-        OnUpdatedChange?.Invoke(dialogueNode);
+        OnChoiceUpdated?.Invoke(choicesText);
         OnChoiceUpdatedUnity?.Invoke();
     }
 
+    /*
     private string GetDialogueFromIdDialogue(string idDialogue)
     {
         if (_idToDialogueSO == null) return "";
@@ -164,6 +151,7 @@ public class DialogueManager : MonoBehaviour
         Debug.LogWarning($"Dialogue ID not found: {idDialogue}");
         return "";
     }
+    */
 
     #region Parcours Graph Data
     private DialogueNodeSO GetNextDialogueNodeByChoiceId(int choiceId)

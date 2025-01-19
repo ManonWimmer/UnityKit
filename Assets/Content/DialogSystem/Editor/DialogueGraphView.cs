@@ -260,7 +260,6 @@ public class DialogueGraphView : GraphView
     #endregion
 
 
-
     #region Save / Load Graph
 
     #region (save/load OLD)
@@ -454,7 +453,7 @@ public class DialogueGraphView : GraphView
             var nodeData = new DialogueNodeSO
             {
                 id = node.GIUD,
-                dialogueId = node.DialogueText,
+                dialogueId = node.DialogueText, // Custom ID in graph
                 title = node.title,
                 position = node.GetPosition().position,
                 entryPoint = node.EntryPoint,
@@ -525,7 +524,7 @@ public class DialogueGraphView : GraphView
                 : CreateDialogueNode(nodeData.title, nodeData.position, nodeData.outputPorts, nodeData.outputPortsChoiceId);
 
             node.GIUD = nodeData.id;
-            node.DialogueText = nodeData.dialogueId;
+            node.DialogueText = nodeData.dialogueId;    // Custom ID in graph
 
             UpdateNodeIdField(node);
 
