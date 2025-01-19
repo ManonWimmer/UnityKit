@@ -62,6 +62,21 @@ public class SaveManagerEditor : Editor
                     savedEntry.TransformSelection = null;
             }
 
+            bool isGameObjectDuplicate = false;
+            foreach (var checkSavedEntry in saveManager.SavedEntries)
+            {
+                if (checkSavedEntry != savedEntry && checkSavedEntry.SelectedGameObject == savedEntry.SelectedGameObject)
+                    isGameObjectDuplicate = true;
+            }
+
+            if (isGameObjectDuplicate)
+            {
+                EditorGUILayout.HelpBox(
+                    $"Error: This GameObject is already selected in another Saved Entry.",
+                    MessageType.Error
+                );
+            }
+
             if (savedEntry.SelectedGameObject != null)
             {
                 // Get script from gameobject
