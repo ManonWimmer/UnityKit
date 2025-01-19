@@ -186,10 +186,13 @@ public class DialogueController : MonoBehaviour
 
     private bool CheckCondition(ConditionSO condition)
     {
-        return false;
         // Exemple : Comparer avec l'inventaire (à implémenter selon votre système d'inventaire)
         //var playerInventory = FindObjectOfType<PlayerInventory>();
         //return playerInventory.HasItem(condition.requiredItem, condition.requiredQuantity);
+
+        if (DialogueInventory.Instance == null) return false;
+
+        return DialogueInventory.Instance.HasItem(condition.requiredItem, condition.requiredQuantity);
     }
 
     #endregion
