@@ -19,6 +19,8 @@ public class DialogueController : MonoBehaviour
     private string _currentNodeId = "";
     private string _currentDialogueId = "";
 
+    private DialogueNodeSO _currentDialogueNodeSO;
+
     #endregion
 
 
@@ -42,7 +44,20 @@ public class DialogueController : MonoBehaviour
     {
         if (_autoInit)
         {
+
+            if (DialogueInventory.Instance != null)
+            {
+                DialogueInventory.Instance.OnUpdatedDialogueInventory += RefreshChoicesButton;
+            }
+
             Init();
+        }
+    }
+    private void OnDestroy()
+    {
+        if (DialogueInventory.Instance != null)
+        {
+            DialogueInventory.Instance.OnUpdatedDialogueInventory -= RefreshChoicesButton;
         }
     }
 
@@ -89,6 +104,12 @@ public class DialogueController : MonoBehaviour
 
         return "";
     }
+    private void RefreshChoicesButton()
+    {
+        if (_currentDialogueNodeSO == null) return;
+
+        NotifyChoiceChange(_currentDialogueNodeSO.outputPortsChoiceId, _currentDialogueNodeSO.outputPorts);
+    }
     #endregion
 
     #region Selection Choice
@@ -101,6 +122,7 @@ public class DialogueController : MonoBehaviour
         string nextNodeId = nextDialogueNode.id;
         string nextDialogueId = nextDialogueNode.dialogueId;
 
+        _currentDialogueNodeSO = nextDialogueNode;
 
         if (!string.IsNullOrEmpty(nextNodeId))
         {
@@ -145,7 +167,7 @@ public class DialogueController : MonoBehaviour
             if (IsChoiceAvailable(choiceGuid))
             {
                 availableChoices.Add(choiceText);
-                Debug.Log("Choice availbable");
+                //Debug.Log("Choice availbable");
             }
         }
 
@@ -162,14 +184,14 @@ public class DialogueController : MonoBehaviour
         DialogueNodeSO currentNode = _dialogueGraphSO.Nodes.FirstOrDefault(node => node.id == _currentNodeId);
         if (currentNode == null)
         {
-            Debug.Log("Break at current node null");
+            //Debug.Log("Break at current node null");
             return false;
         }
 
         PortCondition condition = currentNode.portConditions.FirstOrDefault(cond => cond.portId == choiceTextId);
         if (condition == null)
         {
-            Debug.Log("Pas de condition -> Toujours dispo");
+            //Debug.Log("Pas de condition -> Toujours dispo");
             return true; // Pas de condition = toujours disponible
         }
         // Vérifier si toutes les conditions sont remplies
@@ -177,7 +199,7 @@ public class DialogueController : MonoBehaviour
         {
             if (!CheckCondition(cond))
             {
-                Debug.Log("ne verifie pas les conditions -> pas dispo");
+                //Debug.Log("ne verifie pas les conditions -> pas dispo");
                 return false; // Une condition échoue
             }
         }
@@ -186,10 +208,6 @@ public class DialogueController : MonoBehaviour
 
     private bool CheckCondition(ConditionSO condition)
     {
-        // Exemple : Comparer avec l'inventaire (à implémenter selon votre système d'inventaire)
-        //var playerInventory = FindObjectOfType<PlayerInventory>();
-        //return playerInventory.HasItem(condition.requiredItem, condition.requiredQuantity);
-
         if (DialogueInventory.Instance == null) return false;
 
         return DialogueInventory.Instance.HasItem(condition.requiredItem, condition.requiredQuantity);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,13 @@ public class DialogueInventory : MonoBehaviour
 
 
     #endregion
+
+    #region Delegates
+
+    public event Action OnUpdatedDialogueInventory;
+
+    #endregion
+
 
     private void Awake()
     {
@@ -37,6 +45,8 @@ public class DialogueInventory : MonoBehaviour
         {
             _dialogueInventory[stringName] = quantity;
         }
+
+        OnUpdatedDialogueInventory?.Invoke();
     }
     public bool HasItem(string item, int quantity)
     {
@@ -44,7 +54,7 @@ public class DialogueInventory : MonoBehaviour
 
         if (!_dialogueInventory.ContainsKey(item)) return false;
 
-        if (_dialogueInventory[item] > quantity) return false;
+        if (_dialogueInventory[item] < quantity) return false;
 
         return true;
     }
