@@ -6,6 +6,8 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using static LocalizationSystem;
+using static System.Net.WebRequestMethods;
 using static Unity.VisualScripting.StickyNote;
 
 public class CSVLoader : MonoBehaviour
@@ -13,15 +15,15 @@ public class CSVLoader : MonoBehaviour
     private static string CSVText;
     private static List<List<string>> sortCSV;
     private static int indexOffset = 1;
-    LocalizationSystem localizationSystem;
 
     private bool isLoad = false;
     public delegate void CSVisLoad();
-    public event CSVisLoad csvIsLoad;
+    public static event CSVisLoad csvIsLoad;
+    [SerializeField] private string webLinkCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSXqS5FKCsIi3my0kWlN2RHHga0aSIUu7gs3SEM3jj1TtUS2Pxm7NRfWXWxVk0jgVlo16IPRBYhcuYK/pub?output=csv";
 
     void Start()
     {
-        StartCoroutine(GetRequest("https://docs.google.com/spreadsheets/d/e/2PACX-1vSXqS5FKCsIi3my0kWlN2RHHga0aSIUu7gs3SEM3jj1TtUS2Pxm7NRfWXWxVk0jgVlo16IPRBYhcuYK/pub?output=csv"));
+        StartCoroutine(GetRequest(webLinkCSV));
     }
 
     IEnumerator GetRequest(string uri)
@@ -33,6 +35,8 @@ public class CSVLoader : MonoBehaviour
             switch (webRequest.result)
             {
                 case UnityWebRequest.Result.ConnectionError:
+                    Debug.LogError("No connection");
+                    break;
                 case UnityWebRequest.Result.DataProcessingError:
                     Debug.LogError("Error: " + webRequest.error);
                     break;
@@ -41,11 +45,11 @@ public class CSVLoader : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     //Debug.Log("Received: " + webRequest.downloadHandler.text);
-                    CSVText = webRequest.downloadHandler.text;
                     if (!isLoad)
                     {
+                        CSVText = webRequest.downloadHandler.text;
                         CSVtoList();
-                        csvIsLoad();
+                        csvIsLoad?.Invoke();
                         isLoad = true;
                     }
                     break;
@@ -69,6 +73,26 @@ public class CSVLoader : MonoBehaviour
         sortCSV = result;
     }
 
+    Dictionary<string, Dictionary<Enum, string>> GetDialogueDictionary()
+    {
+        Dictionary<Enum, string> dicoLngTxt = new Dictionary<Enum, string>();
+        Dictionary<string, Dictionary<Enum, string>> resultDico = new Dictionary<string, Dictionary<Enum, string>>();
+        if (!isLoad)
+        {
+            return resultDico;
+        }
+        for (int i = 0; i < sortCSV.Count; i++)
+        {
+            for(int y = 0; y < 3; y++)
+            {
+                dicoLngTxt.Add((Language)y, sortCSV[i][y+2]);
+            }
+            resultDico.Add(sortCSV[i][1],dicoLngTxt);
+            dicoLngTxt.Clear();
+        }
+        return resultDico;
+    }
+
     public static Dictionary<string,string> GetDictionaryValues(LocalizationSystem.Language language)
     {
         Dictionary<string, string> DictionaryValues = new Dictionary<string, string>();
@@ -76,7 +100,7 @@ public class CSVLoader : MonoBehaviour
         {
             if(indexOffset + ((int)language) >= line.Count) 
             {
-                DictionaryValues.Add(line[indexOffset], "Text not defined in the CSV");
+                DictionaryValues.Add(line[indexOffset], string.Format("The keyword {0} isn't defined in {1}.", line[indexOffset], language));
             }
             else
             {
