@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -131,11 +132,56 @@ public class DialogueController : MonoBehaviour
     }
     private void NotifyChoiceChange(List<string> choicesText)
     {
-        OnChoiceUpdated?.Invoke(choicesText);
+        var availableChoices = new List<string>();
+
+        foreach (var choiceText in choicesText)
+        {
+            var choiceId = choicesText.IndexOf(choiceText);
+            if (IsChoiceAvailable(choiceId))
+            {
+                availableChoices.Add(choiceText);
+            }
+        }
+
+
+        OnChoiceUpdated?.Invoke(availableChoices);
+        //OnChoiceUpdated?.Invoke(choicesText);
         OnChoiceUpdatedUnity?.Invoke();
     }
 
     #endregion
+
+    #region Condition Check
+    private bool IsChoiceAvailable(int choiceId)
+    {
+        DialogueNodeSO currentNode = _dialogueGraphSO.Nodes.FirstOrDefault(node => node.id == _currentNodeId);
+        if (currentNode == null) return false;
+
+        PortCondition condition = currentNode.portConditions.FirstOrDefault(cond => cond.portId == choiceId.ToString());
+        if (condition == null) return true; // Pas de condition = toujours disponible
+
+        // Vérifier si toutes les conditions sont remplies
+        foreach (var cond in condition.conditions)
+        {
+            if (!CheckCondition(cond))
+            {
+                return false; // Une condition échoue
+            }
+        }
+        return true; // Toutes les conditions sont remplies
+    }
+
+    private bool CheckCondition(ConditionSO condition)
+    {
+        return false;
+        // Exemple : Comparer avec l'inventaire (à implémenter selon votre système d'inventaire)
+        //var playerInventory = FindObjectOfType<PlayerInventory>();
+        //return playerInventory.HasItem(condition.requiredItem, condition.requiredQuantity);
+    }
+
+    #endregion
+
+
 
     #region Parcours Graph Data
     private DialogueNodeSO GetNextDialogueNodeByChoiceId(int choiceId)

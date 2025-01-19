@@ -107,10 +107,15 @@ public class DialogueGraphView : GraphView
     {
         AddElement(CreateDialogueNode(nodeName, position));
     }
-    private DialogueNode CreateDialogueNode(string nodeName, Vector2 position, List<string> outputPorts = null, List<string> outputPortsChoiceId = null)    // Create a Dialogue Node
+    private DialogueNode CreateDialogueNode(string nodeName, Vector2 position, List<string> outputPorts = null, List<string> outputPortsChoiceId = null, List<PortCondition> portConditions = null)    // Create a Dialogue Node
     {
         // Create a dialogue node with basic configuration
         var node = CreateBasicNode(nodeName, position, _defaultNodeSize);
+
+        if (portConditions != null)
+        {
+            node.PortConditions = portConditions;
+        }
 
         // Add input port
         var inputPort = GeneratePort(node, Direction.Input, typeof(string), Port.Capacity.Multi);
@@ -156,7 +161,7 @@ public class DialogueGraphView : GraphView
             port.portName = portChoiceId;   // Visible label
 
             // Create a container with a text field and delete button for the port
-            var portContainer = CreatePortContainer(port, portChoiceId);
+            var portContainer = CreatePortContainer(port, portChoiceId, node);
             node.outputContainer.Add(portContainer);
 
             node.RefreshPorts();
@@ -173,10 +178,11 @@ public class DialogueGraphView : GraphView
         port.name = Guid.NewGuid().ToString();
         return port;
     }
-    private VisualElement CreatePortContainer(Port port, string defaultName)    // Create a container to hold the port, text field, and delete button
+    private VisualElement CreatePortContainer(Port port, string defaultName, DialogueNode node = null)    // Create a container to hold the port, text field, and delete button
     {
         var container = new VisualElement { style = { flexDirection = FlexDirection.Row } };
 
+        AddEditConditionsButton(container, port, node);
         AddChoiceIdTextField(container, port, defaultName);
         AddDeletePortButton(container, port);
 
@@ -205,6 +211,19 @@ public class DialogueGraphView : GraphView
         };
         container.Add(deleteButton);
     }
+    private void AddEditConditionsButton(VisualElement container, Port port, DialogueNode node) // Add a button to open Edit Condition window
+    {
+        var editConditionsButton = new Button(() =>
+        {
+            ShowConditionEditor(node, port.name);   // Open edition window
+        })
+        {
+            text = "Edit Conditions"
+        };
+
+        container.Add(editConditionsButton);
+    }
+
     private void DisconnectEdges(Port port) // Remove all edges connected to a given port
     {
         edges.ToList().Where(edge => edge.input == port || edge.output == port).ToList().ForEach(RemoveElement);
@@ -222,7 +241,26 @@ public class DialogueGraphView : GraphView
     {
         var port = GeneratePort(node, Direction.Output, typeof(string));
         port.portName = $"Choice {node.outputContainer.childCount}";    // Default name
+
         var container = CreatePortContainer(port, port.portName);
+
+        /*
+        // ----- Condition Part ----------
+
+        var editConditionsButton = new Button(() =>
+        {
+            ShowConditionEditor(node, port.name);   // Ouvrir fenetre d'edition
+        })
+        {
+            text = "Edit Conditions"
+        };
+
+        container.Add(editConditionsButton);
+
+        // -------------------------------
+        */
+
+
         node.outputContainer.Add(container);
         node.RefreshPorts();
         node.RefreshExpandedState();
@@ -450,6 +488,7 @@ public class DialogueGraphView : GraphView
     {
         foreach (var node in nodes.ToList().OfType<DialogueNode>())
         {
+            /*
             var nodeData = new DialogueNodeSO
             {
                 id = node.GIUD,
@@ -460,6 +499,8 @@ public class DialogueGraphView : GraphView
                 outputPorts = ExtractPortNames(node),
                 outputPortsChoiceId = ExtractPortLabels(node)
             };
+            */
+            var nodeData = node.ToSO();
 
             dialogueGraph.Nodes.Add(nodeData);
         }
@@ -521,7 +562,7 @@ public class DialogueGraphView : GraphView
         {
             var node = nodeData.entryPoint
                 ? GenerateEntryPointNode(nodeData.position)
-                : CreateDialogueNode(nodeData.title, nodeData.position, nodeData.outputPorts, nodeData.outputPortsChoiceId);
+                : CreateDialogueNode(nodeData.title, nodeData.position, nodeData.outputPorts, nodeData.outputPortsChoiceId, nodeData.portConditions);
 
             node.GIUD = nodeData.id;
             node.DialogueText = nodeData.dialogueId;    // Custom ID in graph
@@ -587,4 +628,16 @@ public class DialogueGraphView : GraphView
 
         _entryPointNode = null;
     }
+
+
+    #region Conditions
+    private void ShowConditionEditor(DialogueNode node, string portId)
+    {
+        // Implémentez une fenêtre contextuelle pour éditer les conditions
+        var window = EditorWindow.CreateInstance<ConditionEditorWindow>();
+        window.Init(node, portId); // Passez le nœud et l'identifiant du port
+        window.Show();
+    }
+
+    #endregion
 }
