@@ -5,9 +5,7 @@ using UnityEngine;
 public class test : MonoBehaviour
 {
     [SerializeField] private int _privateValue = 10;
-    [SerializeField] private string _privateString = "Apagan";
+    [SerializeField] private string _privateString = "Private String";
 
-    public string PublicString = "Apagan";
-
-    public string PrivateString { get => _privateString; set => _privateString = value; }
+    public string PublicString = "Public String";
 }
