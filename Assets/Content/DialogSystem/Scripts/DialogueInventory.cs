@@ -8,12 +8,13 @@ public class DialogueInventory : MonoBehaviour
     #region Fields
     private static DialogueInventory _instance;
 
-    private Dictionary<string, int> _dialogueInventory = new Dictionary<string, int>();
+    private Dictionary<string, int> _dialogueItemsInventory = new Dictionary<string, int>();
 
     #endregion
 
     #region Properties
     public static DialogueInventory Instance { get => _instance; set => _instance = value; }
+    public Dictionary<string, int> DialogueItemsInventory { get => _dialogueItemsInventory; set => _dialogueItemsInventory = value; }
 
 
     #endregion
@@ -37,13 +38,13 @@ public class DialogueInventory : MonoBehaviour
 
     public void AddItem(string stringName, int quantity)
     {
-        if (_dialogueInventory.ContainsKey(stringName))
+        if (_dialogueItemsInventory.ContainsKey(stringName))
         {
-            _dialogueInventory[stringName] += quantity;
+            _dialogueItemsInventory[stringName] += quantity;
         }
         else
         {
-            _dialogueInventory[stringName] = quantity;
+            _dialogueItemsInventory[stringName] = quantity;
         }
 
         OnUpdatedDialogueInventory?.Invoke();
@@ -52,9 +53,9 @@ public class DialogueInventory : MonoBehaviour
     {
         if (quantity <= 0) return true;
 
-        if (!_dialogueInventory.ContainsKey(item)) return false;
+        if (!_dialogueItemsInventory.ContainsKey(item)) return false;
 
-        if (_dialogueInventory[item] < quantity) return false;
+        if (_dialogueItemsInventory[item] < quantity) return false;
 
         return true;
     }

@@ -18,6 +18,8 @@ public class DialogueDisplayer : MonoBehaviour
     [Space(20)]
 
     [Header("Display Elements")]
+    [SerializeField] private bool _displayButtonsElements = true;
+
     [SerializeField] private TextMeshProUGUI _dialogueText;
 
     [SerializeField] private GameObject _choicesContainer;
