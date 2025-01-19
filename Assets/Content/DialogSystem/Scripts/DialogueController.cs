@@ -169,6 +169,10 @@ public class DialogueController : MonoBehaviour
                 availableChoices.Add(choiceText);
                 //Debug.Log("Choice availbable");
             }
+            else
+            {
+                availableChoices.Add(null);
+            }
         }
 
         OnChoiceUpdated?.Invoke(availableChoices);

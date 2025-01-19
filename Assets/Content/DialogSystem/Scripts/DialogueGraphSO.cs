@@ -7,8 +7,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewDialogueGraph", menuName = "Dialogue/Dialogue Graph")]
 public class DialogueGraphSO : ScriptableObject
 {
-    private List<DialogueNodeSO> nodes = new List<DialogueNodeSO>();
-    private List<DialogueEdgeSO> edges = new List<DialogueEdgeSO>();
+    [SerializeField] private List<DialogueNodeSO> nodes = new List<DialogueNodeSO>();
+    [SerializeField] private List<DialogueEdgeSO> edges = new List<DialogueEdgeSO>();
 
 
     public List<DialogueNodeSO> Nodes { get => nodes; set => nodes = value; }

@@ -251,8 +251,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogueController: {fileID: 0}
-  _idToDialogueSO: {fileID: 11400000, guid: ada5a3e1bd05b114399a6ae925f71aa1, type: 2}
-  _idToChoiceSO: {fileID: 11400000, guid: 449e8dd48136fbb4c8e6a7648726c810, type: 2}
+  _idToDialogueSO: {fileID: 11400000, guid: 3fc2e39a8801b2540ac37d67005bff19, type: 2}
+  _idToChoiceSO: {fileID: 11400000, guid: b9ea86d6456684945a139369c1cacc55, type: 2}
   _displayButtonsElements: 1
   _dialogueText: {fileID: 2384823193196449831}
   _choicesContainer: {fileID: 3970348632323243446}

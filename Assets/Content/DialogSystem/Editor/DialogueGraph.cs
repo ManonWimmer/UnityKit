@@ -228,6 +228,15 @@ public class DialogueGraph : EditorWindow
                 string relativePath = absolutePath.Substring(Application.dataPath.Length);
 
                 SetCurrentSaveLabel($"Saved : {Path.GetFileName(relativePath)}");
+
+                var graphSO = AssetDatabase.LoadAssetAtPath<DialogueGraphSO>(absolutePath);
+                if (graphSO != null)
+                {
+                    Debug.Log("SetDirty at location");
+                    EditorUtility.SetDirty(graphSO); // Indique que l'objet a été modifié
+                    AssetDatabase.SaveAssets();      // Sauvegarde les changements dans le fichier
+                    AssetDatabase.Refresh();
+                }
             }
         });
         dialogueSaveButton.text = "Save Dialogue Graph";

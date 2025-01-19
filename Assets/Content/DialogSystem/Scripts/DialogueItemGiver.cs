@@ -5,6 +5,8 @@ using UnityEngine;
 public class DialogueItemGiver : MonoBehaviour
 {
     #region Fields
+
+    [Header("Key parameters")]
     [SerializeField] private string _itemKeyToGive;
 
     [SerializeField] private int _itemNumberToGive;

@@ -75,6 +75,7 @@ public class DialogueDisplayer : MonoBehaviour
 
         for (int i = 0; i < choicesText.Count; ++i)
         {
+            if (choicesText[i] == null) continue;
             AddChoiceButton(_dialogueController, i, choicesText[i]);
         }
     }

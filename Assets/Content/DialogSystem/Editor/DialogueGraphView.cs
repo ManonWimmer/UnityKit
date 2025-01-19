@@ -482,6 +482,9 @@ public class DialogueGraphView : GraphView
         AssetDatabase.CreateAsset(dialogueGraph, path);
         AssetDatabase.SaveAssets();
 
+        EditorUtility.SetDirty(dialogueGraph);
+        AssetDatabase.SaveAssets();
+
         Debug.Log($"Graph saved at: {path}");
     }
     private void SaveNodes(DialogueGraphSO dialogueGraph)
