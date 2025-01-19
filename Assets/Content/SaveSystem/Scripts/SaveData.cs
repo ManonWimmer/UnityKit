@@ -6,21 +6,21 @@ using static SaveManager;
 [System.Serializable]
 public class SaveData
 {
-    public Dictionary<string, object> DictVariables = new Dictionary<string, object>(); // GUID - List variables
-    public Dictionary<string, TransformSelection> DictTransforms = new Dictionary<string, TransformSelection>(); // GUID - Transform Selection
+    public List<(string, object)> ListTupleSelectionGUIDListVariables = new List<(string, object)>(); // GUID - List variables
+    public Dictionary<string, TransformSelection> DictSelectionGUIDTransformSelection = new Dictionary<string, TransformSelection>(); // GUID - Transform Selection
     public SaveInfos SaveInfos;
-    public SaveData(Dictionary<string, object> data, Dictionary<string, TransformSelection> dictTransforms, SaveInfos saveInfos) { this.DictVariables = data; this.DictTransforms = dictTransforms; this.SaveInfos = saveInfos; } 
+    public SaveData(List<(string, object)> data, Dictionary<string, TransformSelection> dictTransforms, SaveInfos saveInfos) { this.ListTupleSelectionGUIDListVariables = data; this.DictSelectionGUIDTransformSelection = dictTransforms; this.SaveInfos = saveInfos; } 
 }
 
 [System.Serializable]
 public class SaveInfos
 {
-    public string GUID = "";
+    public string SaveGUID = "";
     public string Date = "";
     public string Time = "";
     public int SaveNbr = 0;
 
-    public SaveInfos(string guid, string date, string time, int saveNbr) { this.GUID = guid; this.Date = date; this.Time = time; this.SaveNbr = saveNbr; }
+    public SaveInfos(string guid, string date, string time, int saveNbr) { this.SaveGUID = guid; this.Date = date; this.Time = time; this.SaveNbr = saveNbr; }
 }
 
 

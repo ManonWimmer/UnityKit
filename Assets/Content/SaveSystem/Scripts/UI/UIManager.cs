@@ -35,8 +35,8 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        _saveManager.OnAddSave += ShowProfiles;
-        _saveManager.OnAddSave += ShowSaves;
+        _saveManager.OnUpdateSave += ShowProfiles;
+        _saveManager.OnUpdateSave += ShowSaves;
         _saveManager.OnAllProfilesData += SetProfiles;
         _saveManager.OnRemoveProfile += ShowProfiles;
         ShowProfiles();
