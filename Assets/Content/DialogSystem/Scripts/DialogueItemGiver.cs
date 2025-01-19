@@ -9,20 +9,29 @@ public class DialogueItemGiver : MonoBehaviour
     [Header("Key parameters")]
     [SerializeField] private string _itemKeyToGive;
 
-    [SerializeField] private int _itemNumberToGive;
+    [SerializeField] private int _itemNumber;
     #endregion
 
 
+    #region Give / Remove Item
     public void GiveItemToDialogueInventory()
     {
         if (_itemKeyToGive == null) return;
-        if (_itemNumberToGive <= 0) return;
+        if (_itemNumber <= 0) return;
 
-        Debug.Log("Null check");
         if (DialogueInventory.Instance == null) return;
 
-        Debug.Log("Add Item");
-        DialogueInventory.Instance.AddItem(_itemKeyToGive, _itemNumberToGive);
+        DialogueInventory.Instance.AddItem(_itemKeyToGive, _itemNumber);
+    }
+    public void removeItemToDialogueInventory()
+    {
+        if (_itemKeyToGive == null) return;
+        if (_itemNumber <= 0) return;
+
+        if (DialogueInventory.Instance == null) return;
+
+        DialogueInventory.Instance.RemoveItem(_itemKeyToGive, _itemNumber);
     }
 
+    #endregion
 }

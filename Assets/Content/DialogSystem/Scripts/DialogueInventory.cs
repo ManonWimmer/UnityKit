@@ -49,6 +49,20 @@ public class DialogueInventory : MonoBehaviour
 
         OnUpdatedDialogueInventory?.Invoke();
     }
+    public void RemoveItem(string stringName, int quantity)
+    {
+        if (_dialogueItemsInventory.ContainsKey(stringName))
+        {
+            _dialogueItemsInventory[stringName] -= quantity;
+            if (_dialogueItemsInventory[stringName] < 0)
+            {
+                _dialogueItemsInventory[stringName] = 0;
+            }
+        }
+
+        OnUpdatedDialogueInventory?.Invoke();
+    }
+
     public bool HasItem(string item, int quantity)
     {
         if (quantity <= 0) return true;
