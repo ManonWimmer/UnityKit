@@ -7,35 +7,35 @@ using UnityEngine.Events;
 public class DialogueController : MonoBehaviour
 {
     #region Fields
+    [Header("Init Parameters")]
     [SerializeField] private bool _autoInit;
 
+    [Space(20)]
+
+    [Header("Associated Dialogue Graph")]
     [SerializeField] private DialogueGraphSO _dialogueGraphSO;
-    //[SerializeField] private IdToDialogueSO _idToDialogueSO;
-    //[SerializeField] private IdToDialogueSO _idToDialogueChoicesSO;
 
     private string _currentNodeId = "";
-    private string _currentDialogueText = "";
     private string _currentDialogueId = "";
 
     #endregion
 
 
-
-    #region Properties
-    public string CurrentDialogueText { get => _currentDialogueText; set => _currentDialogueText = value; }
-    //public IdToDialogueSO IdToDialogueChoicesSO { get => _idToDialogueChoicesSO; set => _idToDialogueChoicesSO = value; }
-
-    #endregion
-
-
     #region Delegates
+    [Space(20)]
+
+    [Header("Dialogue / Choices Events")]
+    [Space(5)]
     public UnityEvent OnDialogueUpdatedUnity;
     public event Action<string> OnDialogueUpdated;
+
+    [Space(5)]
 
     public UnityEvent OnChoiceUpdatedUnity;
     public event Action<List<string>> OnChoiceUpdated;
 
     #endregion
+
 
     private void Start()
     {
@@ -48,12 +48,8 @@ public class DialogueController : MonoBehaviour
     #region Init
     public void Init()
     {
-        //var temp = _idToDialogueSO.IdToDialogueConverter;   // Init dictionnary converter
-
         _currentNodeId = GetNodeIdEntryPoint();
         _currentDialogueId = GetDialogueIdEntryPoint();
-
-        //_currentDialogueText = GetDialogueFromIdDialogue(_currentDialogueId);
 
         SelectChoice(0);
     }
@@ -94,18 +90,16 @@ public class DialogueController : MonoBehaviour
     }
     #endregion
 
+    #region Selection Choice
     public void SelectChoice(int choiceId)
     {
         DialogueNodeSO nextDialogueNode = GetNextDialogueNodeByChoiceId(choiceId);
 
-        Debug.Log("Test0");
         if (nextDialogueNode == null) return;
 
         string nextNodeId = nextDialogueNode.id;
         string nextDialogueId = nextDialogueNode.dialogueId;
 
-
-        Debug.Log("Test1");
 
         if (!string.IsNullOrEmpty(nextNodeId))
         {
@@ -115,19 +109,21 @@ public class DialogueController : MonoBehaviour
             }
 
             _currentNodeId = nextNodeId;
-            Debug.Log($"From ID {_currentDialogueId} to ID {nextDialogueId}");
+            //Debug.Log($"From ID {_currentDialogueId} to ID {nextDialogueId}");
         }
         else
         {
             Debug.LogWarning("No valid dialogue found for this choice : " + nextDialogueId);
         }
 
-        //_currentDialogueText = GetDialogueFromIdDialogue(_currentDialogueId);
-
         NotifyDialogueChange(_currentDialogueId);
 
         NotifyChoiceChange(nextDialogueNode.outputPortsChoiceId);
     }
+
+    #endregion
+
+    #region Notify Dialogue / Choices changes
     private void NotifyDialogueChange(string dialogueText)
     {
         OnDialogueUpdated?.Invoke(dialogueText);
@@ -139,19 +135,7 @@ public class DialogueController : MonoBehaviour
         OnChoiceUpdatedUnity?.Invoke();
     }
 
-    /*
-    private string GetDialogueFromIdDialogue(string idDialogue)
-    {
-        if (_idToDialogueSO == null) return "";
-        if (_idToDialogueSO.IdToDialogueConverter.TryGetValue(idDialogue, out var dialogueText))
-        {
-            return dialogueText;
-        }
-
-        Debug.LogWarning($"Dialogue ID not found: {idDialogue}");
-        return "";
-    }
-    */
+    #endregion
 
     #region Parcours Graph Data
     private DialogueNodeSO GetNextDialogueNodeByChoiceId(int choiceId)
@@ -162,7 +146,6 @@ public class DialogueController : MonoBehaviour
         if (choiceId < 0) return null;
 
 
-        Debug.Log("Test2");
 
         // Trouve le nœud actuel
         foreach (DialogueNodeSO node in _dialogueGraphSO.Nodes)
@@ -176,7 +159,6 @@ public class DialogueController : MonoBehaviour
                 // Trouve le nœud cible
                 foreach (DialogueNodeSO targetNode in _dialogueGraphSO.Nodes)
                 {
-                    Debug.Log($"TEST : {targetNode.id}, {edge.toNodeId}");
                     if (targetNode.id == edge.toNodeId)
                     {
                         return targetNode; // Retourne l'ID du dialogue suivant
@@ -194,7 +176,7 @@ public class DialogueController : MonoBehaviour
         {
             if (edge.fromNodeId == currentNodeId && edge.fromPortIndex == choiceId) // Si depuis bon node && bon choix
             {
-                Debug.Log($"Found edge: FromNodeId={edge.fromNodeId}, ToNodeId={edge.toNodeId}, ChoiceId={choiceId}");
+                //Debug.Log($"Found edge: FromNodeId={edge.fromNodeId}, ToNodeId={edge.toNodeId}, ChoiceId={choiceId}");
                 return edge;
             }
         }

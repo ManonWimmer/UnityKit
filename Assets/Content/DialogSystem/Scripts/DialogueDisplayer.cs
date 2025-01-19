@@ -6,11 +6,18 @@ using UnityEngine;
 public class DialogueDisplayer : MonoBehaviour
 {
     #region Fields
+    [Header("Associated Controller")]
     [SerializeField] private DialogueController _dialogueController;
 
+    [Space(20)]
+
+    [Header("Converter")]
     [SerializeField] private IdToDialogueSO _idToDialogueSO;
     [SerializeField] private IdToDialogueSO _idToChoiceSO;
 
+    [Space(20)]
+
+    [Header("Display Elements")]
     [SerializeField] private TextMeshProUGUI _dialogueText;
 
     [SerializeField] private GameObject _choicesContainer;
@@ -21,8 +28,8 @@ public class DialogueDisplayer : MonoBehaviour
 
     private void Awake()
     {
-        var temp = _idToDialogueSO.IdToTextConverter;
-        var temp2 = _idToChoiceSO.IdToTextConverter;
+        var temp = _idToDialogueSO.IdToTextConverter;   // Init dictionnary converter
+        var temp2 = _idToChoiceSO.IdToTextConverter;    // Init dictionnary converter
     }
 
     private void Start()
