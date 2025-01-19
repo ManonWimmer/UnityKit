@@ -10,7 +10,7 @@ using static SaveManager;
 public class SaveManagerEditor : Editor
 {
     // ----- FIELDS ----- //
-    private List<bool> showVariablesFoldout = new List<bool>();
+    private List<List<bool>> showVariablesFoldout = new List<List<bool>>();
     private List<bool> showTransformFoldout = new List<bool>();
 
     private GUIStyle removeButtonStyle;
@@ -197,10 +197,27 @@ public class SaveManagerEditor : Editor
 
                                 // ----- VARIABLES ----- //
                                 // Foldout menu variables
-                                if (showVariablesFoldout.Count < i + 1) showVariablesFoldout.Add(false);
+                                
+                                int scriptDataIndex = savedEntry.ScriptDatas.IndexOf(scriptData);
 
-                                showVariablesFoldout[i] = EditorGUILayout.Foldout(showVariablesFoldout[i], "Save Variables", boldBlueStyle);
-                                if (showVariablesFoldout[i])
+                                if (showVariablesFoldout.Count < i + 1 || showVariablesFoldout[i].Count < scriptDataIndex + 1)
+                                {
+                                    List<bool> scriptDatasBools = new List<bool>();
+                                    foreach (var data in saveManager.SavedEntries)
+                                    {
+                                        List<bool> scriptDatasBools2 = new List<bool>();
+                                        foreach (var script in data.ScriptDatas)
+                                        {
+                                            scriptDatasBools2.Add(false);
+                                        }
+                                        showVariablesFoldout.Add(scriptDatasBools2);
+                                    }
+     
+                                }
+
+
+                                showVariablesFoldout[i][scriptDataIndex] = EditorGUILayout.Foldout(showVariablesFoldout[i][scriptDataIndex], "Save Variables", boldBlueStyle);
+                                if (showVariablesFoldout[i][scriptDataIndex])
                                 {
                                     foreach (var variable in scriptData.VariableSelections)
                                     {
