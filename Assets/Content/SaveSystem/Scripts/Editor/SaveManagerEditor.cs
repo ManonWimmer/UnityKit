@@ -51,8 +51,8 @@ public class SaveManagerEditor : Editor
                 savedEntry.SelectedGameObject = newTargetGameObject;
                 //scriptSelection.SelectedScript = null;
 
-                //if (scriptSelection.VariableSelections != null)
-                //scriptSelection.VariableSelections.Clear();
+                if (savedEntry.Transform != null)
+                    savedEntry.Transform = null;
 
                 if (savedEntry.TransformSelection != null)
                     savedEntry.TransformSelection = null;
@@ -64,10 +64,15 @@ public class SaveManagerEditor : Editor
                 GameObject gameObject = savedEntry.SelectedGameObject as GameObject;
 
                 #region Transfrom Fouldout
-                Transform transform = gameObject.transform;
-                Debug.Log($"get transform {transform}");
-                savedEntry.Transform = transform;
 
+                // Get Tarnsform
+                if (savedEntry.Transform == null)
+                {
+                    Transform transform = gameObject.transform;
+                    Debug.Log($"get transform {transform}");
+                    savedEntry.Transform = transform;
+                }
+                    
                 // Foldout menu transform
                 if (showTransformFoldout.Count < i + 1) showTransformFoldout.Add(false);
 
