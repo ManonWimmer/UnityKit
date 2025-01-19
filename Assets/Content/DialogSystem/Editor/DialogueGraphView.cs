@@ -24,18 +24,18 @@ public class DialogueGraphView : GraphView
     #region Constructor
     public DialogueGraphView()
     {
-        ConfigureGraphView();
-        AddGridBackground();
-        AddEntryPoint();
-        RegisterRightClickEvents();
+        ConfigureGraphView(); // Set up graph interactions (zoom, drag, selection)
+        AddGridBackground(); // Add a grid background for visual clarity
+        AddEntryPoint(); // Create and add the entry/start node
+        RegisterRightClickEvents(); // Register right-click for context menu
     }
 
     private void ConfigureGraphView()
     {
         SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
-        this.AddManipulator(new ContentDragger());
-        this.AddManipulator(new SelectionDragger());
-        this.AddManipulator(new RectangleSelector());
+        this.AddManipulator(new ContentDragger()); // Allow graph panning
+        this.AddManipulator(new SelectionDragger()); // Enable dragging selected elements
+        this.AddManipulator(new RectangleSelector()); // Enable selection with a rectangle
     }
 
     private void AddGridBackground()
@@ -56,7 +56,7 @@ public class DialogueGraphView : GraphView
         {
             if (evt.button == 1) // Right-click
             {
-                _lastMousePosition = evt.mousePosition; // Hide the mouse position
+                _lastMousePosition = evt.mousePosition; // Save mouse position for new node placement
             }
         });
     }
@@ -83,45 +83,52 @@ public class DialogueGraphView : GraphView
     #endregion
 
     #region Node Management
-    private DialogueNode GenerateEntryPointNode(Vector2 position)
+    private DialogueNode GenerateEntryPointNode(Vector2 position)   // generate an Entry Point Node
     {
+        // If the entry node already exists, return it
         if (_entryPointNode != null && this.Contains(_entryPointNode)) return _entryPointNode;
 
+        // Create the entry node with basic configuration
         var node = CreateBasicNode("START", position, _defaultEntryPointScale);
         node.EntryPoint = true;
 
+        // Add an output port to the entry node
         var outputPort = GeneratePort(node, Direction.Output, typeof(float), Port.Capacity.Single);
         outputPort.portName = "Next";
         node.outputContainer.Add(outputPort);
 
         _entryPointNode = node;
 
-        node.RefreshExpandedState();
-        node.RefreshPorts();
+        node.RefreshExpandedState();    // Update UI
+        node.RefreshPorts();    //Update Ports
         return node;
     }
-    public void CreateNode(string nodeName, Vector2 position)
+    public void CreateNode(string nodeName, Vector2 position)   // Create basic Dialogue Node
     {
         AddElement(CreateDialogueNode(nodeName, position));
     }
-    private DialogueNode CreateDialogueNode(string nodeName, Vector2 position, List<string> outputPorts = null, List<string> outputPortsChoiceId = null)
+    private DialogueNode CreateDialogueNode(string nodeName, Vector2 position, List<string> outputPorts = null, List<string> outputPortsChoiceId = null)    // Create a Dialogue Node
     {
+        // Create a dialogue node with basic configuration
         var node = CreateBasicNode(nodeName, position, _defaultNodeSize);
 
+        // Add input port
         var inputPort = GeneratePort(node, Direction.Input, typeof(string), Port.Capacity.Multi);
         inputPort.portName = "Input";
         node.inputContainer.Add(inputPort);
 
+        // Add functionality for creating choices and assigning IDs
         AddNewChoiceButton(node);
         AddIdTextField(node);
 
+        // Add any predefined output ports
         AddOutputPorts(node, outputPorts, outputPortsChoiceId);
 
         node.RefreshExpandedState();
         node.RefreshPorts();
         return node;
     }
-    private DialogueNode CreateBasicNode(string nodeName, Vector2 position, Vector2 size)
+    private DialogueNode CreateBasicNode(string nodeName, Vector2 position, Vector2 size)   // Initialize a basic node with a title and unique GUID
     {
         var node = new DialogueNode
         {
@@ -135,7 +142,7 @@ public class DialogueGraphView : GraphView
         node.RefreshPorts();
         return node;
     }
-    private void AddOutputPorts(DialogueNode node, List<string> portNames, List<string> portChoiceIds)
+    private void AddOutputPorts(DialogueNode node, List<string> portNames, List<string> portChoiceIds)  // Add output ports if defined
     {
         if (portNames == null || portChoiceIds == null) return;
 
@@ -145,9 +152,10 @@ public class DialogueGraphView : GraphView
             var portChoiceId = portChoiceIds.ElementAtOrDefault(i) ?? $"Choice {i}";
 
             var port = GeneratePort(node, Direction.Output, typeof(string));
-            port.name = portName;
-            port.portName = portChoiceId;
+            port.name = portName;   // Unique port name for saving/loading
+            port.portName = portChoiceId;   // Visible label
 
+            // Create a container with a text field and delete button for the port
             var portContainer = CreatePortContainer(port, portChoiceId);
             node.outputContainer.Add(portContainer);
 
@@ -159,14 +167,13 @@ public class DialogueGraphView : GraphView
     #endregion
 
     #region Ports Management
-    private Port GeneratePort(DialogueNode node, Direction portDirection, Type type, Port.Capacity capacity = Port.Capacity.Single)
+    private Port GeneratePort(DialogueNode node, Direction portDirection, Type type, Port.Capacity capacity = Port.Capacity.Single) // Create a port for the node
     {
-
         var port = node.InstantiatePort(Orientation.Horizontal, portDirection, capacity, type);
         port.name = Guid.NewGuid().ToString();
         return port;
     }
-    private VisualElement CreatePortContainer(Port port, string defaultName)
+    private VisualElement CreatePortContainer(Port port, string defaultName)    // Create a container to hold the port, text field, and delete button
     {
         var container = new VisualElement { style = { flexDirection = FlexDirection.Row } };
 
@@ -176,13 +183,13 @@ public class DialogueGraphView : GraphView
         container.Add(port);
         return container;
     }
-    private void AddChoiceIdTextField(VisualElement container, Port port, string defaultName)
+    private void AddChoiceIdTextField(VisualElement container, Port port, string defaultName)   // Add a text field to rename the port
     {
         var textField = new TextField { value = defaultName, style = { flexGrow = 1, marginRight = 4 } };
         textField.RegisterValueChangedCallback(evt => port.portName = evt.newValue);
         container.Add(textField);
     }
-    private void AddDeletePortButton(VisualElement container, Port port)
+    private void AddDeletePortButton(VisualElement container, Port port)    // Add a button to delete the port
     {
         var deleteButton = new Button(() =>
         {
@@ -198,7 +205,7 @@ public class DialogueGraphView : GraphView
         };
         container.Add(deleteButton);
     }
-    private void DisconnectEdges(Port port)
+    private void DisconnectEdges(Port port) // Remove all edges connected to a given port
     {
         edges.ToList().Where(edge => edge.input == port || edge.output == port).ToList().ForEach(RemoveElement);
     }
@@ -206,32 +213,35 @@ public class DialogueGraphView : GraphView
     #endregion
 
     #region Utility Buttons
-    private void AddNewChoiceButton(DialogueNode node)
+    private void AddNewChoiceButton(DialogueNode node)  // Add a button for creating new output choices
     {
         var button = new Button(() => AddChoicePort(node)) { text = "New Choice" };
         node.titleContainer.Add(button);
     }
-    private void AddChoicePort(DialogueNode node)
+    private void AddChoicePort(DialogueNode node)   // Add a new output port for a choice
     {
         var port = GeneratePort(node, Direction.Output, typeof(string));
-        port.portName = $"Choice {node.outputContainer.childCount}";
+        port.portName = $"Choice {node.outputContainer.childCount}";    // Default name
         var container = CreatePortContainer(port, port.portName);
         node.outputContainer.Add(container);
         node.RefreshPorts();
         node.RefreshExpandedState();
     }
-    private void AddIdTextField(DialogueNode node)
+    private void AddIdTextField(DialogueNode node)  // Add a text field for the dialogue ID
     {
-        var textField = new TextField("Dialogue ID") { value = node.DialogueText, name = "DialogueIdField" };
+        var textField = new TextField("Dialogue ID") {
+            value = node.DialogueText,
+            name = "DialogueIdField"    // Assign a name for later retrieval
+        }; 
+        
         textField.RegisterValueChangedCallback(evt => node.DialogueText = evt.newValue);
         node.mainContainer.Add(textField);
     }
 
     #endregion
 
-
-    #region Ports (OLD)
-    public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
+    #region Compatbile Ports (Not used)
+    public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)  // Define compatible ports for connecting edges (not used)
     {
         var compatiblePorts = new List<Port>();
 
@@ -247,242 +257,13 @@ public class DialogueGraphView : GraphView
         return compatiblePorts;
     }
 
-    /*
-    private Port GeneratePort(DialogueNode node, Direction portDirection, Type type, Port.Capacity capacity = Port.Capacity.Single)
-    {
-        var port = node.InstantiatePort(Orientation.Horizontal, portDirection, capacity, type);
-        port.name = Guid.NewGuid().ToString(); // unique Identifiant for this port
-        return port;
-    }
-    */
-    /*
-    private void AddChoicePort(DialogueNode dialogueNode)
-    {
-        var generatePort = GeneratePort(dialogueNode, Direction.Output, typeof(string));
-
-        var outputPortCount = dialogueNode.outputContainer.Query("connector").ToList().Count ;
-        var outputPortName = $"Choice {outputPortCount}";
-
-        generatePort.portName = outputPortName;
-
-        // Créer un conteneur horizontal pour le port et le bouton de suppression
-        var portContainer = new VisualElement();
-        portContainer.style.flexDirection = FlexDirection.Row;
-
-        AddChoiceIdTextField(dialogueNode, generatePort, portContainer);
-
-        CreateDeleteChoiceButton(dialogueNode, portContainer);
-        
-        // Ajouter le port au conteneur
-        portContainer.Add(generatePort);
-
-        // Conteneur au node
-        dialogueNode.outputContainer.Add(portContainer);
-
-
-        dialogueNode.RefreshPorts();
-        dialogueNode.RefreshExpandedState();
-    }
-    */
     #endregion
 
-
-    #region Node (OLD)
-    //private DialogueNode GenerateEntryPointNode(Vector2 position)
-    //{
-    //    if (_entryPointNode !=  null && this.Contains(_entryPointNode)) return _entryPointNode;
-
-    //    var node = new DialogueNode
-    //    {
-    //        title = "START",
-    //        GIUD = Guid.NewGuid().ToString(),
-    //        DialogueText = "ENTRYPOINT",
-    //        EntryPoint = true
-    //    };
-
-    //    var generatedPort = GeneratePort(node, Direction.Output, typeof(float));
-    //    generatedPort.portName = "Next";
-    //    node.outputContainer.Add(generatedPort);
-
-    //    node.RefreshExpandedState();
-    //    node.RefreshPorts();
-
-    //    node.SetPosition(new Rect(position, _defaultEntryPointScale));
-    //    _entryPointNode = node;
-
-    //    return node;
-    //}
-
-    /*
-    public DialogueNode CreateDialogueNode(string nodeName, Vector2 position, List<string> outputPorts = null, List<string> outputPortsChoiceId = null)
-    {
-        var dialogueNode = new DialogueNode()
-        {
-            title = nodeName,
-            DialogueText = nodeName,
-            GIUD = Guid.NewGuid().ToString()
-        };
-
-        var inputPort = GeneratePort(dialogueNode, Direction.Input, typeof(string), Port.Capacity.Multi);
-        inputPort.portName = "Input";
-        dialogueNode.inputContainer.Add(inputPort);
-
-        AddNewChoiceButton(dialogueNode);
-        AddIdTextField(dialogueNode);
-
-        // Ajouter les ports de sortie sauvegardés
-        if (outputPorts != null)
-        {
-            //foreach (var portName in outputPorts)
-            for (int i = 0; i < outputPorts.Count; ++i)
-            {
-                var port = GeneratePort(dialogueNode, Direction.Output, typeof(string));
-                var portContainer = new VisualElement();
-
-                var portName = "";
-                var portChoiceId = "";
-                if (i < outputPorts.Count && outputPorts != null)
-                {
-                    portName = outputPorts[i];
-                    port.name = portName;
-                }
-                if (i < outputPortsChoiceId.Count && outputPortsChoiceId != null)
-                {
-                    portChoiceId = outputPortsChoiceId[i];
-                    port.portName = portChoiceId;
-                }
-                else
-                {
-                    var outputPortCount = dialogueNode.outputContainer.Query("connector").ToList().Count;
-                    var outputPortName = $"Choice {outputPortCount}";
-                    port.portName = $"Choice {outputPortCount}";   // DefaultName for now
-                }
-
-
-                portContainer.style.flexDirection = FlexDirection.Row;
-
-                AddChoiceIdTextField(dialogueNode, port, portContainer, portChoiceId);
-                CreateDeleteChoiceButton(dialogueNode, portContainer);
-                portContainer.Add(port);
-                dialogueNode.outputContainer.Add(portContainer);
-            }
-        }
-
-        dialogueNode.RefreshExpandedState();
-        dialogueNode.RefreshPorts();
-        dialogueNode.SetPosition(new Rect(position, _defaultNodeSize));
-
-
-        return dialogueNode;
-    }
-    */
-    #endregion
-
-    #region Add Button / Fields to node (OLD)
-    /*
-    private void CreateDeleteChoiceButton(DialogueNode dialogueNode, VisualElement portContainer)
-    {
-        // Créer le bouton de suppression
-        var deleteButton = new Button(() =>
-        {
-            // trouver port du choix suppr
-            var port = portContainer.Q<Port>();
-
-            // Verif si lien depuis ce port
-            if (port != null)
-            {
-                var connectedEdges = edges.ToList().Where(edge => edge.input == port || edge.output == port).ToList();
-
-                foreach (var edge in connectedEdges)
-                {
-                    edge.input.Disconnect(edge);
-                    edge.output.Disconnect(edge);
-                    RemoveElement(edge);
-                }
-            }
-
-
-            // Supprimer le port de l'UI
-            dialogueNode.outputContainer.Remove(portContainer);
-
-            // Rafraîchir les ports et l'état du nœud
-            dialogueNode.RefreshPorts();
-            dialogueNode.RefreshExpandedState();
-        })
-        {
-            text = "X" // Texte ou icône du bouton
-        };
-
-        // style bouton pour qu'il soit petit
-        deleteButton.style.marginLeft = 4;
-        deleteButton.style.backgroundColor = new Color(0.8f, 0.2f, 0.2f);
-        deleteButton.style.color = Color.white;
-        deleteButton.style.width = 20;
-
-        // bouton au conteneur
-        portContainer.Add(deleteButton);
-    }
-    */
-    /*
-    private void AddNewChoiceButton(DialogueNode dialogueNode)
-    {
-        var button = new Button(() =>
-        {
-            AddChoicePort(dialogueNode);
-        });
-
-        button.text = "New Choice";
-        dialogueNode.titleContainer.Add(button);
-    }
-    */
-    /*
-    private void AddChoiceIdTextField(DialogueNode dialogueNode, Port associatedPort, VisualElement portContainer, string defaultPortName = "DefaultName")
-    {
-        var textField = new TextField()
-        {
-            value = defaultPortName, // Nom initial
-            style =
-                {
-                    flexGrow = 1,
-                    marginRight = 4, // Espacement
-                }
-        };
-
-        // Mettre à jour dynamiquement le nom du port lorsque le texte change
-        textField.RegisterValueChangedCallback(evt =>
-        {
-            associatedPort.portName = evt.newValue; // Mettre à jour le nom affiché sur le port
-        });
-
-        portContainer.Add(textField);
-    }
-    */
-    /*
-    private void AddIdTextField(DialogueNode dialogueNode)
-    {
-        // Create a text field for Dialogue ID
-        var idField = new TextField("Dialogue ID")
-        {
-            value = dialogueNode.DialogueText, // Default to the current GUID
-            name = "Dialogue ID"
-        };
-
-        // Synchroniser la valeur du champ avec le DialogueText du noeud
-        idField.RegisterValueChangedCallback(evt =>
-        {
-            dialogueNode.DialogueText = evt.newValue; // Mettre à jour le DialogueText
-        });
-
-        dialogueNode.mainContainer.Add(idField);
-    }
-    */
-
-    #endregion
 
 
     #region Save / Load Graph
 
-    public void SaveGraph(string path)
+    public void SaveGraph(string path)  // Save the graph in a DialogueGraphSO
     {
         // Create a new ScriptableObject to save the graph
         var dialogueGraph = ScriptableObject.CreateInstance<DialogueGraphSO>();
@@ -563,7 +344,7 @@ public class DialogueGraphView : GraphView
         Debug.Log($"Graph saved at: {path}");
     }
 
-    public void LoadGraph(DialogueGraphSO dialogueGraph)
+    public void LoadGraph(DialogueGraphSO dialogueGraph)    // Load and display a graph from a DialogueGraphSO
     {
         Debug.Log($"Try to load asset : {dialogueGraph.name}");
 
