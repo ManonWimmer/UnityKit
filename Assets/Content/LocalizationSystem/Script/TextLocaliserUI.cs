@@ -10,10 +10,23 @@ public class TextLocaliserUI : MonoBehaviour
     TextMeshProUGUI textField;
     [SerializeField] private string key;
 
-    void Start()
+    public CSVLoader csvLoader;
+
+    void OnEnable()
+    {
+        csvLoader.csvIsLoad += SetTextUI;
+    }
+
+    void OnDisable()
+    {
+        csvLoader.csvIsLoad -= SetTextUI;
+    }
+
+
+    void SetTextUI()
     {
         textField = GetComponent<TextMeshProUGUI>();
-        string value  = LocalizationSystem.GetLocalisedValue(key);
-        textField.text = value; 
+        string value = LocalizationSystem.GetLocalisedValue(key);
+        textField.text = value;
     }
 }

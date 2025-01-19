@@ -2,16 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using static Unity.VisualScripting.StickyNote;
 
 public class CSVLoader : MonoBehaviour
 {
-    private string CSVText;
-    private int indexOffset = 1;
-    public bool CSVisLoad = false;
-    
+    private static string CSVText;
+    private static List<List<string>> sortCSV;
+    private static int indexOffset = 1;
+    LocalizationSystem localizationSystem;
+
+    private bool isLoad = false;
+    public delegate void CSVisLoad();
+    public event CSVisLoad csvIsLoad;
+
     void Start()
     {
         StartCoroutine(GetRequest("https://docs.google.com/spreadsheets/d/e/2PACX-1vSXqS5FKCsIi3my0kWlN2RHHga0aSIUu7gs3SEM3jj1TtUS2Pxm7NRfWXWxVk0jgVlo16IPRBYhcuYK/pub?output=csv"));
@@ -35,53 +42,48 @@ public class CSVLoader : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     //Debug.Log("Received: " + webRequest.downloadHandler.text);
                     CSVText = webRequest.downloadHandler.text;
+                    if (!isLoad)
+                    {
+                        CSVtoList();
+                        csvIsLoad();
+                        isLoad = true;
+                    }
                     break;
             }
         }
     }
 
-    List<List<string>> CSVtoList()
+
+    static void CSVtoList()
     {
         string[] listContainList;
-        CSVText = CSVText.Replace("\"", "");
-        listContainList = CSVText.Split("\n");
+        string csvText = CSVText;
+        csvText = csvText.Replace("\"", "");
+        listContainList = csvText.Split("\n");
         List<List<string>> result = new List<List<string>>();
         foreach (string line in listContainList)
         {
             string[] words = line.Split(',');
             result.Add(new List<string>(words));
         }
-        return result;
+        sortCSV = result;
     }
 
-    public Dictionary<string,string> GetDictionaryValues(string language)
+    public static Dictionary<string,string> GetDictionaryValues(LocalizationSystem.Language language)
     {
-        List<List<string>> listData = CSVtoList();
         Dictionary<string, string> DictionaryValues = new Dictionary<string, string>();
-        switch (language) 
+        foreach (List<string> line in sortCSV)
         {
-            case "fr":
-                foreach(List<string> line in listData)
-                {
-                    DictionaryValues.Add(line[indexOffset + 0], line[indexOffset + 1]);
-                }
-                break;
-            case "en":
-                foreach (List<string> line in listData)
-                {
-                    DictionaryValues.Add(line[indexOffset + 0], line[indexOffset + 2]);
-                }
-                break;
-            case "es":
-                foreach (List<string> line in listData)
-                {
-                    DictionaryValues.Add(line[indexOffset + 0], line[indexOffset + 3]);
-                }
-                break;
+            if(indexOffset + ((int)language) >= line.Count) 
+            {
+                DictionaryValues.Add(line[indexOffset], "Text not defined in the CSV");
+            }
+            else
+            {
+                DictionaryValues.Add(line[indexOffset], line[indexOffset + ((int)language)]);
+            }
         }
         return DictionaryValues;
-
     }
     //EditorUtility.SaveFilePanelInProject("asset");
-
 }
