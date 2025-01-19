@@ -912,7 +912,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemKeyToGive: Coin
-  _itemNumberToGive: 1
+  _itemNumber: 1
 --- !u!114 &1886499545
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemKeyToGive: Coin
-  _itemNumberToGive: 1
+  _itemNumber: 1
 --- !u!1001 &700848699
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -279,6 +279,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2479267169934737800, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1066472720}
     - target: {fileID: 6120096256402442514, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
       propertyPath: m_Name
       value: Displayer_Dialogue (1)
