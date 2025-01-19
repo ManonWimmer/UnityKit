@@ -18,8 +18,10 @@ public class DialogueItemGiver : MonoBehaviour
         if (_itemKeyToGive == null) return;
         if (_itemNumberToGive <= 0) return;
 
+        Debug.Log("Null check");
         if (DialogueInventory.Instance == null) return;
 
+        Debug.Log("Add Item");
         DialogueInventory.Instance.AddItem(_itemKeyToGive, _itemNumberToGive);
     }
 
