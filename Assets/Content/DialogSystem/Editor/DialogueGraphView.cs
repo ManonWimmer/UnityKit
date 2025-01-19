@@ -242,7 +242,7 @@ public class DialogueGraphView : GraphView
         var port = GeneratePort(node, Direction.Output, typeof(string));
         port.portName = $"Choice {node.outputContainer.childCount}";    // Default name
 
-        var container = CreatePortContainer(port, port.portName);
+        var container = CreatePortContainer(port, port.portName, node);
 
         /*
         // ----- Condition Part ----------

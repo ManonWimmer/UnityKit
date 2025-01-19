@@ -376,7 +376,7 @@ PrefabInstance:
     - target: {fileID: 8820898146673431925, guid: fc39108569f87094eb748b52ef25d1eb, type: 3}
       propertyPath: _dialogueGraphSO
       value: 
-      objectReference: {fileID: 11400000, guid: f581d173b90d4ec4c96f8d899166f930, type: 2}
+      objectReference: {fileID: 11400000, guid: 03dbe278afcfd364fb3125cf174222b3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -527,7 +527,7 @@ PrefabInstance:
     - target: {fileID: 8820898146673431925, guid: fc39108569f87094eb748b52ef25d1eb, type: 3}
       propertyPath: _dialogueGraphSO
       value: 
-      objectReference: {fileID: 11400000, guid: f581d173b90d4ec4c96f8d899166f930, type: 2}
+      objectReference: {fileID: 11400000, guid: 03dbe278afcfd364fb3125cf174222b3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
