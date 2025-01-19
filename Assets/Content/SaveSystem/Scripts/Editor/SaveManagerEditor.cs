@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -14,9 +15,12 @@ public class SaveManagerEditor : Editor
 
     private GUIStyle removeButtonStyle;
     private GUIStyle titleStyle;
-    private GUIStyle boldStyle;
+    private GUIStyle boldBlueStyle;
     private GUIStyle boxStyle;
+    private GUIStyle addScriptButton;
+    private GUIStyle addEntryButton;
     private Color lightBlueColor;
+    private Color redColor;
     // ----- FIELDS ----- //
 
     public override void OnInspectorGUI()
@@ -76,7 +80,7 @@ public class SaveManagerEditor : Editor
                 // Foldout menu transform
                 if (showTransformFoldout.Count < i + 1) showTransformFoldout.Add(false);
 
-                showTransformFoldout[i] = EditorGUILayout.Foldout(showTransformFoldout[i], "Save Transform", boldStyle);
+                showTransformFoldout[i] = EditorGUILayout.Foldout(showTransformFoldout[i], "Save Transform", boldBlueStyle);
                 if (showTransformFoldout[i])
                 {
                     // -- POSITION -- //
@@ -180,7 +184,7 @@ public class SaveManagerEditor : Editor
                                 // Foldout menu variables
                                 if (showVariablesFoldout.Count < i + 1) showVariablesFoldout.Add(false);
 
-                                showVariablesFoldout[i] = EditorGUILayout.Foldout(showVariablesFoldout[i], "Save Variables", boldStyle);
+                                showVariablesFoldout[i] = EditorGUILayout.Foldout(showVariablesFoldout[i], "Save Variables", boldBlueStyle);
                                 if (showVariablesFoldout[i])
                                 {
                                     foreach (var variable in scriptData.VariableSelections)
@@ -215,21 +219,13 @@ public class SaveManagerEditor : Editor
                                 break;
                             }
                         }
-
-
-
-                        
-
-
-
-
                         GUILayout.EndVertical();
                         // ----- VARIABLES ----- //
                     }
                 }
 
                 // Add script
-                if (GUILayout.Button("Add Script Variables"))
+                if (GUILayout.Button("Add Script Variables", addScriptButton))
                 {
                     if (savedEntry.ScriptDatas == null)
                     {
@@ -276,7 +272,7 @@ public class SaveManagerEditor : Editor
         }
 
         // Add save
-        if (GUILayout.Button("Add Saved Entry"))
+        if (GUILayout.Button("Add Saved Entry", addEntryButton))
         {
             saveManager.SavedEntries.Add(new SaveManager.SavedEntry());
         }
@@ -301,10 +297,11 @@ public class SaveManagerEditor : Editor
     private void SetStyles()
     {
         lightBlueColor = new Color(0.6681648f, 0.8293654f, 0.990566f, 1f);
+        redColor = new Color(0.671f, 0.016f, 0.016f, 1f);
 
         // Remove button
         removeButtonStyle = new GUIStyle();
-        removeButtonStyle.normal.textColor = Color.red;
+        removeButtonStyle.normal.textColor = redColor;
         removeButtonStyle.fontStyle = FontStyle.Bold;
         removeButtonStyle.alignment = TextAnchor.MiddleCenter;
 
@@ -315,12 +312,12 @@ public class SaveManagerEditor : Editor
         titleStyle.normal.textColor = Color.white;
 
         // Bold
-        boldStyle = new GUIStyle(EditorStyles.foldout);
-        boldStyle.fontStyle = FontStyle.Bold;
-        boldStyle.normal.textColor = lightBlueColor;
-        boldStyle.onNormal.textColor = lightBlueColor;
-        boldStyle.hover.textColor = lightBlueColor;
-        boldStyle.onHover.textColor = lightBlueColor;
+        boldBlueStyle = new GUIStyle(EditorStyles.foldout);
+        boldBlueStyle.fontStyle = FontStyle.Bold;
+        boldBlueStyle.normal.textColor = lightBlueColor;
+        boldBlueStyle.onNormal.textColor = lightBlueColor;
+        boldBlueStyle.hover.textColor = lightBlueColor;
+        boldBlueStyle.onHover.textColor = lightBlueColor;
 
         // Script Box
         Texture2D backgroundTexture = new Texture2D(1, 1);
@@ -330,9 +327,21 @@ public class SaveManagerEditor : Editor
         boxStyle = new GUIStyle();
         boxStyle.normal.background = backgroundTexture;
         boxStyle.border = new RectOffset(10, 10, 10, 10);
+        boxStyle.margin = new RectOffset(0, 0, 10, 10);     
+        boxStyle.padding = new RectOffset(20, 20, 10, 10);
+ 
+        // Add Script Button
+        addScriptButton = new GUIStyle(GUI.skin.button);
+        addScriptButton.normal.textColor = lightBlueColor;
+        addScriptButton.normal.background = backgroundTexture;
+        addScriptButton.fontStyle = FontStyle.Bold;
 
-        boxStyle.margin = new RectOffset(0, 0, 10, 10);     // Espaces autour de la boîte
-        boxStyle.padding = new RectOffset(20, 20, 10, 10);  // Ajoute de l'espace autour des éléments
+        // Add Entry Button
+        addEntryButton = new GUIStyle(GUI.skin.button);
+        addEntryButton.normal.textColor = lightBlueColor;
+        addEntryButton.normal.background = backgroundTexture;
+        addEntryButton.fontStyle = FontStyle.Bold;
+        
     }
 
 
