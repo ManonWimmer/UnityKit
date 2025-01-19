@@ -253,10 +253,13 @@ MonoBehaviour:
   _dialogueController: {fileID: 0}
   _idToDialogueSO: {fileID: 11400000, guid: 3fc2e39a8801b2540ac37d67005bff19, type: 2}
   _idToChoiceSO: {fileID: 11400000, guid: b9ea86d6456684945a139369c1cacc55, type: 2}
-  _displayButtonsElements: 1
+  _displayerCanvas: {fileID: 2479267169934737800}
   _dialogueText: {fileID: 2384823193196449831}
   _choicesContainer: {fileID: 3970348632323243446}
   _buttonChoicePrefab: {fileID: 8664488508792781418, guid: 0fd138e0dc3638c4e9a8d3b301075cfa, type: 3}
+  _displayButtonsElements: 1
+  _neverHideDisplayer: 0
+  _startHidden: 0
 --- !u!1 &7244787660732718122
 GameObject:
   m_ObjectHideFlags: 0

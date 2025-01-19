@@ -5,19 +5,31 @@ using UnityEngine.Events;
 
 public class OverlapTriggering2D : MonoBehaviour
 {
-    [SerializeField] private string _tagsToCheck;
+    [SerializeField] private List<string> _tagsToCheck;
 
 
     public UnityEvent OnTriggerEnterUnity;
+
+    public UnityEvent OnTriggerExitUnity;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision == null) return;
 
-        if (collision.gameObject.CompareTag(_tagsToCheck))
+        if (_tagsToCheck.Contains(collision.gameObject.tag))
         {
             OnTriggerEnterUnity?.Invoke();
-            Debug.Log("UNity event");
+            Debug.Log("Unity Event");
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision == null) return;
+
+        if (_tagsToCheck.Contains(collision.gameObject.tag))
+        {
+            OnTriggerExitUnity?.Invoke();
+            Debug.Log("Unity Event");
         }
     }
 }

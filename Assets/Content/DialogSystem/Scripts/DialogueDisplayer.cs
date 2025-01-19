@@ -18,13 +18,23 @@ public class DialogueDisplayer : MonoBehaviour
     [Space(20)]
 
     [Header("Display Elements")]
-    [SerializeField] private bool _displayButtonsElements = true;
+
+    [SerializeField] private Canvas _displayerCanvas;
 
     [SerializeField] private TextMeshProUGUI _dialogueText;
 
-    [SerializeField] private GameObject _choicesContainer;
+    [Space(20)]
 
+    [SerializeField] private GameObject _choicesContainer;
     [SerializeField] private GameObject _buttonChoicePrefab;
+
+    [Space(20)]
+
+    [Header("Display Parameters")]
+
+    [SerializeField] private bool _displayButtonsElements = true;
+    [SerializeField] private bool _neverHideDisplayer = false;
+    [SerializeField] private bool _startHidden = false;
 
     #endregion
 
@@ -42,6 +52,11 @@ public class DialogueDisplayer : MonoBehaviour
 
             _dialogueController.OnChoiceUpdated += DisplayChoices;
         }
+
+        if (_startHidden)
+        {
+            HideDisplayer();
+        }
     }
     private void OnDestroy()
     {
@@ -52,6 +67,24 @@ public class DialogueDisplayer : MonoBehaviour
             _dialogueController.OnChoiceUpdated -= DisplayChoices;
         }
     }
+
+    #region Show / hide Displayer
+
+    public void ShowDisplayer()
+    {
+        if (_displayerCanvas == null) return;
+
+        _displayerCanvas.gameObject.SetActive(true);
+    }
+    public void HideDisplayer()
+    {
+        if (_neverHideDisplayer) return;
+        if (_displayerCanvas == null) return;
+
+        _displayerCanvas.gameObject.SetActive(false);
+    }
+
+    #endregion
 
     #region Display Dialogue
     private void DisplayDialogueText(string textId)

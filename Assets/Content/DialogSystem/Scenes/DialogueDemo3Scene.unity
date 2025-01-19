@@ -140,6 +140,10 @@ PrefabInstance:
       value: Displayer_Dialogue
       objectReference: {fileID: 0}
     - target: {fileID: 7614483927623272631, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
+      propertyPath: _startHidden
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7614483927623272631, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
       propertyPath: _dialogueController
       value: 
       objectReference: {fileID: 1500135666}
@@ -193,6 +197,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8724866889999284363, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
   m_PrefabInstance: {fileID: 174156705}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &174156707 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7614483927623272631, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
+  m_PrefabInstance: {fileID: 174156705}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a92cbeede4640eb49abcd3395a9de703, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &276659970
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,6 +661,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1696120058}
   - component: {fileID: 1696120057}
+  - component: {fileID: 1696120059}
+  - component: {fileID: 1696120060}
   m_Layer: 0
   m_Name: Marchand
   m_TagString: Untagged
@@ -722,6 +739,85 @@ Transform:
   - {fileID: 174156706}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &1696120059
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696120056}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 3.5
+--- !u!114 &1696120060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696120056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1aa968f7b3627b45b4d414860ce6f37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tagsToCheck:
+  - Player
+  OnTriggerEnterUnity:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 174156707}
+        m_TargetAssemblyTypeName: DialogueDisplayer, Assembly-CSharp
+        m_MethodName: ShowDisplayer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnTriggerExitUnity:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 174156707}
+        m_TargetAssemblyTypeName: DialogueDisplayer, Assembly-CSharp
+        m_MethodName: HideDisplayer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1886499541
 GameObject:
   m_ObjectHideFlags: 0
@@ -829,7 +925,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1aa968f7b3627b45b4d414860ce6f37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tagsToCheck: Player
+  _tagsToCheck:
+  - Player
   OnTriggerEnterUnity:
     m_PersistentCalls:
       m_Calls:
@@ -845,6 +942,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnTriggerExitUnity:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!212 &1886499546
 SpriteRenderer:
   m_ObjectHideFlags: 0
