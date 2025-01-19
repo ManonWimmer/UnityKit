@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2524305437208833304}
   - component: {fileID: -4190748035483039508}
   m_Layer: 0
-  m_Name: ChoiceButtonDemo
+  m_Name: (Obsolete)ChoiceButtonDemo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

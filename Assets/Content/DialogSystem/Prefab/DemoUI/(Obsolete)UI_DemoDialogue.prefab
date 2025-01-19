@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 2930577615062411359}
   - component: {fileID: 7316613756708827674}
   m_Layer: 0
-  m_Name: UI_DemoDialogue
+  m_Name: (Obsolete)UI_DemoDialogue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
