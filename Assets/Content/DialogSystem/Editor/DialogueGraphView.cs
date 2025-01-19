@@ -215,7 +215,7 @@ public class DialogueGraphView : GraphView
     {
         var editConditionsButton = new Button(() =>
         {
-            ShowConditionEditor(node, port.name);   // Open edition window
+            ShowConditionEditor(node, port.portName);   // Open edition window
         })
         {
             text = "Edit Conditions"

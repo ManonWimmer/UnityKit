@@ -119,7 +119,7 @@ public class DialogueController : MonoBehaviour
 
         NotifyDialogueChange(_currentDialogueId);
 
-        NotifyChoiceChange(nextDialogueNode.outputPortsChoiceId);
+        NotifyChoiceChange(nextDialogueNode.outputPortsChoiceId, nextDialogueNode.outputPorts);
     }
 
     #endregion
@@ -130,19 +130,24 @@ public class DialogueController : MonoBehaviour
         OnDialogueUpdated?.Invoke(dialogueText);
         OnDialogueUpdatedUnity?.Invoke();
     }
-    private void NotifyChoiceChange(List<string> choicesText)
+    private void NotifyChoiceChange(List<string> choicesText, List<string> outputPortGuid)
     {
         var availableChoices = new List<string>();
 
-        foreach (var choiceText in choicesText)
+        //foreach (var choiceText in choicesText)
+        for (int i = 0; i < choicesText.Count; ++i)
         {
-            var choiceId = choicesText.IndexOf(choiceText);
-            if (IsChoiceAvailable(choiceId))
+            if (i >= outputPortGuid.Count) continue;
+
+            var choiceText = choicesText[i];
+            var choiceGuid = outputPortGuid[i];
+
+            if (IsChoiceAvailable(choiceGuid))
             {
                 availableChoices.Add(choiceText);
+                Debug.Log("Choice availbable");
             }
         }
-
 
         OnChoiceUpdated?.Invoke(availableChoices);
         //OnChoiceUpdated?.Invoke(choicesText);
@@ -152,19 +157,27 @@ public class DialogueController : MonoBehaviour
     #endregion
 
     #region Condition Check
-    private bool IsChoiceAvailable(int choiceId)
+    private bool IsChoiceAvailable(string choiceTextId)
     {
         DialogueNodeSO currentNode = _dialogueGraphSO.Nodes.FirstOrDefault(node => node.id == _currentNodeId);
-        if (currentNode == null) return false;
+        if (currentNode == null)
+        {
+            Debug.Log("Break at current node null");
+            return false;
+        }
 
-        PortCondition condition = currentNode.portConditions.FirstOrDefault(cond => cond.portId == choiceId.ToString());
-        if (condition == null) return true; // Pas de condition = toujours disponible
-
+        PortCondition condition = currentNode.portConditions.FirstOrDefault(cond => cond.portId == choiceTextId);
+        if (condition == null)
+        {
+            Debug.Log("Pas de condition -> Toujours dispo");
+            return true; // Pas de condition = toujours disponible
+        }
         // Vérifier si toutes les conditions sont remplies
         foreach (var cond in condition.conditions)
         {
             if (!CheckCondition(cond))
             {
+                Debug.Log("ne verifie pas les conditions -> pas dispo");
                 return false; // Une condition échoue
             }
         }

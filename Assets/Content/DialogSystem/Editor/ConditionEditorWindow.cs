@@ -16,9 +16,6 @@ public class ConditionEditorWindow : EditorWindow
         _node = node;
         _portId = portId;
 
-        Debug.Log(portId);
-        Debug.Log(_node);
-
         var portCondition = _node.PortConditions.FirstOrDefault(cond => cond.portId == portId);
         if (portCondition == null)
         {
