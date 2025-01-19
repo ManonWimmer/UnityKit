@@ -15,20 +15,20 @@ public class IdToDialogueSO : ScriptableObject
 
     [SerializeField] private List<DialogueEntry> _dialogueEntries;
 
-    private Dictionary<string, string> _idToDialogueConverter;
+    private Dictionary<string, string> _idToTextConverter;
 
-    public Dictionary<string, string> IdToDialogueConverter
+    public Dictionary<string, string> IdToTextConverter
     {
         get
         {
-            if (_idToDialogueConverter == null)
+            if (_idToTextConverter == null)
             {
-                _idToDialogueConverter = new Dictionary<string, string>();
+                _idToTextConverter = new Dictionary<string, string>();
                 foreach (var entry in _dialogueEntries)
                 {
-                    if (!_idToDialogueConverter.ContainsKey(entry.id))
+                    if (!_idToTextConverter.ContainsKey(entry.id))
                     {
-                        _idToDialogueConverter.Add(entry.id, entry.dialogueText);
+                        _idToTextConverter.Add(entry.id, entry.dialogueText);
                     }
                     else
                     {
@@ -36,7 +36,7 @@ public class IdToDialogueSO : ScriptableObject
                     }
                 }
             }
-            return _idToDialogueConverter;
+            return _idToTextConverter;
         }
     }
 }

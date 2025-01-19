@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1407b570a3c98a64c8b5cb583e8b2f72, type: 3}
+  m_Name: NewDialogueGraph_Test35
+  m_EditorClassIdentifier: 
+  nodes:
+  - id: 6eb65449-6d6a-4c6b-91bc-ae5dbae29661
+    dialogueId: START
+    title: START
+    position: {x: 100, y: 200}
+    entryPoint: 1
+    outputPorts:
+    - 94fb2074-36d9-42b1-8efd-b7bb33f8b52b
+    outputPortsChoiceId:
+    - Next
+    portConditions: []
+  - id: 95352d9a-9861-49b7-a28e-b50fe8edfd57
+    dialogueId: ID_0
+    title: Dialogue Node
+    position: {x: 221, y: 200}
+    entryPoint: 0
+    outputPorts: []
+    outputPortsChoiceId: []
+    portConditions: []
+  edges:
+  - fromNodeId: 6eb65449-6d6a-4c6b-91bc-ae5dbae29661
+    fromPortId: 94fb2074-36d9-42b1-8efd-b7bb33f8b52b
+    toNodeId: 95352d9a-9861-49b7-a28e-b50fe8edfd57
+    toPortId: 0d1f4981-8aad-481f-b15f-1d097ea28246
+    fromPortIndex: 0
+    toPortIndex: 0

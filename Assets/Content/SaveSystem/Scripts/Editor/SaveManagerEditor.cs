@@ -1,22 +1,26 @@
-using CodiceApp;
 using System;
 using System.Collections.Generic;
+
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.UIElements;
+using static SaveManager;
 
 [CustomEditor(typeof(SaveManager))]
 public class SaveManagerEditor : Editor
 {
     // ----- FIELDS ----- //
-    private List<bool> showVariablesFoldout = new List<bool>();
+    private List<List<bool>> showVariablesFoldout = new List<List<bool>>();
     private List<bool> showTransformFoldout = new List<bool>();
 
-    private GUIStyle removeButtonStyle; 
+    private GUIStyle removeButtonStyle;
     private GUIStyle titleStyle;
-    private GUIStyle boldStyle;
+    private GUIStyle boldBlueStyle;
+    private GUIStyle boxStyle;
+    private GUIStyle addScriptButton;
+    private GUIStyle addEntryButton;
+    private Color lightBlueColor;
+    private Color redColor;
     // ----- FIELDS ----- //
 
     public override void OnInspectorGUI()
@@ -26,21 +30,21 @@ public class SaveManagerEditor : Editor
         SaveManager saveManager = (SaveManager)target;
 
         // Check each gameobject -> script -> variables
-        for (int i = 0; i < saveManager.scriptSelections.Count; i++)
+        for (int i = 0; i < saveManager.SavedEntries.Count; i++)
         {
-            if (i == 0 )
+            if (i == 0)
             {
                 DrawLine();
             }
-            var scriptSelection = saveManager.scriptSelections[i];
+            var savedEntry = saveManager.SavedEntries[i];
 
-            EditorGUILayout.LabelField($"Save Variables {i + 1}", titleStyle);
+            EditorGUILayout.LabelField($"Saved Entry {i + 1}", titleStyle);
 
             // Get gameobject
             EditorGUI.BeginChangeCheck();
             var newTargetGameObject = (GameObject)EditorGUILayout.ObjectField(
                 "Target GameObject",
-                (GameObject)scriptSelection.targetGameObject,
+                (GameObject)savedEntry.SelectedGameObject,
                 typeof(GameObject),
                 true
             );
@@ -48,156 +52,229 @@ public class SaveManagerEditor : Editor
             // On change -> reset script & variables
             if (EditorGUI.EndChangeCheck())
             {
-                scriptSelection.targetGameObject = newTargetGameObject;
-                scriptSelection.selectedScript = null; 
+                savedEntry.SelectedGameObject = newTargetGameObject;
+                //scriptSelection.SelectedScript = null;
 
-                if (scriptSelection.variableSelections != null)
-                    scriptSelection.variableSelections.Clear();
+                if (savedEntry.Transform != null)
+                    savedEntry.Transform = null;
 
-                if (scriptSelection.transformSelection != null)
-                    scriptSelection.transformSelection = null;
+                if (savedEntry.TransformSelection != null)
+                    savedEntry.TransformSelection = null;
             }
 
-            if (scriptSelection.targetGameObject != null)
+            bool isGameObjectDuplicate = false;
+            foreach (var checkSavedEntry in saveManager.SavedEntries)
+            {
+                if (checkSavedEntry != savedEntry && checkSavedEntry.SelectedGameObject == savedEntry.SelectedGameObject)
+                    isGameObjectDuplicate = true;
+            }
+
+            if (isGameObjectDuplicate)
+            {
+                EditorGUILayout.HelpBox(
+                    $"Error: This GameObject is already selected in another Saved Entry.",
+                    MessageType.Error
+                );
+            }
+
+            if (savedEntry.SelectedGameObject != null)
             {
                 // Get script from gameobject
-                GameObject gameObject = scriptSelection.targetGameObject as GameObject;
-                MonoBehaviour[] scripts = gameObject.GetComponents<MonoBehaviour>();
-                string[] scriptNames = scripts.Select(s => s.GetType().Name).ToArray();
-                int selectedIndex = ArrayUtility.IndexOf(scripts, scriptSelection.selectedScript);
-                selectedIndex = EditorGUILayout.Popup("Select Script", selectedIndex, scriptNames);
+                GameObject gameObject = savedEntry.SelectedGameObject as GameObject;
 
-                if (selectedIndex >= 0)
+                #region Transfrom Fouldout
+
+                // Get Tarnsform
+                if (savedEntry.Transform == null)
                 {
-                    scriptSelection.selectedScript = scripts[selectedIndex];
-
-                    // Check if script not already saved
-                    bool isDuplicate = saveManager.scriptSelections
-                        .Where((_, idx) => idx != i) // exclude current script
-                        .Any(sel =>
-                            sel.targetGameObject == scriptSelection.targetGameObject &&
-                            sel.selectedScript == scriptSelection.selectedScript);
-
-                    // Show warning if already used
-                    if (isDuplicate)
-                    {
-                        EditorGUILayout.HelpBox(
-                            $"Error: This script is already selected for the same GameObject.",
-                            MessageType.Error
-                        );
-                    }
-
-
-                    // ----- VARIABLES ----- //
-                    // Get script -> variables
-                    var fields = scriptSelection.selectedScript.GetType()
-                        .GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic)
-                        .Where(f => !f.IsDefined(typeof(HideInInspector), true))
-                        .ToList();
-
-                    // Create selection if doesn't exists
-                    if (scriptSelection.variableSelections == null)
-                        scriptSelection.variableSelections = new List<SaveManager.VariableSelection>();
-
-                    // Check if variable exists in selection
-                    foreach (var field in fields)
-                    {
-                        if (!scriptSelection.variableSelections.Any(v => v.variableName == field.Name))
-                        {
-                            scriptSelection.variableSelections.Add(new SaveManager.VariableSelection { variableName = field.Name, isSelected = false});
-                        }
-                    }
-
-                    // Delete selection if not variables from script
-                    scriptSelection.variableSelections = scriptSelection.variableSelections
-                        .Where(v => fields.Any(f => f.Name == v.variableName))
-                    .ToList();
-                    // ----- VARIABLES ----- //
-
-                    // ----- TRANSFORM ----- //
-                    // Get script -> transform
-                    Transform transform = scriptSelection.selectedScript.transform;
+                    Transform transform = gameObject.transform;
                     Debug.Log($"get transform {transform}");
-                    scriptSelection.transform = transform;
-                    //scriptSelection.transformSelection = new SaveManager.TransformSelection(transform);
-                    //Debug.Log($"ADD TRANSFORM {transform}");
-                    // ----- TRANSFORM ----- //
+                    savedEntry.Transform = transform;
+                }
+                    
+                // Foldout menu transform
+                if (showTransformFoldout.Count < i + 1) showTransformFoldout.Add(false);
 
-                    // GUID
-                    if (scriptSelection.guid == "") scriptSelection.guid = Guid.NewGuid().ToString();
-                    EditorGUILayout.LabelField($"GUID : {scriptSelection.guid}");
+                showTransformFoldout[i] = EditorGUILayout.Foldout(showTransformFoldout[i], "Save Transform", boldBlueStyle);
+                if (showTransformFoldout[i])
+                {
+                    // -- POSITION -- //
+                    GUIStyle positionStyle = new GUIStyle(EditorStyles.label);
+                    positionStyle.normal.textColor = savedEntry.TransformSelection.positionSelected ? Color.white : Color.gray;
 
-                    // ----- VARIABLES ----- //
-                    // Foldout menu variables
-                    if (showVariablesFoldout.Count < i + 1) showVariablesFoldout.Add(false);
+                    // Set toggle & style
+                    EditorGUILayout.BeginHorizontal();
+                    savedEntry.TransformSelection.positionSelected = EditorGUILayout.Toggle(savedEntry.TransformSelection.positionSelected, GUILayout.Width(20));
+                    EditorGUILayout.LabelField("Position", positionStyle);
+                    EditorGUILayout.EndHorizontal();
+                    // -- POSITION -- //
 
-                    showVariablesFoldout[i] = EditorGUILayout.Foldout(showVariablesFoldout[i], "Save Variables", boldStyle);
-                    if (showVariablesFoldout[i])
+                    // -- ROTATION -- //
+                    GUIStyle rotationStyle = new GUIStyle(EditorStyles.label);
+                    rotationStyle.normal.textColor = savedEntry.TransformSelection.rotationSelected ? Color.white : Color.gray;
+
+                    // Set toggle & style
+                    EditorGUILayout.BeginHorizontal();
+                    savedEntry.TransformSelection.rotationSelected = EditorGUILayout.Toggle(savedEntry.TransformSelection.rotationSelected, GUILayout.Width(20));
+                    EditorGUILayout.LabelField("Rotation", rotationStyle);
+                    EditorGUILayout.EndHorizontal();
+                    // -- ROTATION -- //
+
+                    // -- SCALE -- //
+                    GUIStyle scaleStyle = new GUIStyle(EditorStyles.label);
+                    scaleStyle.normal.textColor = savedEntry.TransformSelection.scaleSelected ? Color.white : Color.gray;
+
+                    // Set toggle & style
+                    EditorGUILayout.BeginHorizontal();
+                    savedEntry.TransformSelection.scaleSelected = EditorGUILayout.Toggle(savedEntry.TransformSelection.scaleSelected, GUILayout.Width(20));
+                    EditorGUILayout.LabelField("Scale", scaleStyle);
+                    EditorGUILayout.EndHorizontal();
+                    // -- SCALE -- //
+                }
+                #endregion
+
+                // GUID
+                if (savedEntry.SelectionGUID == "") savedEntry.SelectionGUID = Guid.NewGuid().ToString();
+                EditorGUILayout.LabelField($"GUID : {savedEntry.SelectionGUID}");
+
+                if (savedEntry.ScriptDatas != null && savedEntry.ScriptDatas.Count > 0)
+                {
+                    foreach (var scriptData in savedEntry.ScriptDatas)
                     {
-                        foreach (var variable in scriptSelection.variableSelections)
+                        GUILayout.BeginVertical(boxStyle);
                         {
-                            // Change style if selected or not
-                            GUIStyle variableStyle = new GUIStyle(EditorStyles.label);
-                            variableStyle.normal.textColor = variable.isSelected ? Color.white : Color.gray;
+                            MonoBehaviour[] scripts = gameObject.GetComponents<MonoBehaviour>();
+                            string[] scriptNames = scripts.Select(s => s.GetType().Name).ToArray();
+                            int selectedIndex = ArrayUtility.IndexOf(scripts, scriptData.SelectedScript);
+                            selectedIndex = EditorGUILayout.Popup("Select Script", selectedIndex, scriptNames);
 
-                            // Set toggle & style
-                            EditorGUILayout.BeginHorizontal();
-                            variable.isSelected = EditorGUILayout.Toggle(variable.isSelected, GUILayout.Width(20));
-                            EditorGUILayout.LabelField(variable.variableName, variableStyle);
-                            EditorGUILayout.EndHorizontal();
+                            if (selectedIndex >= 0)
+                            {
+                                scriptData.SelectedScript = scripts[selectedIndex];
+
+                                // Duplication check
+                                bool isDuplicate = false;
+                                foreach (var script in savedEntry.ScriptDatas)
+                                {
+                                    if (script != scriptData && script.SelectedScript == scriptData.SelectedScript)
+                                        isDuplicate = true;
+                                }
+
+                                if (isDuplicate)
+                                {
+                                    EditorGUILayout.HelpBox(
+                                        $"Error: This script is already selected for the same GameObject.",
+                                        MessageType.Error
+                                    );
+                                }
+
+
+                                // ----- VARIABLES ----- //
+                                // Get script -> variables
+                                var fields = scriptData.SelectedScript.GetType()
+                                    .GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic)
+                                    .Where(f => !f.IsDefined(typeof(HideInInspector), true))
+                                    .ToList();
+
+                                // Create selection if doesn't exists
+                                if (scriptData.VariableSelections == null)
+                                    scriptData.VariableSelections = new List<SaveManager.VariableSelection>();
+
+                                // Check if variable exists in selection
+                                foreach (var field in fields)
+                                {
+                                    if (!scriptData.VariableSelections.Any(v => v.VariableName == field.Name))
+                                    {
+                                        scriptData.VariableSelections.Add(new SaveManager.VariableSelection { VariableName = field.Name, IsSaved = false });
+                                    }
+                                }
+
+                                // Delete selection if not variables from script
+                                scriptData.VariableSelections = scriptData.VariableSelections
+                                    .Where(v => fields.Any(f => f.Name == v.VariableName))
+                                .ToList();
+                                // ----- VARIABLES ----- //
+
+                                // ----- VARIABLES ----- //
+                                // Foldout menu variables
+                                
+                                int scriptDataIndex = savedEntry.ScriptDatas.IndexOf(scriptData);
+
+                                if (showVariablesFoldout.Count < i + 1 || showVariablesFoldout[i].Count < scriptDataIndex + 1)
+                                {
+                                    List<bool> scriptDatasBools = new List<bool>();
+                                    foreach (var data in saveManager.SavedEntries)
+                                    {
+                                        List<bool> scriptDatasBools2 = new List<bool>();
+                                        foreach (var script in data.ScriptDatas)
+                                        {
+                                            scriptDatasBools2.Add(false);
+                                        }
+                                        showVariablesFoldout.Add(scriptDatasBools2);
+                                    }
+     
+                                }
+
+
+                                showVariablesFoldout[i][scriptDataIndex] = EditorGUILayout.Foldout(showVariablesFoldout[i][scriptDataIndex], "Save Variables", boldBlueStyle);
+                                if (showVariablesFoldout[i][scriptDataIndex])
+                                {
+                                    foreach (var variable in scriptData.VariableSelections)
+                                    {
+                                        // Change style if selected or not
+                                        GUIStyle variableStyle = new GUIStyle(EditorStyles.label);
+                                        variableStyle.normal.textColor = variable.IsSaved ? Color.white : Color.gray;
+
+                                        // Set toggle & style
+                                        EditorGUILayout.BeginHorizontal();
+                                        variable.IsSaved = EditorGUILayout.Toggle(variable.IsSaved, GUILayout.Width(20));
+                                        EditorGUILayout.LabelField(variable.VariableName, variableStyle);
+                                        EditorGUILayout.EndHorizontal();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // Error when no script selected
+                                EditorGUILayout.HelpBox(
+                                    $"Error: You need to select a script",
+                                    MessageType.Error
+                                );
+                            }
+
+                            // Remove script
+                            if (GUILayout.Button("Remove Script Variables", removeButtonStyle))
+                            {
+                                Debug.Log("Remove script variables");
+                                savedEntry.ScriptDatas.RemoveAt(savedEntry.ScriptDatas.IndexOf(scriptData));
+                                GUI.changed = true;
+                                break;
+                            }
+                        }
+                        GUILayout.EndVertical();
+                        // ----- VARIABLES ----- //
+                    }
+                }
+
+                // Add script
+                if (GUILayout.Button("Add Script Variables", addScriptButton))
+                {
+                    if (savedEntry.ScriptDatas == null)
+                    {
+                        savedEntry.ScriptDatas = new List<SaveManager.ScriptData>();
+                    }
+
+                    // Ajout d'une nouvelle ScriptData
+                    savedEntry.ScriptDatas.Add(new SaveManager.ScriptData());
+
+                    // Assurer que VariableSelections est également initialisé si nécessaire
+                    foreach (var scriptData in savedEntry.ScriptDatas)
+                    {
+                        if (scriptData.VariableSelections == null)
+                        {
+                            scriptData.VariableSelections = new List<SaveManager.VariableSelection>();
                         }
                     }
-                    // ----- VARIABLES ----- //
-
-                    // ----- TRANSFORM ----- //
-                    // Foldout menu variables
-                    if (showTransformFoldout.Count < i + 1) showTransformFoldout.Add(false);
-
-                    showTransformFoldout[i] = EditorGUILayout.Foldout(showTransformFoldout[i], "Save Transform", boldStyle);
-                    if (showTransformFoldout[i])
-                    {
-                        // -- POSITION -- //
-                        GUIStyle positionStyle = new GUIStyle(EditorStyles.label);
-                        positionStyle.normal.textColor = scriptSelection.transformSelection.positionSelected ? Color.white : Color.gray;
-
-                        // Set toggle & style
-                        EditorGUILayout.BeginHorizontal();
-                        scriptSelection.transformSelection.positionSelected = EditorGUILayout.Toggle(scriptSelection.transformSelection.positionSelected, GUILayout.Width(20));
-                        EditorGUILayout.LabelField("Position", positionStyle);
-                        EditorGUILayout.EndHorizontal();
-                        // -- POSITION -- //
-
-                        // -- ROTATION -- //
-                        GUIStyle rotationStyle = new GUIStyle(EditorStyles.label);
-                        rotationStyle.normal.textColor = scriptSelection.transformSelection.rotationSelected ? Color.white : Color.gray;
-
-                        // Set toggle & style
-                        EditorGUILayout.BeginHorizontal();
-                        scriptSelection.transformSelection.rotationSelected = EditorGUILayout.Toggle(scriptSelection.transformSelection.rotationSelected, GUILayout.Width(20));
-                        EditorGUILayout.LabelField("Rotation", rotationStyle);
-                        EditorGUILayout.EndHorizontal();
-                        // -- ROTATION -- //
-
-                        // -- SCALE -- //
-                        GUIStyle scaleStyle = new GUIStyle(EditorStyles.label);
-                        scaleStyle.normal.textColor = scriptSelection.transformSelection.scaleSelected ? Color.white : Color.gray;
-
-                        // Set toggle & style
-                        EditorGUILayout.BeginHorizontal();
-                        scriptSelection.transformSelection.scaleSelected = EditorGUILayout.Toggle(scriptSelection.transformSelection.scaleSelected, GUILayout.Width(20));
-                        EditorGUILayout.LabelField("Scale", scaleStyle);
-                        EditorGUILayout.EndHorizontal();
-                        // -- SCALE -- //
-                    }
-                    // ----- VARIABLES ----- //
-                }
-                else
-                {
-                    // Error when no script selected
-                    EditorGUILayout.HelpBox(
-                        $"Error: You need to select a script",
-                        MessageType.Error
-                    );
                 }
             }
             else
@@ -215,7 +292,7 @@ public class SaveManagerEditor : Editor
             if (GUILayout.Button("Remove Save Variables", removeButtonStyle))
             {
                 Debug.Log("Remove save variables");
-                saveManager.scriptSelections.RemoveAt(i);
+                saveManager.SavedEntries.RemoveAt(i);
                 GUI.changed = true;
                 break;
             }
@@ -227,9 +304,9 @@ public class SaveManagerEditor : Editor
         }
 
         // Add save
-        if (GUILayout.Button("Add Save Variables"))
+        if (GUILayout.Button("Add Saved Entry", addEntryButton))
         {
-            saveManager.scriptSelections.Add(new SaveManager.ScriptSelection());
+            saveManager.SavedEntries.Add(new SaveManager.SavedEntry());
         }
 
         // Save changes in GUI
@@ -242,7 +319,7 @@ public class SaveManagerEditor : Editor
     private void DrawLine()
     {
         var rect = EditorGUILayout.BeginHorizontal();
-        Handles.color = Color.cyan;
+        Handles.color = lightBlueColor;
         Handles.DrawLine(new Vector2(rect.x - 15, rect.y), new Vector2(rect.width + 15, rect.y));
         EditorGUILayout.EndHorizontal();
 
@@ -251,9 +328,12 @@ public class SaveManagerEditor : Editor
 
     private void SetStyles()
     {
+        lightBlueColor = new Color(0.6681648f, 0.8293654f, 0.990566f, 1f);
+        redColor = new Color(0.671f, 0.016f, 0.016f, 1f);
+
         // Remove button
         removeButtonStyle = new GUIStyle();
-        removeButtonStyle.normal.textColor = Color.red;
+        removeButtonStyle.normal.textColor = redColor;
         removeButtonStyle.fontStyle = FontStyle.Bold;
         removeButtonStyle.alignment = TextAnchor.MiddleCenter;
 
@@ -264,11 +344,39 @@ public class SaveManagerEditor : Editor
         titleStyle.normal.textColor = Color.white;
 
         // Bold
-        boldStyle = new GUIStyle(EditorStyles.foldout);
-        boldStyle.fontStyle = FontStyle.Bold;
-        boldStyle.normal.textColor = Color.cyan;
-        boldStyle.onNormal.textColor = Color.cyan;
-        boldStyle.hover.textColor = Color.cyan;
-        boldStyle.onHover.textColor = Color.cyan;
+        boldBlueStyle = new GUIStyle(EditorStyles.foldout);
+        boldBlueStyle.fontStyle = FontStyle.Bold;
+        boldBlueStyle.normal.textColor = lightBlueColor;
+        boldBlueStyle.onNormal.textColor = lightBlueColor;
+        boldBlueStyle.hover.textColor = lightBlueColor;
+        boldBlueStyle.onHover.textColor = lightBlueColor;
+
+        // Script Box
+        Texture2D backgroundTexture = new Texture2D(1, 1);
+        backgroundTexture.SetPixel(0, 0, new Color(0.15f, 0.15f, 0.15f, 1f));
+        backgroundTexture.Apply();
+
+        boxStyle = new GUIStyle();
+        boxStyle.normal.background = backgroundTexture;
+        boxStyle.border = new RectOffset(10, 10, 10, 10);
+        boxStyle.margin = new RectOffset(0, 0, 10, 10);     
+        boxStyle.padding = new RectOffset(20, 20, 10, 10);
+ 
+        // Add Script Button
+        addScriptButton = new GUIStyle(GUI.skin.button);
+        addScriptButton.normal.textColor = lightBlueColor;
+        addScriptButton.normal.background = backgroundTexture;
+        addScriptButton.fontStyle = FontStyle.Bold;
+
+        // Add Entry Button
+        addEntryButton = new GUIStyle(GUI.skin.button);
+        addEntryButton.normal.textColor = lightBlueColor;
+        addEntryButton.normal.background = backgroundTexture;
+        addEntryButton.fontStyle = FontStyle.Bold;
+        
     }
+
+
 }
+
+
