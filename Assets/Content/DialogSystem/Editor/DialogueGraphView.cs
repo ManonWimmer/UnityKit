@@ -263,6 +263,8 @@ public class DialogueGraphView : GraphView
 
     #region Save / Load Graph
 
+    #region (save/load OLD)
+    /*
     public void SaveGraph(string path)  // Save the graph in a DialogueGraphSO
     {
         // Create a new ScriptableObject to save the graph
@@ -429,17 +431,161 @@ public class DialogueGraphView : GraphView
             AddElement(edge);
         }
     }
+    */
+    #endregion
+
+    #region Save
+    public void SaveGraph(string path)
+    {
+        var dialogueGraph = ScriptableObject.CreateInstance<DialogueGraphSO>();
+
+        SaveNodes(dialogueGraph);
+        SaveEdges(dialogueGraph);
+
+        AssetDatabase.CreateAsset(dialogueGraph, path);
+        AssetDatabase.SaveAssets();
+
+        Debug.Log($"Graph saved at: {path}");
+    }
+    private void SaveNodes(DialogueGraphSO dialogueGraph)
+    {
+        foreach (var node in nodes.ToList().OfType<DialogueNode>())
+        {
+            var nodeData = new DialogueNodeSO
+            {
+                id = node.GIUD,
+                dialogueId = node.DialogueText,
+                title = node.title,
+                position = node.GetPosition().position,
+                entryPoint = node.EntryPoint,
+                outputPorts = ExtractPortNames(node),
+                outputPortsChoiceId = ExtractPortLabels(node)
+            };
+
+            dialogueGraph.Nodes.Add(nodeData);
+        }
+    }
+    private void SaveEdges(DialogueGraphSO dialogueGraph)
+    {
+        foreach (var edge in edges.ToList().OfType<Edge>())
+        {
+            if (edge.input == null || edge.output == null) continue;
+
+            var fromNode = edge.output.node as DialogueNode;
+            var toNode = edge.input.node as DialogueNode;
+
+            if (fromNode == null || toNode == null) continue;
+
+            var edgeData = new DialogueEdgeSO
+            {
+                fromNodeId = fromNode.GIUD,
+                fromPortId = edge.output.name,
+                fromPortIndex = GetPortIndex(edge.output, fromNode),
+                toNodeId = toNode.GIUD,
+                toPortId = edge.input.name,
+                toPortIndex = GetPortIndex(edge.input, toNode)
+            };
+
+            dialogueGraph.Edges.Add(edgeData);
+        }
+    }
+    private List<string> ExtractPortNames(DialogueNode node)
+    {
+        return node.outputContainer.Query<Port>().ToList().Select(port => port.name).ToList();
+    }
+
+    private List<string> ExtractPortLabels(DialogueNode node)
+    {
+        return node.outputContainer.Query<Port>().ToList().Select(port => port.portName).ToList();
+    }
+
+    private int GetPortIndex(Port port, DialogueNode node)
+    {
+        return node.EntryPoint
+            ? port.parent.IndexOf(port) // Direct child of the output container
+            : port.parent.parent.IndexOf(port.parent);
+    }
+    #endregion
+
+    #region Load
+    public void LoadGraph(DialogueGraphSO dialogueGraph)
+    {
+        Debug.Log($"Loading graph: {dialogueGraph.name}");
+        ClearGraph();
+
+        LoadNodes(dialogueGraph);
+        LoadEdges(dialogueGraph);
+    }
+    private void LoadNodes(DialogueGraphSO dialogueGraph)
+    {
+        foreach (var nodeData in dialogueGraph.Nodes)
+        {
+            var node = nodeData.entryPoint
+                ? GenerateEntryPointNode(nodeData.position)
+                : CreateDialogueNode(nodeData.title, nodeData.position, nodeData.outputPorts, nodeData.outputPortsChoiceId);
+
+            node.GIUD = nodeData.id;
+            node.DialogueText = nodeData.dialogueId;
+
+            UpdateNodeIdField(node);
+
+            AddElement(node);
+        }
+    }
+    private void UpdateNodeIdField(DialogueNode node)
+    {
+        var idField = node.mainContainer.Q<TextField>("DialogueIdField");
+        if (idField != null)
+        {
+            idField.value = node.DialogueText;
+        }
+    }
+    private void LoadEdges(DialogueGraphSO dialogueGraph)
+    {
+        foreach (var edgeData in dialogueGraph.Edges)
+        {
+            var fromNode = FindNodeById(edgeData.fromNodeId);
+            var toNode = FindNodeById(edgeData.toNodeId);
+
+            if (fromNode == null || toNode == null) continue;
+
+            var fromPort = FindOutputPort(fromNode, edgeData.fromPortId, edgeData.fromPortIndex);
+            var toPort = FindInputPort(toNode, edgeData.toPortIndex);
+
+            if (fromPort != null && toPort != null)
+            {
+                var edge = fromPort.ConnectTo(toPort);
+                AddElement(edge);
+            }
+        }
+    }
+    private DialogueNode FindNodeById(string id)
+    {
+        return nodes.ToList().OfType<DialogueNode>().FirstOrDefault(n => n.GIUD == id);
+    }
+
+    private Port FindOutputPort(DialogueNode node, string portId, int index)
+    {
+        return node.EntryPoint
+            ? node.outputContainer.Children().OfType<Port>().ElementAtOrDefault(index)
+            : node.outputContainer.Query<Port>().ToList().FirstOrDefault(p => p.name == portId);
+    }
+
+    private Port FindInputPort(DialogueNode node, int index)
+    {
+        return node.inputContainer.Children().OfType<Port>().ElementAtOrDefault(index);
+    }
+    #endregion
+
+    #endregion
 
     public void ClearGraph()
     {
-        var elements = graphElements.ToList();
-        foreach (var element in elements)
+        foreach (var element in graphElements.ToList())
         {
             RemoveElement(element);
         }
 
         _entryPointNode = null;
     }
-    #endregion
-
 }
