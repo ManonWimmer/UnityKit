@@ -7872,7 +7872,7 @@ MonoBehaviour:
       - VariableName: _privateString
         IsSaved: 1
       - VariableName: PublicString
-        IsSaved: 0
+        IsSaved: 1
     TransformSelection:
       positionSelected: 1
       positionValue: []
@@ -8144,8 +8144,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _privateValue: 10
-  _privateString: Apagan
-  PublicString: Apagan
+  _privateString: Private String
+  PublicString: Public String
 --- !u!1 &2028865893
 GameObject:
   m_ObjectHideFlags: 0
