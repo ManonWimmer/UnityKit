@@ -1658,6 +1658,14 @@ PrefabInstance:
       value: Displayer_Dialogue
       objectReference: {fileID: 0}
     - target: {fileID: 7614483927623272631, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
+      propertyPath: _idToChoiceSO
+      value: 
+      objectReference: {fileID: 11400000, guid: b9ea86d6456684945a139369c1cacc55, type: 2}
+    - target: {fileID: 7614483927623272631, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
+      propertyPath: _idToDialogueSO
+      value: 
+      objectReference: {fileID: 11400000, guid: 3fc2e39a8801b2540ac37d67005bff19, type: 2}
+    - target: {fileID: 7614483927623272631, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
       propertyPath: _dialogueController
       value: 
       objectReference: {fileID: 1437152241}

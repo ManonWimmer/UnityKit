@@ -50,8 +50,15 @@ public class DialogueDisplayer : MonoBehaviour
 
     private void Awake()
     {
-        var temp = _idToDialogueSO.IdToTextConverter;   // Init dictionnary converter
-        var temp2 = _idToChoiceSO.IdToTextConverter;    // Init dictionnary converter
+        if (_idToDialogueSO != null)
+        {
+            var temp = _idToDialogueSO.IdToTextConverter;   // Init dictionnary converter
+        }
+
+        if (_idToChoiceSO != null)
+        {
+            var temp2 = _idToChoiceSO.IdToTextConverter;    // Init dictionnary converter
+        }
 
         if (_useDynamicLocalizationDisplay && _localizationDynamicDialogue)
         {
@@ -172,14 +179,14 @@ public class DialogueDisplayer : MonoBehaviour
     #region Converter Dialogue / Choice     ID -> TEXT
     private string GetDialogueTextFromDialogueId(string idDialogue)
     {
-        if (_idToDialogueSO == null) return "";
-
         if (_useDynamicLocalizationDisplay && _localizationDynamicDialogue != null)
         {
             return _localizationDynamicDialogue.GetDynamicLocalizedDialogueTextFromId(idDialogue);
         }
         else
         {
+            if (_idToDialogueSO == null) return "";
+
             if (_idToDialogueSO.IdToTextConverter.TryGetValue(idDialogue, out var dialogueText))
             {
                 return dialogueText;
@@ -191,14 +198,14 @@ public class DialogueDisplayer : MonoBehaviour
     }
     private string GetChoiceTextFromChoiceId(string idChoice)
     {
-        if (_idToChoiceSO == null) return "";
-
         if (_useDynamicLocalizationDisplay && _localizationDynamicDialogue != null)
         {
             return _localizationDynamicDialogue.GetDynamicLocalizedDialogueTextFromId(idChoice);
         }
         else
         {
+            if (_idToChoiceSO == null) return "";
+
             if (_idToChoiceSO.IdToTextConverter.TryGetValue(idChoice, out var choiceText))
             {
                 return choiceText;

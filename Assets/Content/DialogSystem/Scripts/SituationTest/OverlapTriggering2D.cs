@@ -19,7 +19,6 @@ public class OverlapTriggering2D : MonoBehaviour
         if (_tagsToCheck.Contains(collision.gameObject.tag))
         {
             OnTriggerEnterUnity?.Invoke();
-            Debug.Log("Unity Event");
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -29,7 +28,6 @@ public class OverlapTriggering2D : MonoBehaviour
         if (_tagsToCheck.Contains(collision.gameObject.tag))
         {
             OnTriggerExitUnity?.Invoke();
-            Debug.Log("Unity Event");
         }
     }
 }
