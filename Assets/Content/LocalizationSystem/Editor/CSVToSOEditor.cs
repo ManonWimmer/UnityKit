@@ -6,6 +6,7 @@ using UnityEngine;
 public class CSVToSOEditor : EditorWindow
 {
     private TextAsset csvFile; // Field to select the CSV file
+    private LocalizationDataSO localizationDataSO; // Field to select the ScriptableObject
     private string lastSelectedFolder; // Last selected folder
 
     [MenuItem("Tools/CSV to ScriptableObjects")] // Adds an entry in the Unity menu
@@ -22,7 +23,10 @@ public class CSVToSOEditor : EditorWindow
 
         // CSV file selection
         csvFile = (TextAsset)EditorGUILayout.ObjectField("CSV File", csvFile, typeof(TextAsset), false);
+        GUILayout.Space(10);
 
+        // Select the existing ScriptableObject to fill
+        localizationDataSO = (LocalizationDataSO)EditorGUILayout.ObjectField("LocalizationDataSO", localizationDataSO, typeof(LocalizationDataSO), false);
         GUILayout.Space(10);
 
         // Button to convert the CSV
@@ -34,16 +38,14 @@ public class CSVToSOEditor : EditorWindow
                 return;
             }
 
-            // Open a folder selection dialog
-            string folderPath = EditorUtility.SaveFilePanelInProject("Save LocalizationData", "NewLocalizationData", "asset", "Save LocalizationData");
-
-            if (!string.IsNullOrEmpty(folderPath))
+            if (localizationDataSO == null)
             {
-                lastSelectedFolder = folderPath;
-
-                // Generate the ScriptableObjects
-                GenerateScriptableObjects(folderPath);
+                EditorUtility.DisplayDialog("Error", "Please select a LocalizationDataSO to fill.", "OK");
+                return;
             }
+
+            // Generate the ScriptableObjects
+            FillLocalizationData(localizationDataSO);
         }
 
         // Display the last used folder
@@ -54,7 +56,7 @@ public class CSVToSOEditor : EditorWindow
         }
     }
 
-    private void GenerateScriptableObjects(string folderPath)
+    private void FillLocalizationData(LocalizationDataSO localizationDataSO)
     {
         // Read the lines of the CSV
         string[] lines = csvFile.text.Split('\n');
@@ -66,9 +68,6 @@ public class CSVToSOEditor : EditorWindow
 
         // Retrieve the headers (first line)
         string[] headers = lines[0].Split(',');
-
-        // Create an instance of the ScriptableObject
-        LocalizationDataSO localizationData = ScriptableObject.CreateInstance<LocalizationDataSO>();
 
         // Loop through each line of the CSV (skipping the header)
         for (int i = 1; i < lines.Length; i++)
@@ -95,22 +94,16 @@ public class CSVToSOEditor : EditorWindow
                 string text = columns[j].Trim();       // Translation text
 
                 // Add the data to the ScriptableObject
-                localizationData.AddEntry(key, languageID, text);
+                localizationDataSO.AddEntry(key, languageID, text);
             }
-
-            // Generate a unique name for the asset to avoid overwriting
-
-
-            Debug.Log($"Asset : {localizationData}  at path : {folderPath}");
-
-            // Save the ScriptableObject with the unique name
-            //AssetDatabase.CreateAsset(localizationData, assetPath);
-            AssetDatabase.CreateAsset(localizationData, folderPath);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-
-            // Confirm success
-            //EditorUtility.DisplayDialog("Success", "The ScriptableObject has been successfully generated.", "OK");
         }
+
+        // Save the ScriptableObject after filling it
+        EditorUtility.SetDirty(localizationDataSO); // Mark the asset as dirty to save changes
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        // Confirm success
+        EditorUtility.DisplayDialog("Success", "The ScriptableObject has been successfully updated.", "OK");
     }
 }

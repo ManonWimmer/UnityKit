@@ -1416,7 +1416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f52972b255fe6d948a9bccfd9bfef064, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _localizationDataSO: {fileID: 0}
+  _localizationDataSO: {fileID: 11400000, guid: 8207d70fcbc394842be8f5a8c2a660ee, type: 2}
   OnLanguageUpdatedUnity:
     m_PersistentCalls:
       m_Calls: []
