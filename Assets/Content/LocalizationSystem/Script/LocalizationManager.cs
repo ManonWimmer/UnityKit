@@ -20,6 +20,8 @@ public class LocalizationManager : MonoBehaviour
         SPANISH = 2
     }
 
+    [SerializeField] private LocalizationDataSO _localizationDataSO;
+
     #endregion
 
 
@@ -33,10 +35,18 @@ public class LocalizationManager : MonoBehaviour
 
     #region Properties
     public static LocalizationManager Instance { get => _instance; set => _instance = value; }
+    public Language CurrentLanguage { get => _currentLanguage; set => _currentLanguage = value; }
 
     #endregion
 
-    
+    private void Awake()
+    {
+        if (_instance != null)
+        {
+            Destroy(gameObject);
+        }
+        _instance = this;
+    }
 
     public void ChangeLanguages(int nextLanguage)
     {
@@ -44,6 +54,41 @@ public class LocalizationManager : MonoBehaviour
 
         OnLanguageUpdated?.Invoke(_currentLanguage);
         OnLanguageUpdatedUnity?.Invoke();
+    }
+
+    public string GetLocalisedTextWithID(string textId)
+    {
+        if (_localizationDataSO == null) return "";
+
+        Debug.Log($"BeforeContains Key tests / text id : {textId} / length dico : {_localizationDataSO.LocalizationData.Count}");
+        foreach (var text in _localizationDataSO.LocalizationData)
+        {
+            Debug.Log($"Key : {text.Key} / Value : {text.Value}");
+        }
+
+        if (!_localizationDataSO.LocalizationData.ContainsKey(textId)) return "";
+        Debug.Log("Contains Key tests");
+
+        string languageKeyId = GetLanguagekeyIdFromEnum(_currentLanguage);
+
+        if (!_localizationDataSO.LocalizationData[textId].ContainsKey(languageKeyId)) return "";
+
+        return _localizationDataSO.LocalizationData[textId][languageKeyId];
+    }
+
+    public string GetLanguagekeyIdFromEnum(Language language)
+    {
+        switch (language)
+        {
+            case Language.ENGLISH:
+                return "EN";
+            case Language.FRENCH:
+                return "FR";
+            case Language.SPANISH:
+                return "SP";
+            default:
+                return "";
+        }
     }
 
 }

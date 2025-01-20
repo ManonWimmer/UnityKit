@@ -41,8 +41,6 @@ public class CSVToSOEditor : EditorWindow
             {
                 lastSelectedFolder = folderPath;
 
-                
-
                 // Generate the ScriptableObjects
                 GenerateScriptableObjects(folderPath);
             }
@@ -100,18 +98,14 @@ public class CSVToSOEditor : EditorWindow
                 localizationData.AddEntry(key, languageID, text);
             }
 
-            // Define the save path
-            string assetPath = $"{folderPath}";
+            // Generate a unique name for the asset to avoid overwriting
 
-            if (AssetDatabase.LoadAssetAtPath<LocalizationDataSO>($"{folderPath}/LocalizationData.asset") != null)
-            {
-                // Si l'asset existe déjà, on le supprime
-                AssetDatabase.DeleteAsset($"{folderPath}/LocalizationData.asset");
-            }
 
-            // Save the ScriptableObject
-            AssetDatabase.CreateAsset(localizationData, assetPath);
-            EditorUtility.SetDirty(localizationData);
+            Debug.Log($"Asset : {localizationData}  at path : {folderPath}");
+
+            // Save the ScriptableObject with the unique name
+            //AssetDatabase.CreateAsset(localizationData, assetPath);
+            AssetDatabase.CreateAsset(localizationData, folderPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 

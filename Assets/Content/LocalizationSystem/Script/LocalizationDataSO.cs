@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static LocalizationDataSO;
 
 [CreateAssetMenu(fileName = "NewLocalizationData", menuName = "Localization/LocalizationData")]
 public class LocalizationDataSO : ScriptableObject
@@ -95,13 +94,21 @@ public class LocalizationDataSO : ScriptableObject
 
         if (!_localizationData.ContainsKey(key))
         {
-            _localizationData[key] = new Dictionary<string, string>();
+            //_localizationData[key] = new Dictionary<string, string>();
+
+            _localizationData.Add(key, new Dictionary<string, string>());
         }
 
         
         if (!_localizationData[key].ContainsKey(languageID))
         {
-            _localizationData[key][languageID] = text;
+            //_localizationData[key][languageID] = text;
+
+            _localizationData[key].Add(languageID, text);
+
+            Debug.Log($"for key '{key}' and language '{languageID}' ADD : {text}!");
+
+            Debug.Log(_localizationData.Count);
         }
         else
         {
