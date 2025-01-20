@@ -2,8 +2,7 @@
     "name": "CREMOT.DialogSystem",
     "rootNamespace": "CREMOT.DialogSystem",
     "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:36c7118c5fbc76140b386c779b427b0e"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

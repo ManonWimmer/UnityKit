@@ -28,6 +28,7 @@ public class LocalizationManager : MonoBehaviour
     #region Delegates
 
     public event Action<Language> OnLanguageUpdated;
+    public event Action OnLanguageUpdatedNoParam;
 
     public UnityEvent OnLanguageUpdatedUnity;
 
@@ -53,6 +54,7 @@ public class LocalizationManager : MonoBehaviour
         _currentLanguage = (Language)nextLanguage;
 
         OnLanguageUpdated?.Invoke(_currentLanguage);
+        OnLanguageUpdatedNoParam?.Invoke();
         OnLanguageUpdatedUnity?.Invoke();
     }
 

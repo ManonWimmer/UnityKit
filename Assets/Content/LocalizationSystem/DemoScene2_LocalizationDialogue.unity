@@ -442,7 +442,7 @@ PrefabInstance:
     - target: {fileID: 7614483927623272631, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
       propertyPath: _localizationDynamicDialogue
       value: 
-      objectReference: {fileID: 700848701}
+      objectReference: {fileID: 0}
     - target: {fileID: 7614483927623272631, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
       propertyPath: _useDynamicLocalizationDisplay
       value: 1
@@ -490,28 +490,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6120096256402442514, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 700848701}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
---- !u!1 &700848700 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6120096256402442514, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
-  m_PrefabInstance: {fileID: 700848699}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &700848701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 700848700}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 222b5e6488625e344ab9181abe698be1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &715112808
 PrefabInstance:
   m_ObjectHideFlags: 0

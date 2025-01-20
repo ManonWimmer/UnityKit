@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 
@@ -44,7 +47,10 @@ public class DialogueDisplayer : MonoBehaviour
     [Header("Localization Parameters")]
 
     [SerializeField] private bool _useDynamicLocalizationDisplay;
-    [SerializeField] private LocalizationDynamicDialogue _localizationDynamicDialogue;
+
+    // Reflexion to avoid dependencies with Localization Package
+    private MonoBehaviour _localizationManager;
+    private MethodInfo _getLocalizedTextMethod;
 
     #endregion
 
@@ -60,16 +66,88 @@ public class DialogueDisplayer : MonoBehaviour
             var temp2 = _idToChoiceSO.IdToTextConverter;    // Init dictionnary converter
         }
 
-        if (_useDynamicLocalizationDisplay && _localizationDynamicDialogue)
+        if (_useDynamicLocalizationDisplay)
         {
-            _localizationDynamicDialogue = GetComponent<LocalizationDynamicDialogue>();
+            GetLocalizationObjectsTroughRelfexion();
+            SubscribeToLanguageChange();
+        }
 
-            if (_localizationDynamicDialogue != null)
-            {
-                _localizationDynamicDialogue.OnNotifyChangeLanguage += RefreshAllText;
-            }
+        if (_localizationManager == null || _getLocalizedTextMethod == null)
+        {
+            _useDynamicLocalizationDisplay = false;
         }
     }
+
+    #region Reflexion Localization setup (to avoid depencies trough packages)
+    private void GetLocalizationObjectsTroughRelfexion()
+    {
+        _localizationManager = FindObjectsOfType<MonoBehaviour>().FirstOrDefault(m => m.GetType().Name == "LocalizationManager");
+
+        if (_localizationManager != null)
+        {
+            // Get dynamic method "GetLocalizedTextWithID" in LocalizationManager
+            _getLocalizedTextMethod = _localizationManager.GetType().GetMethod("GetLocalisedTextWithID", BindingFlags.Public | BindingFlags.Instance);
+
+            if (_getLocalizedTextMethod == null)
+            {
+                //Debug.LogWarning("La méthode GetLocalizedTextWithID n'a pas été trouvée dans LocalizationManager.");
+            }
+        }
+        else
+        {
+            //Debug.LogWarning("Aucun LocalizationManager trouvé dans la scène.");
+        }
+    }
+    private void SubscribeToLanguageChange()
+    {
+        if (_localizationManager == null) return;
+
+        // Get event "OnLanguageUpdatedNoParam" in LocalizationManager
+        var onLanguageUpdatedEvent = _localizationManager.GetType()
+            .GetEvent("OnLanguageUpdatedNoParam", BindingFlags.Public | BindingFlags.Instance);
+
+        if (onLanguageUpdatedEvent != null)
+        {
+            // Create delegate to RefreshAllText
+            var handler = Delegate.CreateDelegate(
+                onLanguageUpdatedEvent.EventHandlerType,
+                this,
+                typeof(DialogueDisplayer).GetMethod("RefreshAllText", BindingFlags.Public | BindingFlags.Instance)
+            );
+
+            // Suscribe from event
+            onLanguageUpdatedEvent.AddEventHandler(_localizationManager, handler);
+            //Debug.Log("Abonné à l'événement OnLanguageUpdatedNoParam.");
+        }
+        else
+        {
+            //Debug.LogWarning("L'événement OnLanguageUpdatedNoParam n'a pas été trouvé.");
+        }
+    }
+    private void UnsubscribeFromLanguageChange()
+    {
+        if (_localizationManager == null) return;
+
+        // Get event "OnLanguageUpdatedNoParam" in LocalizationManager
+        var onLanguageUpdatedEvent = _localizationManager.GetType()
+            .GetEvent("OnLanguageUpdatedNoParam", BindingFlags.Public | BindingFlags.Instance);
+
+        if (onLanguageUpdatedEvent != null)
+        {
+            // Create delegate to RefreshAllText
+            var handler = Delegate.CreateDelegate(
+                onLanguageUpdatedEvent.EventHandlerType,
+                this,
+                typeof(DialogueDisplayer).GetMethod("RefreshAllText", BindingFlags.Public | BindingFlags.Instance)
+            );
+
+            // Unsuscribe from event
+            onLanguageUpdatedEvent.RemoveEventHandler(_localizationManager, handler);
+            //Debug.Log("Désabonné de l'événement OnLanguageUpdatedNoParam.");
+        }
+    }
+
+    #endregion
 
     private void Start()
     {
@@ -94,9 +172,9 @@ public class DialogueDisplayer : MonoBehaviour
             _dialogueController.OnChoiceUpdated -= DisplayChoices;
         }
 
-        if (_localizationDynamicDialogue != null)
+        if (_useDynamicLocalizationDisplay)
         {
-            _localizationDynamicDialogue.OnNotifyChangeLanguage -= RefreshAllText;
+            UnsubscribeFromLanguageChange();
         }
     }
 
@@ -176,12 +254,28 @@ public class DialogueDisplayer : MonoBehaviour
     }
     #endregion
 
+    #region Relfexion Localization methods
+    public string GetLocalizedTextTroughReflexion(string textId)
+    {
+        if (_localizationManager == null || _getLocalizedTextMethod == null)
+        {
+            Debug.LogWarning("Impossible d'obtenir le texte localisé : aucune méthode disponible.");
+            return textId; // Retourne l'ID comme fallback
+        }
+
+        // Appeler dynamiquement la méthode "GetLocalizedTextWithID"
+        return (string)_getLocalizedTextMethod.Invoke(_localizationManager, new object[] { textId });
+    }
+
+    #endregion
+
+
     #region Converter Dialogue / Choice     ID -> TEXT
     private string GetDialogueTextFromDialogueId(string idDialogue)
     {
-        if (_useDynamicLocalizationDisplay && _localizationDynamicDialogue != null)
+        if (_useDynamicLocalizationDisplay && _localizationManager != null && _getLocalizedTextMethod != null)
         {
-            return _localizationDynamicDialogue.GetDynamicLocalizedDialogueTextFromId(idDialogue);
+            return GetLocalizedTextTroughReflexion(idDialogue);
         }
         else
         {
@@ -198,9 +292,9 @@ public class DialogueDisplayer : MonoBehaviour
     }
     private string GetChoiceTextFromChoiceId(string idChoice)
     {
-        if (_useDynamicLocalizationDisplay && _localizationDynamicDialogue != null)
+        if (_useDynamicLocalizationDisplay && _localizationManager != null && _getLocalizedTextMethod != null)
         {
-            return _localizationDynamicDialogue.GetDynamicLocalizedDialogueTextFromId(idChoice);
+            return GetLocalizedTextTroughReflexion(idChoice);
         }
         else
         {
