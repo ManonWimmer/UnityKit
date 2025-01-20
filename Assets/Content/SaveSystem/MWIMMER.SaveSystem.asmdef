@@ -1,6 +1,6 @@
 {
     "name": "MWIMMER.SaveSystem",
-    "rootNamespace": "",
+    "rootNamespace": "MWIMMER.SaveSystem",
     "references": [
         "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
