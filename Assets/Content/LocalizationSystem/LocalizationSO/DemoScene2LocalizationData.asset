@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db56d23eafa5672468a9323d76ad7433, type: 3}
-  m_Name: TestMarchand_2
+  m_Name: DemoScene2LocalizationData
   m_EditorClassIdentifier: 
   _keyEntries:
   - key: ID_0
@@ -37,14 +37,14 @@ MonoBehaviour:
       text: Vous partez !
     - languageID: SP
       text: "\xA1Vete!"
-  - key: BTN_OTHER
+  - key: ID_LF
     translations:
     - languageID: EN
-      text: Give Coin
+      text: Life
     - languageID: FR
-      text: Donne Sous
+      text: Vie
     - languageID: SP
-      text: Give Coin (en espagnol)
+      text: Vida
   - key: C_0
     translations:
     - languageID: EN
@@ -85,3 +85,19 @@ MonoBehaviour:
       text: "Enlevez les pi\xE8ces !"
     - languageID: SP
       text: "\xA1Quita las monedas!"
+  - key: ID_STMA
+    translations:
+    - languageID: EN
+      text: Stamina
+    - languageID: FR
+      text: Energie
+    - languageID: SP
+      text: Vigor
+  - key: ID_AMMO
+    translations:
+    - languageID: EN
+      text: Ammo
+    - languageID: FR
+      text: Munitions
+    - languageID: SP
+      text: Municion

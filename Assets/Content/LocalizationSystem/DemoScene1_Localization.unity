@@ -411,7 +411,7 @@ PrefabInstance:
     - target: {fileID: 4642377269388708133, guid: 47c1fe60fa7a62746b6a9c7c1f17f7b0, type: 3}
       propertyPath: _localizationDataSO
       value: 
-      objectReference: {fileID: 11400000, guid: b532dc398b9504f44b1d41847333e309, type: 2}
+      objectReference: {fileID: 11400000, guid: feea85b230f40ac429e7e299d782f76e, type: 2}
     - target: {fileID: 5211115149453304190, guid: 47c1fe60fa7a62746b6a9c7c1f17f7b0, type: 3}
       propertyPath: m_Name
       value: Manager_Localization

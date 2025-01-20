@@ -10,30 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db56d23eafa5672468a9323d76ad7433, type: 3}
-  m_Name: TestMarchand
+  m_Name: DemoScene1LocalizationData
   m_EditorClassIdentifier: 
   _keyEntries:
-  - key: ID_0
+  - key: ID_LF
     translations:
     - languageID: EN
-      text: I Sell apple !
+      text: Life
     - languageID: FR
-      text: Je vends des pommes
+      text: Vie
     - languageID: SP
-      text: viento truca
-  - key: ID_1
+      text: Vida
+  - key: ID_STMA
     translations:
     - languageID: EN
-      text: Take those apple
+      text: Stamina
     - languageID: FR
-      text: Prenez ces pommes
+      text: Energie
     - languageID: SP
-      text: Toca esta truca
-  - key: ID_2
+      text: Vigor
+  - key: ID_AMMO
     translations:
     - languageID: EN
-      text: you don't have enough money
+      text: Ammo
     - languageID: FR
-      text: Vous n'avez pas assez d'argent
+      text: Munitions
     - languageID: SP
-      text: No tienes dinero
+      text: Municion
