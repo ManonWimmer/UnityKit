@@ -33,7 +33,7 @@ MonoBehaviour:
     translations:
     - languageID: EN
       text: Off you go!
-    - languageID: 'FR '
+    - languageID: FR
       text: Vous partez !
     - languageID: SP
       text: "\xA1Vete!"

@@ -130,6 +130,7 @@ public class DialogueDisplayer : MonoBehaviour
     {
         if (_choicesContainer == null) return;
         if (_dialogueController == null) return;
+        if (!_displayButtonsElements) return;
 
         ClearAllChildren(_choicesContainer.transform);
 
