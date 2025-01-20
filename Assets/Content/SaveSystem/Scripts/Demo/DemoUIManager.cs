@@ -19,6 +19,6 @@ public class DemoUIManager : MonoBehaviour
     {
         _playerHealthTxt.text = $"PLAYER HEALTH : {_demoPlayer.PlayerHealth}";
         _playerLevelTxt.text = $"PLAYER LEVEL : {_demoPlayer.PlayerLevel}";
-        _playerPositionTxt.text = $"PLAYER POSITION : {_playerRectTransform.position}";
+        _playerPositionTxt.text = $"PLAYER POSITION : {_demoPlayer.transform.position}";
     }
 }

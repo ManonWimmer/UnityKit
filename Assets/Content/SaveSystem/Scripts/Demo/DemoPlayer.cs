@@ -42,6 +42,6 @@ public class DemoPlayer : MonoBehaviour
 
     public void RandomYPositon()
     {
-        transform.position = new Vector3(transform.position.y, Random.Range(_minYPosition, _maxYPosition), transform.position.z);
+        transform.position = new Vector3(transform.position.x, Random.Range(_minYPosition, _maxYPosition), transform.position.z);
     }
 }
