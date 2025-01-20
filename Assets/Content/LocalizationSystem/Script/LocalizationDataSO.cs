@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static LocalizationDataSO;
 
 [CreateAssetMenu(fileName = "NewLocalizationData", menuName = "Localization/LocalizationData")]
 public class LocalizationDataSO : ScriptableObject
@@ -20,9 +21,9 @@ public class LocalizationDataSO : ScriptableObject
         public List<TranslationEntry> translations = new List<TranslationEntry>();
     }
 
-    [SerializeField] private List<KeyEntry> _keyEntries = new List<KeyEntry>();
+    //[SerializeField] private List<KeyEntry> _keyEntries = new List<KeyEntry>();
 
-    private Dictionary<string, Dictionary<string, string>> _localizationData;
+    [SerializeField] private Dictionary<string, Dictionary<string, string>> _localizationData = new Dictionary<string, Dictionary<string, string>>();
 
     /// <summary>
     /// Access the localization data as a dictionary at runtime.
@@ -31,6 +32,7 @@ public class LocalizationDataSO : ScriptableObject
     {
         get
         {
+            /*
             if (_localizationData == null)
             {
                 _localizationData = new Dictionary<string, Dictionary<string, string>>();
@@ -55,6 +57,7 @@ public class LocalizationDataSO : ScriptableObject
                     }
                 }
             }
+            */
 
             return _localizationData;
         }
@@ -65,6 +68,7 @@ public class LocalizationDataSO : ScriptableObject
     /// </summary>
     public void AddEntry(string key, string languageID, string text)
     {
+        /*
         // Find the key entry
         var keyEntry = _keyEntries.Find(entry => entry.key == key);
         if (keyEntry == null)
@@ -87,5 +91,21 @@ public class LocalizationDataSO : ScriptableObject
         // Clear the runtime dictionary cache to rebuild it
         _localizationData = null;
         var temp = LocalizationData;
+        */
+
+        if (!_localizationData.ContainsKey(key))
+        {
+            _localizationData[key] = new Dictionary<string, string>();
+        }
+
+        
+        if (!_localizationData[key].ContainsKey(languageID))
+        {
+            _localizationData[key][languageID] = text;
+        }
+        else
+        {
+            Debug.LogWarning($"Duplicate translation detected for key '{key}' and language '{languageID}'");
+        }
     }
 }

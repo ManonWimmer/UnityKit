@@ -103,13 +103,20 @@ public class CSVToSOEditor : EditorWindow
             // Define the save path
             string assetPath = $"{folderPath}";
 
+            if (AssetDatabase.LoadAssetAtPath<LocalizationDataSO>($"{folderPath}/LocalizationData.asset") != null)
+            {
+                // Si l'asset existe déjà, on le supprime
+                AssetDatabase.DeleteAsset($"{folderPath}/LocalizationData.asset");
+            }
+
             // Save the ScriptableObject
             AssetDatabase.CreateAsset(localizationData, assetPath);
+            EditorUtility.SetDirty(localizationData);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
             // Confirm success
-            EditorUtility.DisplayDialog("Success", "The ScriptableObject has been successfully generated.", "OK");
+            //EditorUtility.DisplayDialog("Success", "The ScriptableObject has been successfully generated.", "OK");
         }
     }
 }
