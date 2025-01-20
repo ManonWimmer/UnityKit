@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db56d23eafa5672468a9323d76ad7433, type: 3}
+  m_Name: TestMarchand_2
+  m_EditorClassIdentifier: 
+  _keyEntries:
+  - key: ID_0
+    translations:
+    - languageID: EN
+      text: I'm selling apples! Come back when you've got 3 coins !
+    - languageID: FR
+      text: Je vends des pommes ! Revenez quand vous aurez 3 Pieces !
+    - languageID: SP
+      text: "\xA1Estoy vendiendo manzanas! \xA1Vuelve cuando tengas 3 peniques!"
+  - key: ID_1
+    translations:
+    - languageID: EN
+      text: Here you are! Here's your apple
+    - languageID: FR
+      text: Tenez ! Voici votre pomme
+    - languageID: SP
+      text: "\xA1Aqu\xED tienes! Aqu\xED est\xE1 tu manzana"
+  - key: ID_2
+    translations:
+    - languageID: EN
+      text: Off you go!
+    - languageID: 'FR '
+      text: Vous partez !
+    - languageID: SP
+      text: "\xA1Vete!"
+  - key: BTN_OTHER
+    translations:
+    - languageID: EN
+      text: Give Coin
+    - languageID: FR
+      text: Donne Sous
+    - languageID: SP
+      text: Give Coin (en espagnol)
+  - key: C_0
+    translations:
+    - languageID: EN
+      text: Spend 2 Coins
+    - languageID: FR
+      text: "D\xE9penser 2 Pieces"
+    - languageID: SP
+      text: Gasta 2 Monedas
+  - key: C_1
+    translations:
+    - languageID: EN
+      text: Leave
+    - languageID: FR
+      text: Partir
+    - languageID: SP
+      text: Ir a
+  - key: C_2
+    translations:
+    - languageID: EN
+      text: Continue
+    - languageID: FR
+      text: Continuer
+    - languageID: SP
+      text: Continuar
+  - key: BTN_GV
+    translations:
+    - languageID: EN
+      text: Give coins!
+    - languageID: FR
+      text: Donne des pieces !
+    - languageID: SP
+      text: "\xA1Dona algunas monedas!"

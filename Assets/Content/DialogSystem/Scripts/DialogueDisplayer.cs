@@ -28,6 +28,9 @@ public class DialogueDisplayer : MonoBehaviour
     [SerializeField] private GameObject _choicesContainer;
     [SerializeField] private GameObject _buttonChoicePrefab;
 
+    private string _currentSavedDialogueId;
+    private List<string> _currentSavedChoicesIds;
+
     [Space(20)]
 
     [Header("Display Parameters")]
@@ -36,12 +39,29 @@ public class DialogueDisplayer : MonoBehaviour
     [SerializeField] private bool _neverHideDisplayer = false;
     [SerializeField] private bool _startHidden = false;
 
+    [Space(20)]
+
+    [Header("Localization Parameters")]
+
+    [SerializeField] private bool _useDynamicLocalizationDisplay;
+    [SerializeField] private LocalizationDynamicDialogue _localizationDynamicDialogue;
+
     #endregion
 
     private void Awake()
     {
         var temp = _idToDialogueSO.IdToTextConverter;   // Init dictionnary converter
         var temp2 = _idToChoiceSO.IdToTextConverter;    // Init dictionnary converter
+
+        if (_useDynamicLocalizationDisplay && _localizationDynamicDialogue)
+        {
+            _localizationDynamicDialogue = GetComponent<LocalizationDynamicDialogue>();
+
+            if (_localizationDynamicDialogue != null)
+            {
+                _localizationDynamicDialogue.OnNotifyChangeLanguage += RefreshAllText;
+            }
+        }
     }
 
     private void Start()
@@ -65,6 +85,11 @@ public class DialogueDisplayer : MonoBehaviour
             _dialogueController.OnDialogueUpdated -= DisplayDialogueText;
 
             _dialogueController.OnChoiceUpdated -= DisplayChoices;
+        }
+
+        if (_localizationDynamicDialogue != null)
+        {
+            _localizationDynamicDialogue.OnNotifyChangeLanguage -= RefreshAllText;
         }
     }
 
@@ -94,6 +119,8 @@ public class DialogueDisplayer : MonoBehaviour
         string text = GetDialogueTextFromDialogueId(textId);
 
         _dialogueText.text = text;
+
+        _currentSavedDialogueId = textId;
     }
 
     #endregion
@@ -111,6 +138,8 @@ public class DialogueDisplayer : MonoBehaviour
             if (choicesText[i] == null) continue;
             AddChoiceButton(_dialogueController, i, choicesText[i]);
         }
+
+        _currentSavedChoicesIds = choicesText;
     }
     private void ClearAllChildren(Transform parent)
     {
@@ -143,9 +172,17 @@ public class DialogueDisplayer : MonoBehaviour
     private string GetDialogueTextFromDialogueId(string idDialogue)
     {
         if (_idToDialogueSO == null) return "";
-        if (_idToDialogueSO.IdToTextConverter.TryGetValue(idDialogue, out var dialogueText))
+
+        if (_useDynamicLocalizationDisplay && _localizationDynamicDialogue != null)
         {
-            return dialogueText;
+            return _localizationDynamicDialogue.GetDynamicLocalizedDialogueTextFromId(idDialogue);
+        }
+        else
+        {
+            if (_idToDialogueSO.IdToTextConverter.TryGetValue(idDialogue, out var dialogueText))
+            {
+                return dialogueText;
+            }
         }
 
         Debug.LogWarning($"Dialogue ID not found: {idDialogue}");
@@ -154,14 +191,32 @@ public class DialogueDisplayer : MonoBehaviour
     private string GetChoiceTextFromChoiceId(string idChoice)
     {
         if (_idToChoiceSO == null) return "";
-        if (_idToChoiceSO.IdToTextConverter.TryGetValue(idChoice, out var choiceText))
+
+        if (_useDynamicLocalizationDisplay && _localizationDynamicDialogue != null)
         {
-            return choiceText;
+            return _localizationDynamicDialogue.GetDynamicLocalizedDialogueTextFromId(idChoice);
+        }
+        else
+        {
+            if (_idToChoiceSO.IdToTextConverter.TryGetValue(idChoice, out var choiceText))
+            {
+                return choiceText;
+            }
         }
 
         Debug.LogWarning($"Choice ID not found: {idChoice}");
         return "";
     }
+    #endregion
+
+    #region Refresh Dialogue / Choices
+
+    public void RefreshAllText()
+    {
+        DisplayDialogueText(_currentSavedDialogueId);
+        DisplayChoices(_currentSavedChoicesIds);
+    }
+
     #endregion
 
 }

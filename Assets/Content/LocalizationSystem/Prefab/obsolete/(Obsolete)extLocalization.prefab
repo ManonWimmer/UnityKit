@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1712423393691346017}
   - component: {fileID: 3200729042431473872}
   m_Layer: 0
-  m_Name: TextLocalization
+  m_Name: (Obsolete)extLocalization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

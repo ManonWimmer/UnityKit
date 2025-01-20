@@ -431,7 +431,7 @@ GameObject:
   - component: {fileID: 4651603740906794377}
   - component: {fileID: 2476067619825444148}
   m_Layer: 5
-  m_Name: DropdownLocalization
+  m_Name: (Obsolete)DropdownLocalization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

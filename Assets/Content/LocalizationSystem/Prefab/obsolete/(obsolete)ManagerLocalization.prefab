@@ -9,10 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7407636779591951979}
-  - component: {fileID: 5139241859188892247}
   - component: {fileID: 8697801932007173253}
   m_Layer: 0
-  m_Name: ManagerLocalization
+  m_Name: (obsolete)ManagerLocalization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,19 +32,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5139241859188892247
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 406251488764341324}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 581d2c95252c01e49adb58341cb13883, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  webLinkCSV: https://docs.google.com/spreadsheets/d/e/2PACX-1vSXqS5FKCsIi3my0kWlN2RHHga0aSIUu7gs3SEM3jj1TtUS2Pxm7NRfWXWxVk0jgVlo16IPRBYhcuYK/pub?output=csv
 --- !u!114 &8697801932007173253
 MonoBehaviour:
   m_ObjectHideFlags: 0
