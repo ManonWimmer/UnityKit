@@ -60,14 +60,7 @@ public class LocalizationManager : MonoBehaviour
     {
         if (_localizationDataSO == null) return "";
 
-        Debug.Log($"BeforeContains Key tests / text id : {textId} / length dico : {_localizationDataSO.LocalizationData.Count}");
-        foreach (var text in _localizationDataSO.LocalizationData)
-        {
-            Debug.Log($"Key : {text.Key} / Value : {text.Value}");
-        }
-
         if (!_localizationDataSO.LocalizationData.ContainsKey(textId)) return "";
-        Debug.Log("Contains Key tests");
 
         string languageKeyId = GetLanguagekeyIdFromEnum(_currentLanguage);
 
