@@ -42,23 +42,25 @@ public class LocalizationDataSOEditor : Editor
                 EditorGUILayout.PropertyField(textProperty);
             }
 
+            /*
             // Add a button to add more translations
             if (GUILayout.Button("Add Translation"))
             {
                 translationsProperty.arraySize++;
                 serializedObject.ApplyModifiedProperties();
             }
-
+            */
             GUILayout.Space(10);
         }
 
+        /*
         // Add a button to add more keys
         if (GUILayout.Button("Add New Key"))
         {
             keyEntriesProperty.arraySize++;
             serializedObject.ApplyModifiedProperties();
         }
-
+        */
         serializedObject.ApplyModifiedProperties();
     }
 }

@@ -1,3 +1,4 @@
+using CREMOT.DialogSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,44 +19,44 @@ public class DialogueGraphSO : ScriptableObject
 [System.Serializable]
 public class DialogueNodeSO
 {
-    public string id;
-    public string dialogueId;
-    public string title;
-    public Vector2 position;
-    public bool entryPoint = false;
-    public List<string> outputPorts = new List<string>(); // Liste des GUID des ports de sortie
+    [CREMOT.DialogSystem.ReadOnly] public string id;
+    [CREMOT.DialogSystem.ReadOnly] public string dialogueId;
+    [CREMOT.DialogSystem.ReadOnly] public string title;
+    [CREMOT.DialogSystem.ReadOnly] public Vector2 position;
+    [CREMOT.DialogSystem.ReadOnly] public bool entryPoint = false;
+    [CREMOT.DialogSystem.ReadOnly] public List<string> outputPorts = new List<string>(); // Liste des GUID des ports de sortie
 
-    public List<string> outputPortsChoiceId = new List<string>(); // List des custom ID des ports de sortie
+    [CREMOT.DialogSystem.ReadOnly] public List<string> outputPortsChoiceId = new List<string>(); // List des custom ID des ports de sortie
 
 
-    public List<PortCondition> portConditions = new List<PortCondition>();
+    [CREMOT.DialogSystem.ReadOnly] public List<PortCondition> portConditions = new List<PortCondition>();
 }
 
 [System.Serializable]
 public class DialogueEdgeSO
 {
-    public string fromNodeId;   // Guid node de départ
-    public string fromPortId;   // Guid port de départ
+    [CREMOT.DialogSystem.ReadOnly] public string fromNodeId;   // Guid node de départ
+    [CREMOT.DialogSystem.ReadOnly] public string fromPortId;   // Guid port de départ
 
-    public string toNodeId;     // Guid node d'arrivée
-    public string toPortId;     // Guid port d'arrivée
+    [CREMOT.DialogSystem.ReadOnly] public string toNodeId;     // Guid node d'arrivée
+    [CREMOT.DialogSystem.ReadOnly] public string toPortId;     // Guid port d'arrivée
 
-    public int fromPortIndex;   // position du port de départ (pas utilisé car bug à cause du container visual element)
-    public int toPortIndex;     // position du port d'arrivée (utilisé car pas de container sur ce port)
+    [CREMOT.DialogSystem.ReadOnly] public int fromPortIndex;   // position du port de départ (pas utilisé car bug à cause du container visual element)
+    [CREMOT.DialogSystem.ReadOnly] public int toPortIndex;     // position du port d'arrivée (utilisé car pas de container sur ce port)
 }
 
 // --------------- Condition part -------------------
 [System.Serializable]
 public class ConditionSO
 {
-    public string requiredItem; // Nom de l'item requis
-    public int requiredQuantity; // Quantité requise
-    public bool isMet; // État de la condition (calculé à l'exécution)
+    [CREMOT.DialogSystem.ReadOnly] public string requiredItem; // Nom de l'item requis
+    [CREMOT.DialogSystem.ReadOnly] public int requiredQuantity; // Quantité requise
+    [CREMOT.DialogSystem.ReadOnly] public bool isMet; // État de la condition (calculé à l'exécution)
 }
 
 [System.Serializable]
 public class PortCondition
 {
-    public string portId;
-    public List<ConditionSO> conditions = new List<ConditionSO>();
+    [CREMOT.DialogSystem.ReadOnly] public string portId;
+    [CREMOT.DialogSystem.ReadOnly] public List<ConditionSO> conditions = new List<ConditionSO>();
 }

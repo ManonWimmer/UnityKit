@@ -1,6 +1,7 @@
+using CREMOT.LocalizationSystem;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewLocalizationData", menuName = "Localization/LocalizationData")]
@@ -9,15 +10,15 @@ public class LocalizationDataSO : ScriptableObject
     [System.Serializable]
     public class TranslationEntry
     {
-        public string languageID; // Language (e.g., FR, EN, ES)
-        public string text;       // Text for this language
+        [CREMOT.LocalizationSystem.ReadOnly] public string languageID; // Language (e.g., FR, EN, ES)
+        [CREMOT.LocalizationSystem.ReadOnly] public string text;       // Text for this language
     }
 
     [System.Serializable]
     public class KeyEntry
     {
-        public string key; // Main key (e.g., 1, 2, ...)
-        public List<TranslationEntry> translations = new List<TranslationEntry>();
+        [CREMOT.LocalizationSystem.ReadOnly] public string key; // Main key (e.g., 1, 2, ...)
+        [CREMOT.LocalizationSystem.ReadOnly] public List<TranslationEntry> translations = new List<TranslationEntry>();
     }
 
     [SerializeField] private List<KeyEntry> _keyEntries = new List<KeyEntry>();
