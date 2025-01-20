@@ -7,9 +7,6 @@ using System.Reflection;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using static UnityEngine.Rendering.DebugUI;
-using System.Globalization;
-using static UnityEditor.Rendering.InspectorCurveEditor;
 
 public class SaveManager : MonoBehaviour
 {
