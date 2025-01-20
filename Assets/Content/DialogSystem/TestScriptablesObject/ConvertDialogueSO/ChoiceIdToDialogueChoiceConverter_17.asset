@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dialogueEntries:
   - id: C_0
-    dialogueText: "D\xE9penser 2 Pieces"
+    dialogueText: "D\xE9penser 3 Pieces"
   - id: C_1
     dialogueText: Partir
   - id: C_2

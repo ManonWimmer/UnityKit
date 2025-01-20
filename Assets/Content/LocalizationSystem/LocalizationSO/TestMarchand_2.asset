@@ -48,11 +48,11 @@ MonoBehaviour:
   - key: C_0
     translations:
     - languageID: EN
-      text: Spend 2 Coins
+      text: Spend 3 Coins
     - languageID: FR
-      text: "D\xE9penser 2 Pieces"
+      text: "D\xE9penser 3 Pieces"
     - languageID: SP
-      text: Gasta 2 Monedas
+      text: Gasta 3 Monedas
   - key: C_1
     translations:
     - languageID: EN
@@ -77,3 +77,11 @@ MonoBehaviour:
       text: Donne des pieces !
     - languageID: SP
       text: "\xA1Dona algunas monedas!"
+  - key: BTN_RMV
+    translations:
+    - languageID: EN
+      text: Remove coins!
+    - languageID: FR
+      text: "Enlevez les pi\xE8ces !"
+    - languageID: SP
+      text: "\xA1Quita las monedas!"
