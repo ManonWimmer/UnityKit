@@ -498,6 +498,10 @@ PrefabInstance:
       value: Displayer_Dialogue (1)
       objectReference: {fileID: 0}
     - target: {fileID: 7614483927623272631, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
+      propertyPath: _startHidden
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7614483927623272631, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
       propertyPath: _idToChoiceSO
       value: 
       objectReference: {fileID: 11400000, guid: b9ea86d6456684945a139369c1cacc55, type: 2}
@@ -554,6 +558,25 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d5aadd7ba6d85049a67c1555e0b31f7, type: 3}
+--- !u!1 &840671962 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4557911872919608134, guid: 2873d0dc445b3f4418a01fd466cb8111, type: 3}
+  m_PrefabInstance: {fileID: 1551392723012268907}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &840671965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840671962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63b75f23fd3fed944b8101f1832aa705, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemKeyToGive: Coin
+  _itemNumber: 3
 --- !u!1 &877718911
 GameObject:
   m_ObjectHideFlags: 0
@@ -912,7 +935,7 @@ PrefabInstance:
     - target: {fileID: 8820898146673431925, guid: fc39108569f87094eb748b52ef25d1eb, type: 3}
       propertyPath: _dialogueGraphSO
       value: 
-      objectReference: {fileID: 11400000, guid: 6dd537d2bddc13e4ba4670e7f75f5cba, type: 2}
+      objectReference: {fileID: 11400000, guid: 8c5b16e4741972a46afc442d0547afab, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1390,7 +1413,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4557911872919608134, guid: 2873d0dc445b3f4418a01fd466cb8111, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 840671965}
   m_SourcePrefab: {fileID: 100100000, guid: 2873d0dc445b3f4418a01fd466cb8111, type: 3}
 --- !u!1001 &2369139905969222767
 PrefabInstance:
@@ -1447,7 +1473,7 @@ PrefabInstance:
     - target: {fileID: 8820898146673431925, guid: fc39108569f87094eb748b52ef25d1eb, type: 3}
       propertyPath: _dialogueGraphSO
       value: 
-      objectReference: {fileID: 11400000, guid: 6dd537d2bddc13e4ba4670e7f75f5cba, type: 2}
+      objectReference: {fileID: 11400000, guid: 930e6a76cd1fe784cbdf1fdf63c31325, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

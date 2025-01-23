@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -142,9 +144,12 @@ namespace CREMOT.DialogSystem
                 Debug.LogWarning("No valid dialogue found for this choice : " + nextDialogueId);
             }
 
+
             NotifyDialogueChange(_currentDialogueId);
 
             NotifyChoiceChange(nextDialogueNode.outputPortsChoiceId, nextDialogueNode.outputPorts);
+
+            ApplyNodeAssociatedFunctions(_currentDialogueNodeSO);
         }
 
         #endregion
@@ -222,6 +227,43 @@ namespace CREMOT.DialogSystem
 
         #endregion
 
+        #region Apply node associated Functions
+
+        private void ApplyNodeAssociatedFunctions(DialogueNodeSO nodeData)
+        {
+            if (nodeData == null) return;
+
+            foreach (var callFunData in nodeData.callFunctions)
+            {
+                if (callFunData == null) continue;
+
+                if (string.IsNullOrEmpty(callFunData.gameObjectId) || string.IsNullOrEmpty(callFunData.methodName)) continue;
+
+                var tempGameObject = EditorUtility.InstanceIDToObject(int.Parse(callFunData.gameObjectId)) as GameObject;
+
+                if (tempGameObject == null) continue;
+
+                // Split the method name to get the component type and method name  "componentName.methodName"
+                var methodParts = callFunData.methodName.Split('.');
+                if (methodParts.Length != 2) continue;
+
+                var componentName = methodParts[0];
+                var methodName = methodParts[1];
+
+                // Get the component
+                var component = tempGameObject.GetComponent(componentName);
+                if (component == null) continue;
+
+                // Get the method
+                var method = component.GetType().GetMethod(methodName, BindingFlags.Public | BindingFlags.Instance);
+                if (method == null) continue;
+
+                // Invoke the method
+                method.Invoke(component, null);
+            }
+        }
+
+        #endregion
 
 
         #region Parcours Graph Data
