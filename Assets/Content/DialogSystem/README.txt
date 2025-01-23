@@ -28,6 +28,7 @@ Setup :
 		-> You can also create your own with the DialogueDisplayer component
 	-> Set the DialogueController in your DialogueDisplayer
 
+	----------------------------------------------
 
 	-> if YOU ARE NOT using the loaclization system
 		-> You'll need to setup your dialog and choices idToDialogue converter
@@ -35,6 +36,9 @@ Setup :
 		-> Enter the id's you set in your graph and the associated text
 		-> Repeat the process for the choices
 		-> Set the converter variables in the DialogueDisplayer
+
+	----------------------------------------------
+
 	-> if YOU ARE using the loaclization system
 		-> You won't need the Dialogue and Choices converter
 		-> Add a LocalizationDynamicDialogue component to the DialogueDisplayer
@@ -46,6 +50,18 @@ Setup :
 
 	-> You now have your Dialogue Ready to go !
 
+	----------------------------------------------
+
+	-> if you wan't to use Function calls trough graph
+		-> you'll need the prefab ManagerPersistant in your scene
+		-> then click "assign GUID to All Objects""
+			-> now every gameObjects in the scene have a Persistant GUID attached
+			-> !!!!! WARNING !!!!! if you click "remove all guids" your references in the graph will break
+			-> references only works in the scene you linked you function graph in (or in duplications of the scene if the Persistant GUID remain the same)
+		-> if you wan't to add a Persistant GUID only for new objects that don't have one, don't worry, the button "assign GUID to All Objects" doesn't modify existing Persistant GUID
+
+		-> You are now ready to use Function Calls in the graph !
+
 -----------------------------------------------------------------------------------
 
 Customization :
@@ -56,4 +72,4 @@ Customization :
 
 Crédits : Corentin REMOT
 
-Salut francko !
+Salut franck'o !
