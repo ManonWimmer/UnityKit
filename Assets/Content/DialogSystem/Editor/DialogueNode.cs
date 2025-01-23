@@ -59,7 +59,7 @@ namespace CREMOT.DialogSystem
 
                 callFunctions = nodeEventsContainers.Select(container => new CallFunctionData
                 {
-                    gameObjectId = container.CallFunctionField.value != null ? container.CallFunctionField.value.GetInstanceID().ToString() : "",
+                    gameObjectPersistantGUID = (container.CallFunctionField.value as GameObject).GetComponent<PersistentGUID>().GUID,
 
                     methodName = container.MethodPopupField.value
                 }).ToList()

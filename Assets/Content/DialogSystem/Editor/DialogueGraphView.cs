@@ -590,7 +590,20 @@ namespace CREMOT.DialogSystem
                 foreach (var callFunctionData in nodeData.callFunctions)
                 {
                     var container = new NodeCallFunctionContainer(node);
-                    container.CallFunctionField.value = EditorUtility.InstanceIDToObject(int.Parse(callFunctionData.gameObjectId)) as GameObject;
+                    //container.CallFunctionField.value = EditorUtility.InstanceIDToObject(int.Parse(callFunctionData.gameObjectId)) as GameObject;
+
+                    // ------ Load object associated to event trough persistant GUID ---------------
+                    foreach (var gameObject in GameObject.FindObjectsOfType<GameObject>())
+                    {
+                        var persistentGUID = gameObject.GetComponent<PersistentGUID>();
+                        if (persistentGUID != null && persistentGUID.GUID == callFunctionData.gameObjectPersistantGUID)
+                        {
+                            container.CallFunctionField.value = gameObject;
+                            break;
+                        }
+                    }
+                    // --------------------------------------------------------------------------------
+
                     container.MethodPopupField.value = callFunctionData.methodName;
                     node.nodeEventsContainers.Add(container);
                 }

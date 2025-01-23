@@ -68,7 +68,7 @@ namespace CREMOT.DialogSystem
     [System.Serializable]
     public class CallFunctionData
     {
-        public string gameObjectId;
+        public string gameObjectPersistantGUID;
         public string methodName;
     }
 }

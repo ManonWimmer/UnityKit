@@ -237,9 +237,14 @@ namespace CREMOT.DialogSystem
             {
                 if (callFunData == null) continue;
 
-                if (string.IsNullOrEmpty(callFunData.gameObjectId) || string.IsNullOrEmpty(callFunData.methodName)) continue;
+                if (string.IsNullOrEmpty(callFunData.gameObjectPersistantGUID) || string.IsNullOrEmpty(callFunData.methodName)) continue;
 
-                var tempGameObject = EditorUtility.InstanceIDToObject(int.Parse(callFunData.gameObjectId)) as GameObject;
+                GameObject tempGameObject = null;
+
+                if (PersistentGUIDManager.Instance != null)
+                {
+                    tempGameObject = PersistentGUIDManager.Instance.GetObjectByGUID(callFunData.gameObjectPersistantGUID);
+                }
 
                 if (tempGameObject == null) continue;
 
