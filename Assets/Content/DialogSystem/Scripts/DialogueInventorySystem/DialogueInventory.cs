@@ -40,6 +40,8 @@ namespace CREMOT.DialogSystem
 
         public void AddItem(string stringName, int quantity)
         {
+            if (string.IsNullOrEmpty(stringName)) return;
+
             if (_dialogueItemsInventory.ContainsKey(stringName))
             {
                 _dialogueItemsInventory[stringName] += quantity;
@@ -53,6 +55,8 @@ namespace CREMOT.DialogSystem
         }
         public void RemoveItem(string stringName, int quantity)
         {
+            if (string.IsNullOrEmpty(stringName)) return;
+
             if (_dialogueItemsInventory.ContainsKey(stringName))
             {
                 _dialogueItemsInventory[stringName] -= quantity;
@@ -67,6 +71,8 @@ namespace CREMOT.DialogSystem
 
         public bool HasItem(string item, int quantity)
         {
+            if (string.IsNullOrEmpty(item)) return false;
+
             if (quantity <= 0) return true;
 
             if (!_dialogueItemsInventory.ContainsKey(item)) return false;
