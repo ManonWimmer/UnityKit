@@ -3,40 +3,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewIdToDialogueConverter", menuName = "Dialogue/IdToDialogueConverter")]
-public class IdToDialogueSO : ScriptableObject
+namespace CREMOT.DialogSystem
 {
-    [Serializable]
-    public class DialogueEntry
+    [CreateAssetMenu(fileName = "NewIdToDialogueConverter", menuName = "Dialogue/IdToDialogueConverter")]
+    public class IdToDialogueSO : ScriptableObject
     {
-        public string id;
-        public string dialogueText;
-    }
-
-    [SerializeField] private List<DialogueEntry> _dialogueEntries;
-
-    private Dictionary<string, string> _idToTextConverter;
-
-    public Dictionary<string, string> IdToTextConverter
-    {
-        get
+        [Serializable]
+        public class DialogueEntry
         {
-            if (_idToTextConverter == null)
+            public string id;
+            public string dialogueText;
+        }
+
+        [SerializeField] private List<DialogueEntry> _dialogueEntries;
+
+        private Dictionary<string, string> _idToTextConverter;
+
+        public Dictionary<string, string> IdToTextConverter
+        {
+            get
             {
-                _idToTextConverter = new Dictionary<string, string>();
-                foreach (var entry in _dialogueEntries)
+                if (_idToTextConverter == null)
                 {
-                    if (!_idToTextConverter.ContainsKey(entry.id))
+                    _idToTextConverter = new Dictionary<string, string>();
+                    foreach (var entry in _dialogueEntries)
                     {
-                        _idToTextConverter.Add(entry.id, entry.dialogueText);
-                    }
-                    else
-                    {
-                        Debug.Log($"Duplicate dialogue ID detected: {entry.id}");
+                        if (!_idToTextConverter.ContainsKey(entry.id))
+                        {
+                            _idToTextConverter.Add(entry.id, entry.dialogueText);
+                        }
+                        else
+                        {
+                            Debug.Log($"Duplicate dialogue ID detected: {entry.id}");
+                        }
                     }
                 }
+                return _idToTextConverter;
             }
-            return _idToTextConverter;
         }
     }
 }

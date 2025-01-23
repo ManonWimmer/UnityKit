@@ -4,20 +4,23 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 
-[CustomEditor(typeof(DialogueGraphSO))]
-public class GraphEditor : Editor
+namespace CREMOT.DialogSystem
 {
-    [OnOpenAsset]
-    public static bool OnOpenAsset(int instanceId, int index)
+    [CustomEditor(typeof(DialogueGraphSO))]
+    public class GraphEditor : Editor
     {
-        Object @object = EditorUtility.InstanceIDToObject(instanceId);
-        if (@object.GetType() == typeof(DialogueGraphSO))
+        [OnOpenAsset]
+        public static bool OnOpenAsset(int instanceId, int index)
         {
-            DialogueGraph.OpenDialogueGraphWindow(@object);
+            Object @object = EditorUtility.InstanceIDToObject(instanceId);
+            if (@object.GetType() == typeof(DialogueGraphSO))
+            {
+                DialogueGraph.OpenDialogueGraphWindow(@object);
 
-            return true;
+                return true;
+            }
+
+            return false;
         }
-
-        return false;
     }
 }

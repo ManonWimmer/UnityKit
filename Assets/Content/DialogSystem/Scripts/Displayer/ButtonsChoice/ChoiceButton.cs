@@ -3,36 +3,39 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class ChoiceButton : MonoBehaviour
+namespace CREMOT.DialogSystem
 {
-    #region Fields
-    private DialogueController _dialogueController;
-
-    private int _associatedChoiceIndex;
-
-    [SerializeField] private TextMeshProUGUI _choiceText;
-    #endregion
-
-
-    public void Init(DialogueController dialogueController, int id, string textValue = "Default Choice")   // Init Button data
+    public class ChoiceButton : MonoBehaviour
     {
-        _dialogueController = dialogueController;
+        #region Fields
+        private DialogueController _dialogueController;
 
-        _associatedChoiceIndex = id;    // init id to indicate wich path to take
+        private int _associatedChoiceIndex;
 
-        SetButtonLabel(textValue);
-    }
-    public void SetButtonLabel(string text)
-    {
-        if (_choiceText == null) return;
+        [SerializeField] private TextMeshProUGUI _choiceText;
+        #endregion
 
-        _choiceText.text = text;
-    }
 
-    public void TriggerSelectChoiceButton()     // send id button to indicate wich path to take -> trough UnityEvent
-    {
-        if (_dialogueController == null) return;
+        public void Init(DialogueController dialogueController, int id, string textValue = "Default Choice")   // Init Button data
+        {
+            _dialogueController = dialogueController;
 
-        _dialogueController.SelectChoice(_associatedChoiceIndex);
+            _associatedChoiceIndex = id;    // init id to indicate wich path to take
+
+            SetButtonLabel(textValue);
+        }
+        public void SetButtonLabel(string text)
+        {
+            if (_choiceText == null) return;
+
+            _choiceText.text = text;
+        }
+
+        public void TriggerSelectChoiceButton()     // send id button to indicate wich path to take -> trough UnityEvent
+        {
+            if (_dialogueController == null) return;
+
+            _dialogueController.SelectChoice(_associatedChoiceIndex);
+        }
     }
 }

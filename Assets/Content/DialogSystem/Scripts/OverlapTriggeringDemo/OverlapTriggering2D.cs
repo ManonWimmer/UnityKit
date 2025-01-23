@@ -3,31 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class OverlapTriggering2D : MonoBehaviour
+namespace CREMOT.DialogSystem
 {
-    [SerializeField] private List<string> _tagsToCheck;
-
-
-    public UnityEvent OnTriggerEnterUnity;
-
-    public UnityEvent OnTriggerExitUnity;
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    public class OverlapTriggering2D : MonoBehaviour
     {
-        if (collision == null) return;
+        [SerializeField] private List<string> _tagsToCheck;
 
-        if (_tagsToCheck.Contains(collision.gameObject.tag))
+
+        public UnityEvent OnTriggerEnterUnity;
+
+        public UnityEvent OnTriggerExitUnity;
+
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            OnTriggerEnterUnity?.Invoke();
+            if (collision == null) return;
+
+            if (_tagsToCheck.Contains(collision.gameObject.tag))
+            {
+                OnTriggerEnterUnity?.Invoke();
+            }
         }
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision == null) return;
-
-        if (_tagsToCheck.Contains(collision.gameObject.tag))
+        private void OnTriggerExit2D(Collider2D collision)
         {
-            OnTriggerExitUnity?.Invoke();
+            if (collision == null) return;
+
+            if (_tagsToCheck.Contains(collision.gameObject.tag))
+            {
+                OnTriggerExitUnity?.Invoke();
+            }
         }
     }
 }
