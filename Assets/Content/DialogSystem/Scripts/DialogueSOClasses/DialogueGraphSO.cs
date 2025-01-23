@@ -33,6 +33,8 @@ namespace CREMOT.DialogSystem
 
 
         [CREMOT.DialogSystem.ReadOnly] public List<PortCondition> portConditions = new List<PortCondition>();
+
+        [CREMOT.DialogSystem.ReadOnly] public List<CallFunctionData> callFunctions = new List<CallFunctionData>();
     }
 
     [System.Serializable]
@@ -62,5 +64,11 @@ namespace CREMOT.DialogSystem
     {
         [CREMOT.DialogSystem.ReadOnly] public string portId;
         [CREMOT.DialogSystem.ReadOnly] public List<ConditionSO> conditions = new List<ConditionSO>();
+    }
+    [System.Serializable]
+    public class CallFunctionData
+    {
+        public string gameObjectId;
+        public string methodName;
     }
 }

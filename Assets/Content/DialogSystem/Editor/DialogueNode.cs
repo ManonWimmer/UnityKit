@@ -52,24 +52,34 @@ namespace CREMOT.DialogSystem
                 title = title,
                 position = GetPosition().position,
                 entryPoint = EntryPoint,
-                //outputPorts = new List<string>(OutputPorts),
                 outputPorts = outputContainer.Query<Port>().ToList().Select(port => port.name).ToList(),
-                //outputPortsChoiceId = new List<string>(OutputPortsChoiceId),
                 outputPortsChoiceId = outputContainer.Query<Port>().ToList().Select(port => port.portName).ToList(),
 
-                portConditions = PortConditions
+                portConditions = PortConditions,
+
+                callFunctions = nodeEventsContainers.Select(container => new CallFunctionData
+                {
+                    gameObjectId = container.CallFunctionField.value != null ? container.CallFunctionField.value.GetInstanceID().ToString() : "",
+
+                    methodName = container.MethodPopupField.value
+                }).ToList()
             };
         }
     }
 
     public class NodeCallFunctionContainer : VisualElement
     {
+        #region Fields
         public ObjectField CallFunctionField;
 
         public PopupField<string> MethodPopupField;
-        private List<string> methodNames = new List<string>();
+        public List<string> methodNames = new List<string>();
+
+        #endregion
 
 
+
+        #region Construct
         public NodeCallFunctionContainer(DialogueNode node)
         {
             CallFunctionField = new ObjectField("Event Field")
@@ -89,6 +99,9 @@ namespace CREMOT.DialogSystem
             node.mainContainer.Add(CallFunctionField);
             node.mainContainer.Add(MethodPopupField);
         }
+        #endregion
+
+        #region Popup
         private void UpdateMethodPopup(GameObject selectedObject)
         {
             methodNames.Clear();
@@ -109,6 +122,6 @@ namespace CREMOT.DialogSystem
             MethodPopupField.choices = methodNames;
             MethodPopupField.index = 0;
         }
+        #endregion
     }
-
 }

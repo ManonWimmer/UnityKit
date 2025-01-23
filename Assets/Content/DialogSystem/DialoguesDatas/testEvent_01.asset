@@ -10,33 +10,35 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1407b570a3c98a64c8b5cb583e8b2f72, type: 3}
-  m_Name: NewDialogueGraph_Test35
+  m_Name: testEvent_01
   m_EditorClassIdentifier: 
   nodes:
-  - id: 6eb65449-6d6a-4c6b-91bc-ae5dbae29661
+  - id: d18485da-3c95-4b06-bb12-4549b6d0aa8a
     dialogueId: START
     title: START
     position: {x: 100, y: 200}
     entryPoint: 1
     outputPorts:
-    - 94fb2074-36d9-42b1-8efd-b7bb33f8b52b
+    - 98ef46e2-65e2-4963-888b-17dfc6c81d92
     outputPortsChoiceId:
     - Next
     portConditions: []
     callFunctions: []
-  - id: 95352d9a-9861-49b7-a28e-b50fe8edfd57
-    dialogueId: ID_0
+  - id: b22c34d4-6bec-4fb3-b357-8b3cc375f480
+    dialogueId: Dialogue Node
     title: Dialogue Node
-    position: {x: 221, y: 200}
+    position: {x: 238, y: 200}
     entryPoint: 0
     outputPorts: []
     outputPortsChoiceId: []
     portConditions: []
-    callFunctions: []
+    callFunctions:
+    - gameObjectId: -3390
+      methodName: DialogueInventory.RemoveItem
   edges:
-  - fromNodeId: 6eb65449-6d6a-4c6b-91bc-ae5dbae29661
-    fromPortId: 94fb2074-36d9-42b1-8efd-b7bb33f8b52b
-    toNodeId: 95352d9a-9861-49b7-a28e-b50fe8edfd57
-    toPortId: 0d1f4981-8aad-481f-b15f-1d097ea28246
+  - fromNodeId: d18485da-3c95-4b06-bb12-4549b6d0aa8a
+    fromPortId: 98ef46e2-65e2-4963-888b-17dfc6c81d92
+    toNodeId: b22c34d4-6bec-4fb3-b357-8b3cc375f480
+    toPortId: 7eee2f04-43ae-4bc2-bf01-7759bc4ca726
     fromPortIndex: 0
     toPortIndex: 0
