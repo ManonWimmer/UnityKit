@@ -285,12 +285,12 @@ namespace CREMOT.DialogSystem
         }
         private void AddCallFunctionField(DialogueNode node)
         {
-            NodeCallFunctionContainer nodeEventsContainer = new NodeCallFunctionContainer(node)
-            {
-                
-            };
+            NodeCallFunctionContainer nodeEventsContainer = new NodeCallFunctionContainer(node);
 
             node.nodeEventsContainers.Add(nodeEventsContainer);
+
+            node.RefreshExpandedState();
+            node.RefreshPorts();
         }
         
         #endregion

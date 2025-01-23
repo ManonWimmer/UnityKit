@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using System.Linq;
 using UnityEditor.UIElements;
 using UnityEngine.Events;
+using System.Reflection;
 
 namespace CREMOT.DialogSystem
 {
@@ -65,17 +66,49 @@ namespace CREMOT.DialogSystem
     {
         public ObjectField CallFunctionField;
 
+        public PopupField<string> MethodPopupField;
+        private List<string> methodNames = new List<string>();
+
+
         public NodeCallFunctionContainer(DialogueNode node)
         {
-            var callFunctionField = new ObjectField("Event Field")
+            CallFunctionField = new ObjectField("Event Field")
             {
 
             };
-            callFunctionField.objectType = typeof(GameObject);
+            CallFunctionField.RegisterValueChangedCallback(evt =>
+            {
+                UpdateMethodPopup(evt.newValue as GameObject);
+            });
 
-            node.mainContainer.Add(callFunctionField);
+            CallFunctionField.objectType = typeof(GameObject);
 
-            CallFunctionField = callFunctionField;
+            MethodPopupField = new PopupField<string>("Selected Method", methodNames, 0);
+
+
+            node.mainContainer.Add(CallFunctionField);
+            node.mainContainer.Add(MethodPopupField);
+        }
+        private void UpdateMethodPopup(GameObject selectedObject)
+        {
+            methodNames.Clear();
+
+            if (selectedObject != null)
+            {
+                var components = selectedObject.GetComponents<MonoBehaviour>();
+                foreach (var component in components)
+                {
+                    var methods = component.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+
+                    foreach (var method in methods)
+                    {
+                        methodNames.Add($"{component.GetType().Name}.{method.Name}");
+                    }
+                }
+            }
+            MethodPopupField.choices = methodNames;
+            MethodPopupField.index = 0;
         }
     }
+
 }
