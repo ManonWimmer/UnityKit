@@ -19,7 +19,7 @@ MonoBehaviour:
     position: {x: 100, y: 200}
     entryPoint: 1
     outputPorts:
-    - ecc7a137-e9b9-45a7-a696-1a1bfd5ec6c5
+    - c41c3cf6-f9b2-42b0-9357-8850a42d9d2a
     outputPortsChoiceId:
     - Next
     portConditions: []
@@ -55,11 +55,11 @@ MonoBehaviour:
     - C_2
     portConditions: []
     callFunctions:
-    - gameObjectId: -69594
+    - gameObjectPersistantGUID: 3f821078-e700-490b-8d08-208cbe14bbd8
       methodName: DialogueDisplayer.HideDisplayer
-    - gameObjectId: -69536
+    - gameObjectPersistantGUID: 4c982f90-3cf5-4bb6-9d7a-03f692e7c778
       methodName: DialogueDisplayer.ShowDisplayer
-    - gameObjectId: 36942
+    - gameObjectPersistantGUID: 10da50e1-b899-4137-bae7-e9a8fab49536
       methodName: DialogueItemGiver.removeItemToDialogueInventory
   - id: 6fd89bee-7255-4b2b-b828-83dc7c6d2676
     dialogueId: ID_2
@@ -74,26 +74,26 @@ MonoBehaviour:
     callFunctions: []
   edges:
   - fromNodeId: 08e8728d-a673-4197-92ec-233c8b00222a
-    fromPortId: ecc7a137-e9b9-45a7-a696-1a1bfd5ec6c5
+    fromPortId: c41c3cf6-f9b2-42b0-9357-8850a42d9d2a
     toNodeId: 8a437327-5457-4234-9369-1f6f123a50ab
-    toPortId: 11b180ca-abc7-463c-be48-d31093d26529
+    toPortId: f86ff1ed-faf7-41e0-9633-47d61f9b43a9
     fromPortIndex: 0
     toPortIndex: 0
   - fromNodeId: 8a437327-5457-4234-9369-1f6f123a50ab
     fromPortId: 35de5544-d673-4157-bd2a-b97d952ebfe7
     toNodeId: 6fd89bee-7255-4b2b-b828-83dc7c6d2676
-    toPortId: 9190a8d5-f874-45ba-8b82-503eaa2b6472
+    toPortId: 799f4b0c-a12f-4fdc-92f5-4a0e1015a750
     fromPortIndex: 1
     toPortIndex: 0
   - fromNodeId: 6fd89bee-7255-4b2b-b828-83dc7c6d2676
     fromPortId: 0c0951a3-c072-4648-8c8e-72b07413118f
     toNodeId: 8a437327-5457-4234-9369-1f6f123a50ab
-    toPortId: 11b180ca-abc7-463c-be48-d31093d26529
+    toPortId: f86ff1ed-faf7-41e0-9633-47d61f9b43a9
     fromPortIndex: 0
     toPortIndex: 0
   - fromNodeId: 8a437327-5457-4234-9369-1f6f123a50ab
     fromPortId: 4b2d9c37-961f-4e94-8c8c-9b7405194938
     toNodeId: 7e789819-9826-466f-8d20-5bc41954e06b
-    toPortId: c3de6cf8-60bb-47da-92cc-a08ff204941c
+    toPortId: 5763b866-f4f0-401e-ac2d-bf9e83463018
     fromPortIndex: 0
     toPortIndex: 0
