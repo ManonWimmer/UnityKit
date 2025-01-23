@@ -587,7 +587,18 @@ namespace CREMOT.DialogSystem
                 node.GIUD = nodeData.id;
                 node.DialogueText = nodeData.dialogueId;    // Custom ID in graph
 
+                foreach (var callFunctionData in nodeData.callFunctions)
+                {
+                    var container = new NodeCallFunctionContainer(node);
+                    container.CallFunctionField.value = EditorUtility.InstanceIDToObject(int.Parse(callFunctionData.gameObjectId)) as GameObject;
+                    container.MethodPopupField.value = callFunctionData.methodName;
+                    node.nodeEventsContainers.Add(container);
+                }
+
                 UpdateNodeIdField(node);
+
+                node.RefreshExpandedState();
+                node.RefreshPorts();
 
                 AddElement(node);
             }
