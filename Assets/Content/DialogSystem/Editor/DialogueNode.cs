@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 using System.Linq;
+using UnityEditor.UIElements;
+using UnityEngine.Events;
 
 namespace CREMOT.DialogSystem
 {
@@ -22,6 +24,9 @@ namespace CREMOT.DialogSystem
         public List<string> OutputPortsChoiceId = new List<string>();
 
         public List<PortCondition> PortConditions = new List<PortCondition>();
+
+
+        public List<NodeCallFunctionContainer> nodeEventsContainers = new List<NodeCallFunctionContainer>();
 
 
         // Synchronize with DialogueNodeSO
@@ -53,6 +58,24 @@ namespace CREMOT.DialogSystem
 
                 portConditions = PortConditions
             };
+        }
+    }
+
+    public class NodeCallFunctionContainer : VisualElement
+    {
+        public ObjectField CallFunctionField;
+
+        public NodeCallFunctionContainer(DialogueNode node)
+        {
+            var callFunctionField = new ObjectField("Event Field")
+            {
+
+            };
+            callFunctionField.objectType = typeof(GameObject);
+
+            node.mainContainer.Add(callFunctionField);
+
+            CallFunctionField = callFunctionField;
         }
     }
 }

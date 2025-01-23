@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 using System;
 using UnityEditor;
 using System.Linq;
+using UnityEditor.UIElements;
 
 namespace CREMOT.DialogSystem
 {
@@ -124,6 +125,9 @@ namespace CREMOT.DialogSystem
             // Add functionality for creating choices and assigning IDs
             AddNewChoiceButton(node);
             AddIdTextField(node);
+
+            AddNewCallFunctionFieldButton(node);
+
 
             // Add any predefined output ports
             AddOutputPorts(node, outputPorts, outputPortsChoiceId);
@@ -274,7 +278,21 @@ namespace CREMOT.DialogSystem
             textField.RegisterValueChangedCallback(evt => node.DialogueText = evt.newValue);
             node.mainContainer.Add(textField);
         }
+        private void AddNewCallFunctionFieldButton(DialogueNode node)
+        {
+            var button = new Button(() => AddCallFunctionField(node)) { text = "New Call Function Field" };
+            node.mainContainer.Add(button);
+        }
+        private void AddCallFunctionField(DialogueNode node)
+        {
+            NodeCallFunctionContainer nodeEventsContainer = new NodeCallFunctionContainer(node)
+            {
+                
+            };
 
+            node.nodeEventsContainers.Add(nodeEventsContainer);
+        }
+        
         #endregion
 
         #region Compatbile Ports (Not used)
